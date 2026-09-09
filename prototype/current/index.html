@@ -1,0 +1,3301 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#151515">
+<title>Curro & Parné · V9.2 Marketplace QA</title>
+<style>
+:root{
+  --coal:#151515; --coal2:#24211e; --ivory:#F7F4EE; --paper:#FFFDF9; --paper2:#FBF7F0;
+  --copper:#B9894D; --copper2:#D0A46E; --green:#23855B; --red:#C84B4B; --amber:#AA7136;
+  --muted:#7E786F; --line:#E6DFD4; --soft:#EEE8DE; --shadow:0 16px 42px rgba(21,21,21,.09);
+  --shadow-soft:0 8px 24px rgba(21,21,21,.05);
+}
+*{box-sizing:border-box}
+html{background:#e9e4dc}
+body{margin:0;background:#e9e4dc;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--coal)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{
+  max-width:430px;margin:0 auto;min-height:100vh;background:var(--ivory);
+  position:relative;padding-bottom:112px;box-shadow:0 0 48px rgba(0,0,0,.08)
+}
+.top{
+  position:sticky;top:0;z-index:20;padding:calc(10px + env(safe-area-inset-top)) 10px 8px;
+  background:linear-gradient(180deg,rgba(247,244,238,.97),rgba(247,244,238,.78),transparent);
+  backdrop-filter:blur(12px)
+}
+.brandrow{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(23,23,23,.97);border-radius:23px;padding:8px 8px 8px 14px;
+  box-shadow:0 14px 34px rgba(0,0,0,.19), inset 0 0 0 1px rgba(255,255,255,.05)
+}
+.brand{font-size:17px;font-weight:950;letter-spacing:.02em;color:white}.brand span{color:var(--copper2)}
+.mode{
+  display:flex;gap:4px;background:#2B2927;padding:4px;border-radius:999px
+}
+.mode button{
+  border:0;background:transparent;border-radius:999px;padding:7px 9px;
+  font-size:10px;font-weight:900;color:#A9A29A;transition:.18s
+}
+.mode button.on{
+  background:linear-gradient(180deg,#C7985C,#B9894D);color:white;
+  box-shadow:0 6px 14px rgba(185,137,77,.25)
+}
+main{padding:8px 14px 18px}
+.screen{display:none}.screen.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:.45;transform:translateY(2px)}to{opacity:1;transform:none}}
+.hero{
+  background:linear-gradient(145deg,var(--coal),#2A2521);color:white;border-radius:26px;
+  padding:21px;box-shadow:var(--shadow);position:relative;overflow:hidden
+}
+.hero:after{
+  content:"";position:absolute;width:190px;height:190px;border-radius:50%;
+  right:-68px;top:-72px;background:radial-gradient(circle,rgba(185,137,77,.38),transparent 68%)
+}
+.hero .eyebrow{text-transform:uppercase;letter-spacing:.15em;font-size:10px;font-weight:950;color:#D9BD93}
+.hero h1{font-size:29px;line-height:1.01;margin:8px 0 9px;max-width:310px}
+.hero p{margin:0;color:#D8D1C9;font-size:13px;line-height:1.48;max-width:330px}
+.hero .hero-actions{display:flex;gap:8px;margin-top:18px}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 3px 10px}
+.section-title h2{margin:0;font-size:17px;letter-spacing:-.01em}
+.section-title button{border:0;background:none;color:var(--copper);font-weight:900;font-size:12px}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:21px;padding:15px;
+  margin-bottom:11px;box-shadow:var(--shadow-soft)
+}
+.card.job{background:linear-gradient(180deg,#FFFDF9,#F8F0E4);border-color:#DEC29B}
+.card.dark{background:linear-gradient(145deg,#1A1918,#282522);border-color:#2D2A27;color:white}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--muted);font-size:12px;line-height:1.45}
+.dark .muted{color:#B9B1A8}
+.small{font-size:11px}.big{font-size:29px;font-weight:950;letter-spacing:-.03em}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;
+  font-size:10px;font-weight:950;letter-spacing:.02em
+}
+.pill.gold{background:#F1E4D0;color:#77542C}.pill.green{background:#E5F0E9;color:var(--green)}
+.pill.red{background:#F6E5E5;color:#9A3D3D}.pill.dark{background:#2D2A27;color:#EBD7B6}
+.pill.soft{background:#EFEAE2;color:#615A52}
+.btn{
+  width:100%;border:0;border-radius:15px;padding:13px 15px;font-weight:900;
+  transition:.16s transform,.16s opacity;min-height:46px
+}
+.btn:active{transform:scale(.985)}.btn.primary{background:var(--coal);color:white}
+.btn.copper{background:linear-gradient(180deg,#C5965B,#B9894D);color:white}
+.btn.green{background:var(--green);color:white}.btn.light{background:var(--soft);color:var(--coal)}
+.btn.red{background:#F6E5E5;color:#9A3D3D}.btn.ghost{background:transparent;color:var(--coal);border:1px solid var(--line)}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tag{background:#EFEAE2;color:#5E584F;font-size:11px;padding:6px 8px;border-radius:999px}
+.notice{
+  padding:11px 12px;border-radius:15px;background:#F1E8DA;color:#6B5134;font-size:12px;line-height:1.45
+}
+.notice.success{background:#E8F3EC;color:#246844}.notice.warn{background:#F7E8E8;color:#9A3D3D}
+.notice.dark{background:#252321;color:#D9D2C8}
+.person{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center}
+.avatar{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:var(--coal);color:white;font-weight:950;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)
+}
+.avatar.gold{background:var(--copper)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpis .card{padding:12px}.kpis b{font-size:20px;display:block;letter-spacing:-.03em}
+.kpis span{font-size:10px;color:var(--muted)}
+.progress{display:flex;gap:5px;margin:13px 0}
+.progress i{height:5px;flex:1;border-radius:999px;background:#E3DCD1}
+.progress i.on{background:var(--copper)}
+.nextstep{
+  margin:12px 0 0;padding:12px;border-radius:16px;background:#F4EEE5;border:1px solid #E7D7C0
+}
+.nextstep strong{display:block;font-size:12px;margin-bottom:3px}
+.route{
+  height:220px;border-radius:20px;background:linear-gradient(120deg,rgba(185,137,77,.18),transparent 35%),linear-gradient(25deg,#DBD4C9,#F9F6F0);
+  position:relative;overflow:hidden;border:1px solid var(--line)
+}
+.route:before,.route:after{content:"";position:absolute;background:white;border-radius:999px;box-shadow:0 0 0 1px #D6CFC5}
+.route:before{width:340px;height:18px;left:-24px;top:105px;transform:rotate(-18deg)}
+.route:after{height:300px;width:16px;left:228px;top:-28px;transform:rotate(23deg)}
+.dot{position:absolute;width:16px;height:16px;border-radius:50%;z-index:3;box-shadow:0 0 0 5px rgba(255,255,255,.9)}
+.dot.me{background:var(--copper);left:70px;top:150px}.dot.dest{background:var(--coal);right:58px;top:50px}
+.route-line{position:absolute;left:82px;top:144px;width:210px;height:5px;background:var(--copper);transform:rotate(-25deg);transform-origin:left center;z-index:2;border-radius:999px}
+.comms{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.comms .btn{display:flex;align-items:center;justify-content:center;gap:8px}
+.chat-list{display:grid;gap:10px;margin-top:10px}
+.bubble{max-width:82%;padding:10px 12px;border-radius:16px;font-size:12px;line-height:1.45}
+.bubble.me{justify-self:end;background:var(--coal);color:white;border-bottom-right-radius:5px}
+.bubble.them{justify-self:start;background:#EEE8DE;color:var(--coal);border-bottom-left-radius:5px}
+.bubble.system{justify-self:center;max-width:92%;background:#F2E7D6;color:#70512E;font-size:11px;text-align:center}
+.chat-compose{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+.chat-compose input{margin:0}
+.quick{display:flex;gap:6px;overflow:auto;padding:2px 0 4px;margin-top:10px}
+.quick button{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 10px;font-size:11px;font-weight:800}
+.timeline{display:grid;gap:10px}.tl{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.tl b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#E7E1D7;font-size:11px}
+.tl.done b{background:var(--green);color:white}.tl.current b{background:var(--copper);color:white}
+.tl p{margin:2px 0 0;font-size:12px}.tl small{color:var(--muted)}
+.contract-steps{display:grid;gap:8px;margin-top:12px}
+.contract-step{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.contract-step:last-child{border-bottom:0}
+.contract-step b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E8E1D7;font-size:11px}
+.contract-step.done b{background:var(--green);color:white}.contract-step.current b{background:var(--copper);color:white}
+.nav-wrap{
+  position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(410px,calc(100% - 20px));
+  z-index:30;padding-bottom:env(safe-area-inset-bottom)
+}
+.nav{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:7px;
+  background:rgba(23,23,23,.96);backdrop-filter:blur(18px);border-radius:24px;
+  box-shadow:0 16px 40px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.05)
+}
+.nav button{
+  position:relative;border:0;background:transparent;color:#A9A29A;font-size:9px;font-weight:850;
+  padding:8px 2px 7px;border-radius:17px;transition:.18s
+}
+.nav button.on{background:#2B2927;color:white}
+.nav .ico{
+  display:grid;place-items:center;width:28px;height:28px;margin:0 auto 2px;border-radius:10px;
+  font-size:16px
+}
+.nav button.on .ico{background:linear-gradient(180deg,#C7985C,#B9894D);color:white;box-shadow:0 7px 16px rgba(185,137,77,.28)}
+.badge{
+  position:absolute;top:4px;right:16px;min-width:16px;height:16px;border-radius:999px;background:var(--red);color:white;
+  display:grid;place-items:center;font-size:9px;font-weight:900;padding:0 4px
+}
+.modal{
+  position:fixed;inset:0;background:rgba(15,15,15,.6);display:none;align-items:end;justify-content:center;z-index:60
+}
+.modal.on{display:flex}
+.sheet{
+  width:min(430px,100%);background:var(--ivory);border-radius:28px 28px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height:88vh;overflow:auto;box-shadow:0 -20px 50px rgba(0,0,0,.16)
+}
+.sheet-handle{width:42px;height:4px;border-radius:999px;background:#D8D1C7;margin:0 auto 14px}
+input,select,textarea{
+  width:100%;border:1px solid var(--line);background:white;border-radius:14px;padding:12px;margin:5px 0 10px;color:var(--coal);outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:#C8A373;box-shadow:0 0 0 3px rgba(185,137,77,.1)}
+.toast{
+  position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(18px);background:var(--coal);color:white;
+  padding:11px 14px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:90
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.divider{height:1px;background:var(--line);margin:12px 0}
+.call-box{text-align:center;padding:12px 2px}.call-icon{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;margin:10px auto 12px;background:var(--green);color:white;font-size:28px;box-shadow:0 12px 28px rgba(35,133,91,.25)}
+.shift-clock{
+  margin:12px 0;padding:15px;border-radius:20px;background:linear-gradient(145deg,#171716,#292622);
+  color:white;box-shadow:0 14px 30px rgba(21,21,21,.16);position:relative;overflow:hidden
+}
+.shift-clock:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-44px;top:-55px;background:radial-gradient(circle,rgba(185,137,77,.38),transparent 68%)}
+.shift-clock .clock-label{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:#D4B68E;font-weight:950}
+.shift-clock .clock-time{font-size:35px;line-height:1;font-weight:950;letter-spacing:.02em;margin:7px 0 5px;position:relative;z-index:1}
+.shift-clock .clock-sub{font-size:11px;color:#C7C0B8;position:relative;z-index:1}
+.shift-clock .mini-action{margin-top:11px;border:1px solid rgba(255,255,255,.12);background:#302D2A;color:white;border-radius:12px;padding:9px 11px;font-size:10px;font-weight:900;position:relative;z-index:2}
+.history-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.history-item:last-child{border-bottom:0}
+.alarm-badge{display:inline-flex;align-items:center;gap:6px;background:#F2E4D2;color:#77542C;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950}
+.vault{
+  background:linear-gradient(145deg,#171716,#292622);color:white;border-radius:22px;padding:16px;
+  box-shadow:0 14px 32px rgba(21,21,21,.14);margin:10px 0;position:relative;overflow:hidden
+}
+.vault:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-65px;top:-65px;background:radial-gradient(circle,rgba(185,137,77,.34),transparent 70%)}
+.vault-head{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1}
+.lock{width:38px;height:38px;border-radius:13px;background:#34302C;display:grid;place-items:center;font-size:18px}
+.secure-row{display:grid;grid-template-columns:28px 1fr auto;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.secure-row:last-child{border-bottom:0}
+.secure-row .ok{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(35,133,91,.22);color:#78D5A8;font-size:11px;font-weight:950}
+.secure-row small{color:#AAA39B}
+.permission{background:#F4EEE5;border:1px solid #E4D4BD;border-radius:17px;padding:12px;margin:10px 0}
+.permission strong{display:block;font-size:12px}
+.permission .why{margin-top:4px;color:var(--muted);font-size:11px;line-height:1.4}
+.data-mask{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
+.chat-alert{position:relative}
+.chat-alert .unread{
+  position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;
+  background:var(--red);color:white;display:grid;place-items:center;font-size:9px;font-weight:950;
+  box-shadow:0 0 0 3px var(--paper)
+}
+.chat-head-alert{display:inline-flex;align-items:center;gap:6px}
+.chat-head-alert i{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 3px #F7E7E7}
+.quick-wrap{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 10px;scrollbar-width:none}
+.quick-wrap::-webkit-scrollbar{display:none}
+.quick-chip{flex:0 0 auto;border:1px solid #DDD2C4;background:#FFFDF9;border-radius:999px;padding:9px 11px;font-size:10px;font-weight:850;color:#34302C;cursor:pointer}
+.quick-chip:active{transform:scale(.97)}
+.quick-label{font-size:9px;font-weight:900;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:8px 0 6px}
+.service-entry{
+  cursor:pointer;
+  border:1px solid rgba(185,137,77,.18);
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+  position:relative;
+  overflow:hidden
+}
+.service-entry:before{
+  content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;
+  border-radius:0 99px 99px 0;background:var(--copper)
+}
+.service-entry:active{transform:scale(.985)}
+.service-entry:hover{box-shadow:0 12px 28px rgba(21,21,21,.09);border-color:rgba(185,137,77,.34)}
+.progress-link{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#F4EADF;color:#7A552D;border:1px solid #E5D3BD;
+  border-radius:999px;padding:7px 10px;font-size:9px;font-weight:950;
+  letter-spacing:.02em;white-space:nowrap
+}
+.progress-link .arrow{font-size:12px;line-height:1;transition:transform .16s ease}
+.service-entry:active .progress-link .arrow{transform:translateX(2px)}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 4px rgba(35,133,91,.12);display:inline-block;margin-right:2px
+}
+.rating-stars{display:flex;gap:7px;margin:10px 0 12px}
+.star-btn{border:0;background:#EEE7DD;color:#B7AA99;width:38px;height:38px;border-radius:12px;font-size:20px;cursor:pointer;transition:.15s ease}
+.star-btn.active{background:#F1E3D2;color:var(--copper);transform:translateY(-1px)}
+.star-btn:active{transform:scale(.96)}
+.review-box{background:#FBF8F2;border:1px solid #E9DED0;border-radius:18px;padding:13px;margin:10px 0}
+.review-box .review-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.review-box p{margin:8px 0 0;font-size:11px;line-height:1.5;color:#5E5850}
+.doc-section{background:#FBF8F2;border:1px solid #E9DED0;border-radius:16px;padding:12px;margin:9px 0}
+.doc-section h4{margin:0 0 6px;font-size:11px}
+.doc-line{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid #EEE6DC;font-size:10px}
+.doc-line:last-child{border-bottom:0}
+.reference-note{font-size:10px;color:var(--muted);line-height:1.45}
+
+
+
+
+
+
+@media(min-width:650px){body{padding:16px 0}.app{border-radius:30px;min-height:calc(100vh - 32px);overflow:hidden}.nav-wrap{bottom:26px}}
+
+.market-hero{background:linear-gradient(145deg,#171717,#29241e);color:#fff;border-radius:24px;padding:18px;margin:14px 0;box-shadow:0 14px 34px rgba(21,21,21,.15)}
+.market-hero .muted{color:#cfc6bb}.fill-track{height:8px;background:rgba(255,255,255,.13);border-radius:99px;overflow:hidden;margin:12px 0 7px}.fill-bar{height:100%;background:var(--copper);border-radius:99px}.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.slot{border:1px solid #e7ded3;background:#fbf8f2;border-radius:14px;padding:10px 6px;text-align:center;font-size:9px;font-weight:850}.slot.filled{background:#edf7f1;border-color:#cde7d7;color:#1e704e}.match-card{border:1px solid #e8dfd4;background:#fff;border-radius:19px;padding:13px;margin:9px 0}.match-score{font-size:10px;font-weight:950;color:#7a552d;background:#f4eadf;border:1px solid #e5d3bd;border-radius:999px;padding:6px 8px;white-space:nowrap}.match-reasons{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.reason{font-size:8px;font-weight:850;background:#f4f2ee;border-radius:999px;padding:5px 7px;color:#625c54}.newcomer{background:#edf3f8;color:#48657a;border:1px solid #d8e4ec}.market-tabs{display:flex;gap:6px;overflow:auto;padding-bottom:3px;margin:9px 0}.market-tab{border:1px solid #e3d8cb;background:#fff;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:900;white-space:nowrap;cursor:pointer}.market-tab.active{background:#171717;color:#fff;border-color:#171717}
+
+.referral-card{border:1px solid #e5d6c3;background:linear-gradient(145deg,#fffaf3,#f7efe4);border-radius:22px;padding:15px;margin:12px 0}
+.referral-flow{display:grid;gap:7px;margin:12px 0}.ref-step{display:flex;align-items:center;gap:9px;font-size:10px}.ref-step b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#eee8df}.ref-step.done b{background:#e4f2e9;color:#21734f}.ref-step.current b{background:#b9894d;color:white}
+.reward-lock{border:1px dashed #d3b58f;border-radius:14px;padding:10px;background:#fff;font-size:10px}
+
+.cv-card{border:1px solid #e3ddd3;background:#fff;border-radius:18px;padding:14px;margin:10px 0}
+.cv-secure{border:1px solid #d9e9df;background:#f6fbf8;border-radius:16px;padding:12px;margin:10px 0}
+.security-list{display:grid;gap:7px;margin-top:8px}.security-item{display:flex;gap:8px;align-items:flex-start;font-size:11px}
+.security-dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#e6f3ea;color:#23855b;font-weight:800;flex:0 0 auto}
+.cv-upload{border:1px dashed #cbb89f;border-radius:16px;padding:12px;background:#fffaf5}
+.cv-status{font-size:10px;font-weight:800;letter-spacing:.04em}
+
+
+.job-switcher{display:grid;gap:9px;margin:10px 0 16px}
+.job-switch{border:1px solid #e5dfd5;background:#fff;border-radius:16px;padding:12px;text-align:left;width:100%;cursor:pointer}
+.job-switch.active{box-shadow:0 0 0 2px rgba(185,137,77,.22);border-color:#b9894d}
+.job-switch .topline{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.job-switch .meta{font-size:11px;color:#777;margin-top:5px}
+.jobs-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+.jobs-kpi>div{background:#fff;border:1px solid #e7e0d7;border-radius:14px;padding:10px;text-align:center}
+.jobs-kpi b{display:block;font-size:18px}.jobs-kpi span{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:.06em}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brandrow">
+    <div class="brand">CURRO <span>&</span> PARNÉ</div>
+    <div class="mode">
+      <button id="swWorker" class="on" onclick="switchDemo('worker')">Profesional</button>
+      <button id="swBiz" onclick="switchDemo('biz')">Negocio</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="screen on"></section>
+  <section id="curros" class="screen"></section>
+  <section id="activity" class="screen"></section>
+  <section id="profile" class="screen"></section>
+</main>
+
+<div class="nav-wrap">
+  <nav class="nav">
+    <button class="on" data-page="home" onclick="go('home',this)"><span class="ico">⌂</span>Inicio</button>
+    <button data-page="curros" onclick="go('curros',this)"><span class="ico">✦</span><span id="nav2">Curros</span></button>
+    <button data-page="activity" onclick="go('activity',this)"><span class="ico">◴</span><span id="nav3">Actividad</span><span id="actBadge"></span></button>
+    <button data-page="profile" onclick="go('profile',this)"><span class="ico">◉</span><span id="nav4">Perfil</span></button>
+  </nav>
+</div>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="sheet"><div class="sheet-handle"></div><div id="sheet"></div></div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const JOB_STATES=[
+ 'draft','published','interest','selected','docs_pending','terms_pending','worker_accept_pending',
+ 'confirmed','preparing','en_route','arrived','checked_in','working','finished',
+ 'payment_pending','business_paid','closed'
+];
+
+const initial={
+  demoRole:'worker',
+  worker:{name:'Jonathan Gómez',available:true,money:235,completed:24,rating:4.9,punctuality:100},
+  business:{name:'La Terraza del Puerto',rating:4.8,payAvg:'12 min'},
+  job:null,
+  jobs:[],
+  activeJobId:null,
+  proposal:null,
+  relation:{jobsTogether:0,mutualRating:null,favorite:false},
+  chat:[],
+  history:[],
+  jobCounter:0,
+  unread:{worker:0,biz:0},
+  notifications:[],
+  vault:{identity:true,social:true,labor:true},
+  reviews:[]
+};
+
+
+
+const ASSIGNMENT_STATES=[
+ 'selected','docs_pending','terms_pending','worker_accept_pending','confirmed','preparing',
+ 'en_route','arrived','checked_in','working','finished','payment_pending','business_paid','closed',
+ 'cancelled','no_show','replaced'
+];
+
+function freshAssignment(candidate){
+ return {slotReleased:false,releasedAt:null,releaseReason:null,previousState:null,
+   id:`${S.job?.id||'JOB'}-${candidate.id}`,
+   candidateId:candidate.id,
+   name:candidate.name,
+   role:candidate.role,
+   state:'selected',
+   secureFlow:{requested:false,authorized:false,conditionsViewed:false},
+   businessPaid:false,
+   workerPaid:false,
+   checkedInAt:null,
+   shiftEndAt:null,
+   incidentOpen:false,
+   ratedByWorker:false,
+   ratedByBusiness:false,
+   reviews:{worker:null,biz:null},
+   selectedAt:Date.now()
+ };
+}
+function ensureAssignments(job=S.job, marketplace=S.marketplace){
+ if(!job)return [];
+ job.assignments=Array.isArray(job.assignments)?job.assignments:[];
+ const candidates=marketplace?.candidates||[];
+ for(const c of candidates){
+   if(c.status==='selected' && !job.assignments.some(a=>a.candidateId===c.id)){
+     job.assignments.push(freshAssignment(c));
+   }
+ }
+ job.assignments=job.assignments.map(a=>{
+   const x={
+     slotReleased:Boolean(a.slotReleased),
+     releasedAt:a.releasedAt||null,
+     releaseReason:a.releaseReason||null,
+     previousState:a.previousState||null,
+     ...a
+   };
+   const releasedStates=['cancelled','no_show','replaced'];
+   // Self-heal impossible combinations in old/corrupt persisted data.
+   if(x.slotReleased && !releasedStates.includes(x.state)){
+     x.state=releasedStates.includes(x.releaseReason)?x.releaseReason:'cancelled';
+   }
+   if(releasedStates.includes(x.state) && !x.slotReleased){
+     x.slotReleased=true;
+     x.releaseReason=x.releaseReason||x.state;
+     x.releasedAt=x.releasedAt||Date.now();
+   }
+   return x;
+ });
+ return job.assignments;
+}
+function assignmentFor(candidateId,job=S.job){
+ return ensureAssignments(job,S.marketplace).find(a=>a.candidateId===candidateId)||null;
+}
+function upsertAssignment(candidate){
+ let a=assignmentFor(candidate.id);
+ if(a){
+   if(a.slotReleased||assignmentIsReplaceable(a)){
+     a.slotReleased=false;
+     a.releasedAt=null;
+     a.releaseReason=null;
+     a.previousState=a.state;
+     a.state='selected';
+     a.selectedAt=Date.now();
+   }
+   return a;
+ }
+ if(occupiedSlotsFor()>=marketTotal())return null;
+ a=freshAssignment(candidate);S.job.assignments.push(a);
+ return a;
+}
+function removeAssignment(candidateId){
+ if(!S.job)return;
+ S.job.assignments=ensureAssignments().filter(a=>a.candidateId!==candidateId);
+}
+function assignmentLabel(st){
+ const m={cancelled:'Cancelado',no_show:'No presentado',replaced:'Reemplazado'};
+ return m[st]||jobLabel(st);
+}
+function assignmentCompleted(a){return !!a && a.state==='closed' && a.ratedByWorker && a.ratedByBusiness && !a.incidentOpen}
+function assignmentProgress(a){
+ if(!a)return '';
+ return `<div class="progress">${['selected','terms_pending','confirmed','checked_in','working','payment_pending','closed'].map(s=>`<i class="${stateIndex(a.state)>=stateIndex(s)?'on':''}"></i>`).join('')}</div>`;
+}
+function assignmentCandidate(id){return S.marketplace?.candidates?.find(c=>c.id===id)||null}
+
+function scheduleDayIndex(label){
+ const s=String(label||'').toLowerCase();
+ if(s.includes('mañana'))return 1;
+ if(s.includes('hoy'))return 0;
+ const m=s.match(/(\d{1,2})[\/-](\d{1,2})/);
+ if(m)return Number(m[1])*40+Number(m[2]);
+ return 0;
+}
+function hmMinutes(v){
+ const m=String(v||'').match(/(\d{1,2}):(\d{2})/);
+ return m?Number(m[1])*60+Number(m[2]):0;
+}
+function intervalForJob(job){
+ const day=scheduleDayIndex(job?.date);
+ let start=day*1440+hmMinutes(job?.start);
+ let end=day*1440+hmMinutes(job?.end);
+ if(end<=start)end+=1440;
+ return [start,end];
+}
+function intervalsOverlap(a,b){
+ const [as,ae]=intervalForJob(a),[bs,be]=intervalForJob(b);
+ return Math.max(as,bs)<Math.min(ae,be);
+}
+function workerCommittedInRecord(r){
+ const a=(r?.job?.assignments||[]).find(x=>x.candidateId==='p1');
+ if(a && ASSIGNMENT_STATES.includes(a.state) && a.state!=='closed')return true;
+ const me=(r?.marketplace?.candidates||[]).find(c=>c.id==='p1');
+ return !!me && me.status==='selected' && r.job?.state!=='closed';
+}
+function workerScheduleConflict(targetJob=S.job){
+ if(!targetJob)return null;
+ syncActiveJobRecord();
+ return (S.jobs||[]).find(r=>
+   r.id!==targetJob.id &&
+   workerCommittedInRecord(r) &&
+   intervalsOverlap(r.job,targetJob)
+ )||null;
+}
+function conflictText(rec){
+ return rec?`${rec.id} · ${rec.job?.date||''} ${rec.job?.start||''}–${rec.job?.end||''}`:'';
+}
+
+function syncJonathanAssignmentFromJob(){
+ if(!S.job || !S.marketplace)return;
+ const me=workerCandidate();
+ if(!me || me.status!=='selected')return;
+ const a=upsertAssignment(me);
+ a.state=S.job.state;
+ a.secureFlow=cloneData(S.job.secureFlow||a.secureFlow);
+ a.businessPaid=!!S.job.businessPaid;
+ a.workerPaid=!!S.job.workerPaid;
+ a.shiftEndAt=S.job.shiftEndAt||a.shiftEndAt;
+ a.incidentOpen=!!S.job.incidentOpen;
+ a.ratedByWorker=!!S.job.ratedByWorker;
+ a.ratedByBusiness=!!S.job.ratedByBusiness;
+ a.reviews=cloneData(S.job.reviews||a.reviews);
+}
+function syncJobFromJonathanAssignment(){
+ if(!S.job)return;
+ const a=assignmentFor('p1');
+ if(!a)return;
+ S.job.state=a.state;
+ S.job.secureFlow=cloneData(a.secureFlow);
+ S.job.businessPaid=!!a.businessPaid;
+ S.job.workerPaid=!!a.workerPaid;
+ S.job.shiftEndAt=a.shiftEndAt||null;
+ S.job.incidentOpen=!!a.incidentOpen;
+ S.job.ratedByWorker=!!a.ratedByWorker;
+ S.job.ratedByBusiness=!!a.ratedByBusiness;
+ S.job.reviews=cloneData(a.reviews||{worker:null,biz:null});
+}
+function recomputeJobSummaryState(){
+ if(!S.job)return;
+ const as=ensureAssignments();
+ if(!as.length)return;
+ const consuming=as.filter(assignmentConsumesSlot);
+ if(!consuming.length){
+   // No active/historical coverage: the Curro is again available if it still has open slots.
+   if(openSlotsFor()>0 && !['draft','published','interest'].includes(S.job.state))S.job.state='published';
+   return;
+ }
+ const unresolved=consuming.filter(a=>a.state!=='closed');
+ if(!unresolved.length){S.job.state='closed';return;}
+ const minRank=Math.min(...unresolved.map(a=>stateIndex(a.state)));
+ const earliest=unresolved.find(a=>stateIndex(a.state)===minRank);
+ if(earliest?.candidateId==='p1'){
+   syncJobFromJonathanAssignment();
+ }else{
+   S.job.state=earliest?.state||'selected';
+ }
+}
+function cloneData(v){return v==null?v:JSON.parse(JSON.stringify(v))}
+
+function numericJobId(id){
+ const m=String(id||'').match(/^CP-(\d+)$/);
+ return m?Number(m[1]):0;
+}
+function repairAssignmentInvariant(a){
+ if(!a)return a;
+ a.secureFlow={requested:false,authorized:false,conditionsViewed:false,...(a.secureFlow||{})};
+ a.businessPaid=Boolean(a.businessPaid);
+ a.workerPaid=Boolean(a.workerPaid);
+ a.ratedByWorker=Boolean(a.ratedByWorker);
+ a.ratedByBusiness=Boolean(a.ratedByBusiness);
+ a.reviews={worker:null,biz:null,...(a.reviews||{})};
+ a.slotReleased=Boolean(a.slotReleased);
+ a.releasedAt=a.releasedAt||null;
+ a.releaseReason=a.releaseReason||null;
+ a.previousState=a.previousState||null;
+ const releasedStates=['cancelled','no_show','replaced'];
+
+ // Released assignments are a valid audit state and must never be promoted back to selected.
+ if(a.slotReleased || releasedStates.includes(a.state)){
+   a.slotReleased=true;
+   if(!releasedStates.includes(a.state))a.state=releasedStates.includes(a.releaseReason)?a.releaseReason:'cancelled';
+   a.releaseReason=a.releaseReason||a.state;
+   a.releasedAt=a.releasedAt||Date.now();
+   a.businessPaid=false;
+   a.workerPaid=false;
+   return a;
+ }
+
+ if(a.workerPaid){
+   a.businessPaid=true;
+   a.state='closed';
+ }else if(a.businessPaid && stateIndex(a.state)<stateIndex('business_paid')){
+   a.state='business_paid';
+ }
+ if(!ASSIGNMENT_STATES.includes(a.state))a.state='selected';
+ return a;
+}
+function repairJobInvariant(job, marketplace){
+ if(!job)return job;
+ job.assignments=Array.isArray(job.assignments)?job.assignments.map(repairAssignmentInvariant):[];
+ job.businessPaid=Boolean(job.businessPaid);
+ job.workerPaid=Boolean(job.workerPaid);
+ if(job.workerPaid){
+   job.businessPaid=true;
+   job.state='closed';
+ }else if(job.businessPaid && stateIndex(job.state)<stateIndex('business_paid') && stateIndex(job.state)>=stateIndex('payment_pending')){
+   job.state='business_paid';
+ }
+ const p1=job.assignments.find(a=>a.candidateId==='p1');
+ if(p1){
+   if(job.businessPaid||p1.businessPaid){
+     job.businessPaid=p1.businessPaid=true;
+     if(stateIndex(p1.state)<stateIndex('business_paid'))p1.state='business_paid';
+   }
+   if(job.workerPaid||p1.workerPaid){
+     job.workerPaid=p1.workerPaid=true;
+     job.businessPaid=p1.businessPaid=true;
+     p1.state='closed';
+     job.state='closed';
+   }else if(job.businessPaid && job.state==='payment_pending'){
+     job.state='business_paid';
+   }
+ }
+ if(!JOB_STATES.includes(job.state))job.state='published';
+ return job;
+}
+function recordFreshness(r){
+ return Number(r?.updatedAt)||Number(r?.job?.updatedAt)||Number(r?.job?.closedAt)||0;
+}
+function chooseCanonicalRecord(a,b,activeJob){
+ if(!a)return b;if(!b)return a;
+ if(activeJob && activeJob.id===a.id){
+   const current=makeJobRecord(activeJob,S.marketplace,S.chat,S.referral);
+   current.updatedAt=Date.now();
+   return current;
+ }
+ const af=recordFreshness(a),bf=recordFreshness(b);
+ if(af!==bf)return af>bf?a:b;
+ const ar=stateIndex(a.job?.state),br=stateIndex(b.job?.state);
+ if(ar!==br)return ar>br?a:b;
+ const ap=(a.job?.workerPaid?2:0)+(a.job?.businessPaid?1:0);
+ const bp=(b.job?.workerPaid?2:0)+(b.job?.businessPaid?1:0);
+ return bp>ap?b:a;
+}
+function dedupeJobRecords(records,activeJob){
+ const map=new Map();
+ for(const raw of (records||[])){
+   if(!raw?.id||!raw?.job)continue;
+   raw.job.id=raw.id;
+   repairJobInvariant(raw.job,raw.marketplace);
+   const prev=map.get(raw.id);
+   map.set(raw.id,chooseCanonicalRecord(prev,raw,activeJob));
+ }
+ return [...map.values()];
+}
+function repairActivePaymentState(){
+ if(!S.job)return;
+ repairJobInvariant(S.job,S.marketplace);
+ const a=assignmentFor('p1');
+ if(a){
+   repairAssignmentInvariant(a);
+   if(a.businessPaid && !S.job.businessPaid)S.job.businessPaid=true;
+   if(a.workerPaid && !S.job.workerPaid)S.job.workerPaid=true;
+   if(S.job.workerPaid){S.job.state='closed';a.state='closed';}
+   else if(S.job.businessPaid && S.job.state==='payment_pending'){S.job.state='business_paid';a.state='business_paid';}
+ }
+}
+
+function makeJobRecord(job, marketplace, chat, referral){
+ const j=cloneData(job);
+ repairJobInvariant(j,marketplace);
+ return {id:j.id,job:j,marketplace:cloneData(marketplace),chat:cloneData(chat||[]),referral:cloneData(referral||null),updatedAt:Date.now()};
+}
+function activeJobRecord(){
+ return (S.jobs||[]).find(r=>r.id===S.activeJobId)||null;
+}
+function syncActiveJobRecord(){
+ if(!S.job)return;
+ ensureAssignments();
+ repairActivePaymentState();
+ syncJonathanAssignmentFromJob();
+ repairJobInvariant(S.job,S.marketplace);
+ S.jobs=Array.isArray(S.jobs)?S.jobs:[];
+ const rec=makeJobRecord(S.job,S.marketplace,S.chat,S.referral);
+ S.jobs=S.jobs.filter(r=>r?.id!==S.job.id);
+ S.jobs.unshift(rec);
+ S.jobs=dedupeJobRecords(S.jobs,S.job);
+ S.activeJobId=S.job.id;
+}
+function loadJobRecord(id){
+ if(!id)return false;
+ syncActiveJobRecord();
+ S.jobs=dedupeJobRecords(S.jobs,S.job);
+ const rec=(S.jobs||[]).find(r=>r.id===id);
+ if(!rec)return false;
+ S.activeJobId=rec.id;
+ S.job=cloneData(rec.job);
+ S.marketplace=cloneData(rec.marketplace);
+ S.chat=cloneData(rec.chat||[]);
+ S.referral=cloneData(rec.referral);
+ ensureMarketplace();ensureReferral();ensureAssignments();
+ repairActivePaymentState();
+ return true;
+}
+function selectJob(id,page){
+ if(!loadJobRecord(id)){toast('No se encontró el Curro');return;}
+ markNotificationsRead(S.demoRole,id);
+ save();renderAll();
+ if(page)go(page,document.querySelector(`[data-page="${page}"]`));
+}
+function jobRecords(){
+ syncActiveJobRecord();
+ S.jobs=dedupeJobRecords(S.jobs,S.job);
+ return (S.jobs||[]).slice().sort((a,b)=>{
+   const ac=a.job?.state==='closed'?1:0,bc=b.job?.state==='closed'?1:0;
+   if(ac!==bc)return ac-bc;
+   return String(b.id).localeCompare(String(a.id));
+ });
+}
+function openJobRecords(){
+ return jobRecords().filter(r=>r.job?.state!=='closed' || !(r.job?.ratedByWorker&&r.job?.ratedByBusiness));
+}
+function jobRecordNeedsBusinessAttention(r){
+ return businessAttentionReasons(r).length>0;
+}
+function jobMiniCard(r,role='biz',page='curros'){
+ const j=r.job||{};
+ const active=r.id===S.activeJobId;
+ const rejectedNotice=role==='worker'&&workerRejectionPendingRecord(r);
+ const hasUnread=unreadNotificationsForJob(role==='worker'?'worker':'biz',r.id).length>0;
+ const total=Math.max(1,Number(j.workers)||1);
+ const occupied=occupiedSlotsFor(j,r.referral);
+ const open=Math.max(0,total-occupied);
+ const needsReplacement=role==='biz'&&open>0&&(j.assignments||[]).some(assignmentIsReplaceable);
+ const status=rejectedNotice?'No seleccionado':needsReplacement?'Reemplazo necesario':hasUnread&&page==='activity'?'Nuevo':jobLabel(j.state);
+ return `<button class="job-switch ${active?'active':''}" onclick="selectJob('${r.id}','${page}')">
+   <div class="topline"><strong>${r.id} · ${j.role}</strong><span class="pill ${rejectedNotice||needsReplacement?'red':hasUnread&&page==='activity'?'gold':j.state==='closed'?'green':'gold'}">${status}</span></div>
+   <div class="meta">${j.date||''} · ${j.start||''}–${j.end||''} · ${j.zone||''}</div>
+   <div class="meta">${role==='biz'?`${occupied}/${total} plazas${open?` · ${open} ${open===1?'vacante':'vacantes'}`:''} · `:''}${money(j.pay||0)}${active?' · ABIERTO':''}</div>
+ </button>`;
+}
+function workerRejectionPendingRecord(r){
+ const n=r?.job?.rejectionNotice;
+ return !!(n && n.type==='business_rejection' && !n.acknowledged);
+}
+function currentWorkerRejectionPending(){
+ return !!(S.job?.rejectionNotice?.type==='business_rejection' && !S.job.rejectionNotice.acknowledged);
+}
+function acknowledgeWorkerRejection(){
+ if(!S.job || !currentWorkerRejectionPending()){toast('Este aviso ya está resuelto');return;}
+ S.job.rejectionNotice.acknowledged=true;
+ S.job.rejectionNotice.acknowledgedAt=Date.now();
+ markNotificationsRead('worker',S.job.id);
+ save();renderAll();toast('Aviso archivado');
+}
+
+function workerEligibleRecord(r){
+ const j=r?.job;if(!j)return false;
+ if(!S.worker.available && j.state==='published')return false;
+ if(!professionalCanDo(j.role))return false;
+ const me=(r.marketplace?.candidates||[]).find(c=>c.id==='p1');
+ const blocked=['rejected','worker_rejected','worker_withdrawn'];
+ if(me&&blocked.includes(me.status))return false;
+ if(['rejected_by_worker','withdrawn','rejected_by_business'].includes(j.workerDecision))return false;
+ if(j.state==='published')return true;
+ return !!me && ['interested','selected','invited'].includes(me.status);
+}
+
+function normalizeState(raw){
+ const x=raw&&typeof raw==='object'?raw:JSON.parse(JSON.stringify(initial));
+ x.demoRole=x.demoRole==='biz'?'biz':'worker';
+ x.jobs=Array.isArray(x.jobs)?x.jobs:[];
+ x.activeJobId=x.activeJobId||x.job?.id||x.jobs[0]?.id||null;
+ x.worker={...initial.worker,...(x.worker||{})};
+ x.business={...initial.business,...(x.business||{})};
+ x.relation={...initial.relation,...(x.relation||{})};
+ x.chat=Array.isArray(x.chat)?x.chat:[];
+ x.history=Array.isArray(x.history)?x.history:[];
+ x.history.forEach(h=>{if(h.archived===undefined)h.archived=true;});
+ x.jobCounter=Number.isFinite(x.jobCounter)?x.jobCounter:(x.job?1:0);
+ x.unread={worker:Number(x.unread?.worker)||0,biz:Number(x.unread?.biz)||0};
+ x.notifications=Array.isArray(x.notifications)?x.notifications.filter(n=>n&&n.recipient&&n.title).map(n=>({
+   id:n.id||`N-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+   jobId:n.jobId||null,recipient:n.recipient,type:n.type||'info',title:n.title,
+   message:n.message||'',read:Boolean(n.read),ts:Number(n.ts)||Date.now(),readAt:n.readAt||null
+ })) : [];
+ x.vault={...initial.vault,...(x.vault||{})};
+ x.reviews=Array.isArray(x.reviews)?x.reviews:[];
+ if(x.job && !x.jobs.some(r=>r&&r.id===x.job.id)){
+   x.jobs.unshift(makeJobRecord(x.job,x.marketplace,x.chat,x.referral));
+ }
+ if(!x.job && x.activeJobId){
+   const rec=x.jobs.find(r=>r&&r.id===x.activeJobId);
+   if(rec){x.job=cloneData(rec.job);x.marketplace=cloneData(rec.marketplace);x.chat=cloneData(rec.chat||[]);x.referral=cloneData(rec.referral);}
+ }
+ if(x.job){
+   x.job.workerDecision=x.job.workerDecision||'pending';
+   x.job.workerInterest=Boolean(x.job.workerInterest);
+   if(x.job.state==='published'&&x.job.workerDecision==='interested')x.job.state='interest';
+   if(x.job.state==='interest'&&!x.job.workerInterest)x.job.state='published';
+   if(!JOB_STATES.includes(x.job.state))x.job.state='published';
+   x.job.durationMs=Number(x.job.durationMs)||calcDurationMs(x.job.start||'20:00',x.job.end||'01:00');
+   x.job.secureFlow={requested:false,authorized:false,conditionsViewed:false,...(x.job.secureFlow||{})};
+   x.job.reviews={worker:null,biz:null,...(x.job.reviews||{})};
+   x.job.ratedByWorker=Boolean(x.job.ratedByWorker);
+   x.job.ratedByBusiness=Boolean(x.job.ratedByBusiness);
+   x.job.pay=Number(x.job.pay)||75;
+   x.job.workers=Math.max(1,Number(x.job.workers)||3);
+   x.job.assignments=Array.isArray(x.job.assignments)?x.job.assignments:[];
+   ensureOperationalState(x.job);
+   if(x.job.rejectionNotice){
+     x.job.rejectionNotice={
+       type:'business_rejection',
+       ts:Number(x.job.rejectionNotice.ts)||Date.now(),
+       acknowledged:Boolean(x.job.rejectionNotice.acknowledged),
+       acknowledgedAt:x.job.rejectionNotice.acknowledgedAt||null,
+       ...x.job.rejectionNotice
+     };
+   }
+   repairJobInvariant(x.job,x.marketplace);
+ }
+ 
+ x.jobs=x.jobs.filter(r=>r&&r.job&&r.id).map(r=>{
+   r.id=r.job.id=r.id||r.job.id;
+   r.marketplace=r.marketplace||null;
+   r.chat=Array.isArray(r.chat)?r.chat:[];
+   r.referral=r.referral||null;
+   if(!JOB_STATES.includes(r.job.state))r.job.state='published';
+   r.job.workerDecision=r.job.workerDecision||'pending';
+   r.job.workerInterest=Boolean(r.job.workerInterest);
+   r.job.secureFlow={requested:false,authorized:false,conditionsViewed:false,...(r.job.secureFlow||{})};
+   r.job.reviews={worker:null,biz:null,...(r.job.reviews||{})};
+   r.job.ratedByWorker=Boolean(r.job.ratedByWorker);
+   r.job.ratedByBusiness=Boolean(r.job.ratedByBusiness);
+   r.job.pay=Number(r.job.pay)||75;
+   r.job.workers=Math.max(1,Number(r.job.workers)||1);
+   r.job.assignments=Array.isArray(r.job.assignments)?r.job.assignments:[];
+   ensureOperationalState(r.job);
+   if(r.job.rejectionNotice){
+     r.job.rejectionNotice={
+       type:'business_rejection',
+       ts:Number(r.job.rejectionNotice.ts)||Date.now(),
+       acknowledged:Boolean(r.job.rejectionNotice.acknowledged),
+       acknowledgedAt:r.job.rejectionNotice.acknowledgedAt||null,
+       ...r.job.rejectionNotice
+     };
+   }
+   r.job.durationMs=Number(r.job.durationMs)||calcDurationMs(r.job.start||'20:00',r.job.end||'01:00');
+   repairJobInvariant(r.job,r.marketplace);
+   r.updatedAt=Number(r.updatedAt)||0;
+   return r;
+ });
+
+ x.jobs=dedupeJobRecords(x.jobs,x.job);
+ const maxId=Math.max(0,...x.jobs.map(r=>numericJobId(r.id)),numericJobId(x.job?.id));
+ x.jobCounter=Math.max(Number(x.jobCounter)||0,maxId);
+ if(x.activeJobId && !x.jobs.some(r=>r.id===x.activeJobId))x.activeJobId=x.job?.id||x.jobs[0]?.id||null;
+ return x;
+}
+let stored=null;
+try{stored=JSON.parse(localStorage.getItem('cp_v8')||'null')}catch(e){stored=null}
+let S=normalizeState(stored);
+
+function save(){
+ repairActivePaymentState();
+ syncActiveJobRecord();
+ S.jobs=dedupeJobRecords(S.jobs,S.job);
+ S=normalizeState(S);
+ try{localStorage.setItem('cp_v8',JSON.stringify(S))}catch(e){console.warn('No se pudo guardar el estado',e)}
+}
+function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1700)}
+function go(id,btn){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+function switchDemo(role){
+ const pending=unreadNotificationCount(role);
+ S.demoRole=role;
+ save();renderAll();
+ go('home',document.querySelector('[data-page="home"]'));
+ toast(pending?`${pending} aviso${pending>1?'s':''} pendiente${pending>1?'s':''}`:(role==='worker'?'Vista Profesional':'Vista Negocio'));
+}
+function openModal(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('on')}
+function closeModal(){document.getElementById('modal').classList.remove('on')}
+function resetDemo(){try{localStorage.removeItem('cp_v8')}catch(e){};S=normalizeState(JSON.parse(JSON.stringify(initial)));closeModal();renderAll();go('home',document.querySelector('[data-page="home"]'));toast('Demo V9.4.2 reiniciada')}
+
+function stateIndex(st){const i=JOB_STATES.indexOf(st);return i<0?0:i}
+function jobLabel(st){
+ const m={
+  published:'Publicado',interest:'Profesional interesado',selected:'Seleccionado',
+  docs_pending:'Documentación',terms_pending:'Condiciones',worker_accept_pending:'Esperando aceptación',
+  confirmed:'Todo listo',preparing:'Preparándose',en_route:'En ruta',arrived:'Ha llegado',
+  checked_in:'Check-in',working:'Turno activo',finished:'Turno finalizado',
+  payment_pending:'Pendiente de pago',business_paid:'Pago realizado',closed:'Cerrado'
+ };
+ return m[st]||'Sin Curro';
+}
+function progressBar(st){
+ const milestones=['published','selected','terms_pending','confirmed','en_route','checked_in','working','payment_pending','closed'];
+ const idx=stateIndex(st);
+ const active=milestones.filter(m=>stateIndex(m)<=idx).length;
+ const pct=Math.max(0,Math.min(100,Math.round((active/milestones.length)*100)));
+ return `<div class="progress" aria-label="Progreso del Curro ${pct}%">${milestones.map((m,i)=>`<i class="${i<active?'on':''}"></i>`).join('')}</div>`;
+}
+function nextStep(st,role){
+ const w={
+  published:'Revisa el Curro y decide si te interesa.',
+  interest:'El negocio está revisando tu candidatura.',
+  selected:'El negocio iniciará el paso previo de contratación.',
+  docs_pending:'El negocio está revisando documentación.',
+  terms_pending:'Las condiciones están siendo preparadas.',
+  worker_accept_pending:'Revisa las condiciones y acepta para confirmar el Curro.',
+  confirmed:'Todo está listo. Puedes prepararte para salir.',
+  preparing:'Cuando estés listo, inicia el trayecto.',
+  en_route:'Dirígete al local. Puedes usar chat o llamada privada.',
+  arrived:'Haz check-in cuando estés en el establecimiento.',
+  checked_in:'Inicia el turno cuando corresponda.',
+  working:'Finaliza el turno al terminar el servicio.',
+  finished:'Confirma el cierre del turno.',
+  payment_pending:'Espera a que el negocio marque el pago.',
+  business_paid:'Confirma que has cobrado.',
+  closed:'Valora la experiencia.'
+ };
+ const b={
+  published:'Espera profesionales interesados.',
+  interest:'Revisa el perfil y selecciona al profesional.',
+  selected:'Inicia el proceso previo al Curro.',
+  docs_pending:'Confirma que la documentación está revisada.',
+  terms_pending:'Define y envía las condiciones.',
+  worker_accept_pending:'Esperando aceptación del profesional.',
+  confirmed:'El servicio está listo.',
+  preparing:'El profesional se está preparando.',
+  en_route:'Puedes ver ETA, escribir o llamar sin mostrar números personales.',
+  arrived:'El profesional ha llegado.',
+  checked_in:'Check-in realizado.',
+  working:'El turno está en curso.',
+  finished:'El profesional ha finalizado el turno.',
+  payment_pending:'Marca el pago cuando lo hayas realizado.',
+  business_paid:'Esperando confirmación de cobro.',
+  closed:'Valora al profesional y añádelo a tu equipo si encaja.'
+ };
+ return `<div class="nextstep"><strong>Siguiente paso</strong><div class="muted">${(role==='worker'?w:b)[st]||'Sin acciones pendientes.'}</div></div>`;
+}
+
+function notifyRole(recipient,type,title,message,jobId=S.job?.id){
+ S.notifications=Array.isArray(S.notifications)?S.notifications:[];
+ const event={
+   id:`N-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+   jobId:jobId||null,recipient,type,title,message,read:false,ts:Date.now()
+ };
+ S.notifications.unshift(event);
+ return event;
+}
+
+function notifyRoleOnce(recipient,type,title,message,jobId=S.job?.id){
+ S.notifications=Array.isArray(S.notifications)?S.notifications:[];
+ const exists=S.notifications.some(n=>n.recipient===recipient&&n.type===type&&n.jobId===jobId);
+ if(exists)return null;
+ return notifyRole(recipient,type,title,message,jobId);
+}
+
+function roleNotifications(role,onlyUnread=false){
+ const list=Array.isArray(S.notifications)?S.notifications:[];
+ return list.filter(n=>n.recipient===role&&(!onlyUnread||!n.read));
+}
+function unreadNotificationCount(role){return roleNotifications(role,true).length}
+function unreadNotificationsForJob(role,jobId){
+ return roleNotifications(role,true).filter(n=>n.jobId===jobId);
+}
+function markNotificationsRead(role,jobId){
+ if(!jobId)return;
+ S.notifications=(S.notifications||[]).map(n=>
+   n.recipient===role&&n.jobId===jobId?{...n,read:true,readAt:n.readAt||Date.now()}:n
+ );
+}
+function notificationSummaryForJob(role,jobId){
+ const items=roleNotifications(role,false).filter(n=>n.jobId===jobId).slice(0,3);
+ if(!items.length)return '';
+ return `<div class="card"><div class="section-title" style="margin-top:0"><h2>Avisos</h2></div>
+ ${items.map(n=>`<div class="history-item"><div><strong>${escapeHTML(n.title)}</strong><div class="muted">${escapeHTML(n.message||'')}</div></div><span class="pill ${n.read?'soft':'gold'}">${n.read?'LEÍDO':'NUEVO'}</span></div>`).join('')}
+ </div>`;
+}
+
+function systemMsg(text){S.chat.push({type:'system',text,ts:Date.now()})}
+function addChat(text,from){
+ if(!text.trim())return;
+ S.chat.push({type:from===S.demoRole?'me':'them',sender:from,text:text.trim(),ts:Date.now()});save();renderAll();setTimeout(scrollChat,0)
+}
+function notifyChatReceiver(sender,text){
+ const receiver=sender==='worker'?'biz':'worker';
+ S.unread=S.unread||{worker:0,biz:0};
+ S.unread[receiver]=(Number(S.unread[receiver])||0)+1;
+ try{
+   if('Notification' in window && Notification.permission==='granted' && receiver!==S.demoRole){
+     new Notification('Nuevo mensaje · Curro & Parné',{body:text});
+   }
+ }catch(e){}
+}
+function refreshChatSheet(){
+ const c=document.getElementById('chatList');
+ if(c)c.innerHTML=S.chat.length?S.chat.map(chatBubble).join(''):'<div class="bubble system">La conversación se habilita para este Curro.</div>';
+ const i=document.getElementById('chatInput');if(i)i.value='';
+ scrollChat();
+}
+function sendTyped(){
+ const i=document.getElementById('chatInput');if(!i)return;
+ const v=i.value.trim(); if(!v)return;
+ S.chat.push({type:'msg',sender:S.demoRole,text:v,ts:Date.now()});
+ notifyChatReceiver(S.demoRole,v);
+ save();renderAll();refreshChatSheet();toast('Mensaje enviado ✓');
+}
+function quickMsg(t){
+ S.chat.push({type:'msg',sender:S.demoRole,text:t,ts:Date.now()});
+ notifyChatReceiver(S.demoRole,t);
+ save();renderAll();refreshChatSheet();toast('Mensaje enviado ✓');
+}
+function scrollChat(){const c=document.getElementById('chatList');if(c)c.scrollTop=c.scrollHeight}
+function chatBubble(m){
+ if(m.type==='system')return `<div class="bubble system">${m.text}</div>`;
+ const mine=m.sender===S.demoRole;
+ return `<div class="bubble ${mine?'me':'them'}">${m.text}</div>`;
+}
+
+function quickMessagesForRole(){
+ if(S.demoRole==='biz')return [
+   ['👋','Te esperamos'],
+   ['📍','¿Dónde estás?'],
+   ['⏱','¿Cuánto te queda?'],
+   ['🚪','Avísanos al llegar'],
+   ['ℹ️','Pregunta por el encargado'],
+   ['🕐','El turno empieza en breve'],
+   ['💶','Pago realizado'],
+   ['⚠️','Necesitamos hablar contigo']
+ ];
+ return [
+   ['🚗','Voy de camino'],
+   ['⏱','Llego en 5 min'],
+   ['📍','He llegado'],
+   ['🚪','¿Por dónde entro?'],
+   ['👤','¿Por quién pregunto?'],
+   ['⚠️','Tengo un problema'],
+   ['🕐','Voy con retraso'],
+   ['💬','Necesito hablar contigo']
+ ];
+}
+function quickMessagesHTML(){
+ const title=S.demoRole==='biz'?'Respuestas rápidas del negocio':'Mensajes rápidos';
+ return `<div class="quick-label">${title}</div><div class="quick-wrap">${quickMessagesForRole().map(([ico,t])=>`<button class="quick-chip" onclick="quickMsg('${t.replace(/'/g,"\\'")}')">${ico} ${t}</button>`).join('')}</div>`;
+}
+
+function chatModal(){
+ S.unread[S.demoRole]=0;save();renderAll();
+ openModal(`<div class="row"><div><span class="pill gold">${S.job?.id||'CURRO'}</span><h2 style="margin:8px 0 2px">Chat del Curro</h2><div class="muted">${S.demoRole==='worker'?S.business.name:S.worker.name}</div></div><span class="pill green">Privado</span></div>
+ <div id="chatList" class="chat-list">${S.chat.length?S.chat.map(chatBubble).join(''):'<div class="bubble system">La conversación se habilita para este Curro.</div>'}</div>
+ ${quickMessagesHTML()}<div class="chat-compose"><input id="chatInput" placeholder="${S.demoRole==='biz'?'Escribir solo si hace falta…':'Escribe un mensaje…'}" onkeydown="if(event.key==='Enter'){event.preventDefault();sendTyped()}"><button class="btn copper" style="width:auto;padding:0 16px" onclick="sendTyped()">Enviar</button></div>`);
+ setTimeout(scrollChat,0);
+}
+function callModal(){
+ openModal(`<div class="call-box"><div class="call-icon">☎</div><h2>Llamada privada</h2><p class="muted">Curro & Parné conectará la llamada sin mostrar los números personales de ninguna de las partes.</p><div class="notice success">Tu número personal no se comparte.</div><br><button class="btn green" onclick="toast('Demo: llamada conectada');closeModal()">Simular llamada</button></div>`);
+}
+function commButtons(){
+ const n=S.unread?.[S.demoRole]||0;
+ return `<div class="comms"><button class="btn light chat-alert" onclick="chatModal()">💬 Mensaje${n?`<span class="unread">${n}</span>`:''}</button><button class="btn light" onclick="callModal()">☎ Llamar</button></div>`;
+}
+
+
+function parseSchedule(raw, fallbackDate='Hoy'){
+ const value=(raw||'').trim();
+ const parts=value.split('·').map(x=>x.trim());
+ const date=parts.length>1?parts[0]:fallbackDate;
+ const times=(parts.length>1?parts[1]:parts[0]||'20:00–01:00').replace('-', '–').split('–').map(x=>x.trim());
+ return {date:date||fallbackDate,start:times[0]||'20:00',end:times[1]||'01:00'};
+}
+function calcDurationMs(start,end){
+ const [sh,sm]=(start||'20:00').split(':').map(Number), [eh,em]=(end||'01:00').split(':').map(Number);
+ let s=(sh||0)*60+(sm||0), e=(eh||0)*60+(em||0);
+ if(e<=s)e+=24*60;
+ return Math.max(30,(e-s))*60*1000;
+}
+function durationLabel(job=S.job){
+ const ms=job?.durationMs||0, mins=Math.round(ms/60000), h=Math.floor(mins/60), m=mins%60;
+ if(!h)return `${m} min`;
+ return m?`${h} h ${m} min`:`${h} h`;
+}
+function money(v){
+ return `${Number(v||0).toLocaleString('es-ES')} €`;
+}
+
+function showPublish(){
+ openModal(`<div class="pill gold">CURRO YA</div><h2>Publicar necesidad</h2>
+ <p class="muted">Todo lo que modifiques aquí viajará con el Curro durante contratación, servicio, pago e historial.</p>
+ <label class="muted">Puesto</label><select id="pubRole"><option>Camarero/a</option><option>Bartender</option><option>Cocinero/a</option><option>Ayudante de cocina</option></select>
+ <label class="muted">Horario</label><input id="pubHours" value="Hoy · 20:00–01:00">
+ <label class="muted">Pago por profesional</label><input id="pubPay" inputmode="decimal" value="75 €">
+ <label class="muted">Profesionales necesarios</label><input id="pubWorkers" type="number" min="1" max="20" value="3">
+ <label class="muted">Zona</label><input id="pubZone" value="Muelle Uno · Málaga">
+ <button class="btn copper" onclick="publishJob()">Publicar Curro YA</button>`);
+}
+function nextJobId(){
+ S.jobs=Array.isArray(S.jobs)?S.jobs:[];
+ const used=new Set(S.jobs.map(r=>r?.id).filter(Boolean));
+ if(S.job?.id)used.add(S.job.id);
+ const maxExisting=Math.max(0,...[...used].map(numericJobId));
+ S.jobCounter=Math.max(Number(S.jobCounter)||0,maxExisting);
+ let id='';
+ do{
+   S.jobCounter++;
+   id='CP-'+String(S.jobCounter).padStart(4,'0');
+ }while(used.has(id));
+ return id;
+}
+function makeJob(id, direct=false){
+ return {id,role:'Camarero/a',date:'Hoy',start:'20:00',end:'01:00',pay:75,venue:S.business.name,
+ zone:'Muelle Uno · Málaga',distance:'3,2 km',state:'published',businessPaid:false,workerPaid:false,
+ ratedByWorker:false,ratedByBusiness:false,durationMs:5*60*60*1000,shiftEndAt:null,direct,
+ secureFlow:{requested:false,authorized:false,conditionsViewed:false},
+ reviews:{worker:null,biz:null},assignments:[],workers:3};
+}
+function publishJob(){
+ try{
+  syncActiveJobRecord();
+  const role=document.getElementById('pubRole')?.value||'Camarero/a';
+  const sch=parseSchedule(document.getElementById('pubHours')?.value,'Hoy');
+  const rawPay=(document.getElementById('pubPay')?.value||'').replace(',','.').replace(/[^\d.]/g,'');
+  const pay=Number.parseFloat(rawPay);
+  const zone=(document.getElementById('pubZone')?.value||'').trim();
+  const workers=Math.max(1,Math.min(20,Number(document.getElementById('pubWorkers')?.value)||3));
+  if(!Number.isFinite(pay)||pay<=0){toast('Introduce un pago válido');return;}
+  if(!zone){toast('Introduce una zona');return;}
+  if(!sch.start||!sch.end){toast('Introduce un horario válido');return;}
+  const id=nextJobId();
+  S.job=makeJob(id,false);S.job.workerDecision='pending';
+  Object.assign(S.job,{role,date:sch.date,start:sch.start,end:sch.end,pay,zone,workers,durationMs:calcDurationMs(sch.start,sch.end)});
+  S.activeJobId=id;
+  S.marketplace=null;ensureMarketplace();S.marketplace.tab='recommended';S.marketplace.candidates.forEach(c=>c.status='available');
+  S.referral=null;resetReferralForJob();
+  S.chat=[{type:'system',text:`Curro ${id} publicado.`,ts:Date.now()}];
+  syncActiveJobRecord();
+  if(professionalCanDo(role)&&S.worker.available)S.unread.worker=(Number(S.unread.worker)||0)+1;
+  save();closeModal();renderAll();toast(`Curro ${id} publicado · ${money(pay)}`);
+ }catch(e){console.error('publishJob',e);toast('No se pudo publicar. Revisa los datos.');}
+}
+function showDirectJob(){
+ if(!S.worker.available){toast('Jonathan ha pausado su disponibilidad');return;}
+ openModal(`<div class="pill gold">INVITACIÓN DIRECTA</div><h2>Invitar a Jonathan</h2>
+ <p class="muted">La invitación debe corresponder a una competencia validada del profesional. Jonathan decidirá si la acepta o la rechaza.</p>
+ <label class="muted">Puesto compatible</label><select id="directRole"><option>Camarero/a</option></select>
+ <label class="muted">Horario</label><input id="directHours" value="Mañana · 20:00–01:00">
+ <label class="muted">Pago</label><input id="directPay" inputmode="decimal" value="75 €">
+ <label class="muted">Zona</label><input id="directZone" value="${S.job?.zone||'Muelle Uno · Málaga'}">
+ <button class="btn copper" onclick="publishDirectJob()">Enviar invitación</button>`);
+}
+function publishDirectJob(){
+ if(!S.worker.available){toast('Jonathan ha pausado su disponibilidad');return;}
+ syncActiveJobRecord();
+ const id=nextJobId();
+ const role=document.getElementById('directRole')?.value||'Camarero/a';
+ if(!professionalCanDo(role)){toast('No puedes invitar a este profesional a un puesto incompatible');return;}
+ const sch=parseSchedule(document.getElementById('directHours')?.value,'Mañana');
+ const pay=parseFloat((document.getElementById('directPay')?.value||'75').replace(',','.').replace(/[^\d.]/g,''))||75;
+ const zone=(document.getElementById('directZone')?.value||'Muelle Uno · Málaga').trim();
+ S.job=makeJob(id,true);
+ Object.assign(S.job,{role,pay,date:sch.date,start:sch.start,end:sch.end,zone,workers:1,durationMs:calcDurationMs(sch.start,sch.end),workerDecision:'invited',workerInterest:false});
+ S.activeJobId=id;
+ S.marketplace=null;ensureMarketplace();
+ S.marketplace.tab='recommended';S.marketplace.candidates.forEach(c=>c.status='available');
+ const me=S.marketplace.candidates.find(c=>c.id==='p1');if(me)me.status='invited';
+ S.referral=null;resetReferralForJob();
+ S.chat=[{type:'system',text:`${S.business.name} ha invitado a Jonathan al Curro ${id}.`,ts:Date.now()}];
+ notifyRole('worker','invitation','Nueva invitación',`${S.business.name} te ha invitado a ${id}.`,id);
+ syncActiveJobRecord();
+ save();closeModal();renderAll();toast(`Invitación ${id} enviada · ${money(pay)}`);
+}
+function vaultHTML(){
+ return `<div class="vault">
+   <div class="vault-head"><div style="display:flex;align-items:center;gap:10px"><div class="lock">🔐</div><div><strong>Bóveda Laboral</strong><div style="font-size:10px;color:#BEB7AF">Datos protegidos · acceso controlado</div></div></div><span class="pill dark">LISTA</span></div>
+   <div class="secure-row"><span class="ok">✓</span><div><strong>Identidad</strong><br><small>Verificada por el sistema</small></div><small>No pública</small></div>
+   <div class="secure-row"><span class="ok">✓</span><div><strong>Datos laborales</strong><br><small>Preparados para contratación</small></div><small>Protegidos</small></div>
+   <div class="secure-row"><span class="ok">✓</span><div><strong>Seguridad Social</strong><br><small>Dato validado</small></div><small>No visible</small></div>
+ </div>`;
+}
+
+function requireJobState(allowed, actionLabel){
+ if(!S.job){toast('No hay un Curro activo');return false;}
+ const list=Array.isArray(allowed)?allowed:[allowed];
+ if(!list.includes(S.job.state)){
+   toast((actionLabel||'Esta acción')+' no está disponible en el estado actual');
+   return false;
+ }
+ return true;
+}
+
+function requestSecureData(){
+ if(!requireJobState('selected','Solicitar datos'))return;
+ const me=workerCandidate();
+ if(!me || me.status!=='selected'){toast('No hay un profesional seleccionado para este expediente');return;}
+ S.job.secureFlow=S.job.secureFlow||{};
+ if(S.job.secureFlow.requested){toast('La solicitud ya fue enviada');return;}
+ S.job.secureFlow.requested=true;
+ systemMsg(`El negocio verificado solicita autorización de datos mínimos para ${S.job.id}.`);
+ syncJonathanAssignmentFromJob();notifyRole('worker','contracting','Contratación iniciada',`${S.business.name} ha iniciado la contratación de ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Solicitud segura enviada');
+}
+function authorizeSecureData(){
+ if(!requireJobState('selected','Autorizar datos'))return;
+ S.job.secureFlow=S.job.secureFlow||{};
+ if(!S.job.secureFlow.requested){toast('El negocio todavía no ha solicitado datos');return;}
+ if(S.job.secureFlow.authorized){toast('Los datos ya están autorizados');return;}
+ S.job.secureFlow.authorized=true;
+ systemMsg(`Jonathan ha autorizado el uso de los datos mínimos necesarios para ${S.job.id}.`);
+ syncJonathanAssignmentFromJob();notifyRole('biz','contracting','Datos autorizados',`${S.worker.name} ha autorizado los datos necesarios para ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Acceso mínimo autorizado');
+}
+function reviewLaborDossier(){
+ if(!S.job)return;
+ const sf=S.job.secureFlow||{};
+ openModal(`<div class="row"><div><span class="pill gold">${S.job.id}</span><h2 style="margin:8px 0 2px">Expediente de contratación</h2></div><span class="pill green">NEGOCIO VERIFICADO</span></div>
+ <p class="muted">Revisión del expediente autorizado para este Curro. No se muestran documentos originales ni datos sensibles completos.</p>
+ <div class="doc-section"><h4>Profesional seleccionado</h4>
+ <div class="doc-line"><span>Profesional</span><strong>${S.worker.name}</strong></div>
+ <div class="doc-line"><span>Identidad</span><strong>Verificada ✓</strong></div>
+ <div class="doc-line"><span>Datos laborales</span><strong>Preparados ✓</strong></div>
+ <div class="doc-line"><span>Seguridad Social</span><strong>Verificada ✓</strong></div></div>
+ <div class="doc-section"><h4>Autorización</h4>
+ <div class="doc-line"><span>Finalidad</span><strong>Contratación de ${S.job.id}</strong></div>
+ <div class="doc-line"><span>Alcance</span><strong>Datos mínimos necesarios</strong></div>
+ <div class="doc-line"><span>Autorización profesional</span><strong>${sf.authorized?'Concedida ✓':'Pendiente'}</strong></div>
+ <div class="doc-line"><span>Documentos descargables</span><strong>No</strong></div></div>
+ <div class="notice">🔐 En producción, cada acceso deberá quedar auditado por usuario, Curro, finalidad y fecha/hora.</div>
+ <label style="display:flex;gap:9px;align-items:flex-start;margin:12px 0;font-size:11px"><input id="dossierAck" type="checkbox" style="width:auto;margin:2px 0 0"><span>He revisado el expediente autorizado y puedo continuar.</span></label>
+ <button class="btn green" onclick="if(!document.getElementById('dossierAck').checked){toast('Confirma que has revisado el expediente');return;} closeModal();docsOk();">Registrar revisión y continuar</button>`);
+}
+
+function conditionsDocument(){
+ if(S.job?.secureFlow)S.job.secureFlow.conditionsViewed=true;
+ save();
+ openModal(`<div class="row"><div><span class="pill gold">${S.job.id}</span><h2 style="margin:8px 0 2px">Revisión previa del Curro</h2></div><span class="pill green">TRAZABLE</span></div>
+ <p class="muted">Este paso sirve para revisar las condiciones concretas antes de aceptar o confirmar la contratación.</p>
+
+ <div class="doc-section">
+   <h4>Servicio</h4>
+   <div class="doc-line"><span>Puesto</span><strong>${S.job.role}</strong></div>
+   <div class="doc-line"><span>Establecimiento</span><strong>${S.job.venue}</strong></div>
+   <div class="doc-line"><span>Zona</span><strong>${S.job.zone}</strong></div>
+ </div>
+
+ <div class="doc-section">
+   <h4>Horario y remuneración</h4>
+   <div class="doc-line"><span>Fecha</span><strong>${S.job.date}</strong></div>
+   <div class="doc-line"><span>Horario</span><strong>${S.job.start}–${S.job.end}</strong></div>
+   <div class="doc-line"><span>Duración prevista</span><strong>${durationLabel(S.job)}</strong></div>
+   <div class="doc-line"><span>Importe</span><strong>${money(S.job.pay)}</strong></div>
+ </div>
+
+ <div class="doc-section">
+   <h4>Responsabilidad y trazabilidad</h4>
+   <div class="doc-line"><span>Negocio</span><strong>${S.business.name}</strong></div>
+   <div class="doc-line"><span>Profesional</span><strong>${S.worker.name}</strong></div>
+   <div class="doc-line"><span>Estado documental</span><strong>Datos mínimos autorizados ✓</strong></div>
+ </div>
+
+ <label style="display:flex;gap:9px;align-items:flex-start;margin:12px 0;font-size:11px"><input id="docAcknowledge" type="checkbox" style="width:auto;margin:2px 0 0"> <span>He revisado las condiciones mostradas para este Curro.</span></label>
+ <div class="notice">Demo con datos ficticios. En producción, este paso deberá registrar versión del documento, fecha/hora, identidad del usuario y aceptación correspondiente.</div><br>
+ <button class="btn primary" onclick="if(!document.getElementById('docAcknowledge').checked){toast('Marca que has revisado las condiciones');return;} closeModal();toast('Revisión registrada ✓');renderAll()">Confirmar revisión</button>`);
+}
+function secureRequestWorkerCard(){
+ return `<div class="section-title"><h2>Solicitud de contratación</h2><span class="pill green">NEGOCIO VERIFICADO</span></div>
+ <div class="card job"><div class="row"><div><strong>${S.business.name}</strong><div class="muted">${S.job.id} · ${S.job.role}</div></div><span class="pill gold">${money(S.job.pay)}</span></div>
+ <div class="permission"><strong>Datos solicitados para este Curro</strong><div class="why">Nombre legal · Identificador laboral necesario · Seguridad Social. No se comparte una carpeta descargable de documentación.</div></div>
+ <div class="notice">🔐 La autorización es específica para ${S.job.id}. El acceso debe ser mínimo, trazable y caducar al terminar su finalidad.</div><br>
+ <button class="btn green" onclick="authorizeSecureData()">Autorizar datos mínimos</button></div>`;
+}
+
+function openWorkerJob(){
+ if(!workerCanSeeOpportunity()){closeModal();toast('Esta oportunidad ya no está disponible para tu perfil');return;}
+ const invited=S.job.workerDecision==='invited';
+ const conflict=workerScheduleConflict(S.job);
+ openModal(`<div class="row"><span class="pill gold">${invited?'INVITACIÓN':'CURRO YA'}</span><div class="big">${money(S.job.pay)}</div></div>
+ <h2>${S.job.role}</h2><p class="muted">${S.job.venue}<br>${S.job.zone}<br>${S.job.date} · ${S.job.start}–${S.job.end}</p>
+ <div class="tags"><span class="tag">${S.job.distance}</span><span class="tag">${durationLabel(S.job)}</span><span class="tag">⭐ ${S.business.rating}</span></div>
+ <div class="notice">Lugar, horario, función y remuneración visibles antes de decidir.</div><br>
+ <div class="btnrow">
+ ${conflict?`<button class="btn light" disabled>Conflicto horario</button>`:(invited?'<button class="btn copper" onclick="workerAcceptInvitation()">Aceptar invitación</button>':'<button class="btn copper" onclick="workerInterest()">Me interesa</button>')}
+ <button class="btn light" onclick="workerRejectOpportunity()">Rechazar</button>
+ </div>`);
+}
+function workerInterest(){
+ if(!S.job || !workerCanSeeOpportunity()){toast('Esta oportunidad ya no está disponible');return;}
+ if(marketOccupied()>=marketTotal()){toast('Este Curro ya está completo');return;}
+ const conflict=workerScheduleConflict(S.job);if(conflict){toast('Se solapa con '+conflictText(conflict));return;}
+ S.job.workerInterest=true;
+ S.job.workerDecision='interested';
+ S.job.state='interest';
+ const c=workerCandidate();if(c)c.status='interested';
+ S.unread.worker=0;
+ systemMsg('Jonathan ha mostrado interés en este Curro.');
+ S.unread.biz=(Number(S.unread.biz)||0)+1;
+ notifyRole('biz','application','Nueva candidatura',`${S.worker.name} se ha inscrito en ${S.job.id}.`,S.job.id);
+ save();closeModal();renderAll();toast('Candidatura enviada ✓');
+}
+
+function selectCandidate(id){
+ const c=S.marketplace?.candidates?.find(x=>x.id===id);if(!c)return;
+ if(c.status!=='interested'){toast('Este profesional no tiene una candidatura activa');return;}
+ if(!roleMatches(c.role,S.job.role)){toast('Perfil incompatible con este Curro');return;}
+ if(marketOccupied()>=marketTotal()){toast('No quedan plazas libres');return;}
+ if(id==='p1'){selectWorker();return;}
+ const previous=c.status;
+ c.status='selected';
+ const a=upsertAssignment(c);
+ if(!a){c.status=previous;toast('No quedan plazas libres');return;}
+ a.state='selected';a.slotReleased=false;
+ recomputeJobSummaryState();
+ clearUrgentReplacementIfCovered();save();renderAll();toast(c.name+' seleccionado ✓');
+}
+function selectWorker(){
+ if(!S.job || !professionalCanDo(S.job.role)){toast('El profesional no es compatible con este puesto');return;}
+ if(marketOccupied()>=marketTotal()){toast('No quedan plazas libres');return;}
+ if(S.job.state!=='interest' || S.job.workerDecision!=='interested'){toast('Jonathan no tiene una candidatura activa');return;}
+ const conflict=workerScheduleConflict(S.job);
+ if(conflict){toast('Conflicto horario con '+conflictText(conflict));return;}
+ const c=workerCandidate();if(!c || c.status!=='interested'){toast('La candidatura ya no está disponible');return;}
+ c.status='selected';
+ const a=upsertAssignment(c);if(!a){toast('No quedan plazas libres');return;}a.state='selected';
+ S.job.workerDecision='selected';S.job.state='selected';
+ syncJonathanAssignmentFromJob();
+ systemMsg('Jonathan ha sido seleccionado por el negocio.');
+ notifyRole('worker','selected','Has sido seleccionado',`${S.business.name} te ha seleccionado para ${S.job.id}.`,S.job.id);
+ clearUrgentReplacementIfCovered();save();renderAll();toast('Jonathan seleccionado');
+}
+function beginDocs(){
+ if(!requireJobState('selected','Continuar contratación'))return;
+ const sf=S.job.secureFlow||{};
+ if(!sf.requested||!sf.authorized){toast('Falta la autorización de datos mínimos');return;}
+ S.job.state='docs_pending';
+ systemMsg('El negocio ha iniciado la revisión previa al Curro.');
+ syncJonathanAssignmentFromJob();save();renderAll();toast('Revisión iniciada');
+}
+function docsOk(){
+ if(!requireJobState('docs_pending','Registrar revisión'))return;
+ S.job.state='terms_pending';
+ systemMsg('Documentación revisada. Preparando condiciones.');
+ syncJonathanAssignmentFromJob();save();renderAll();toast('Documentación revisada');
+}
+function sendTerms(){
+ if(!requireJobState('terms_pending','Enviar condiciones'))return;
+ S.job.state='worker_accept_pending';
+ systemMsg('El negocio ha enviado las condiciones del Curro.');
+ syncJonathanAssignmentFromJob();notifyRole('worker','terms','Condiciones listas',`Revisa y confirma las condiciones de ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Condiciones enviadas');
+}
+function acceptTerms(){
+ if(!requireJobState('worker_accept_pending','Aceptar condiciones'))return;
+ S.job.state='confirmed';
+ systemMsg('Jonathan ha aceptado las condiciones. El Curro está confirmado.');
+ syncJonathanAssignmentFromJob();notifyRole('biz','confirmed','Curro confirmado',`${S.worker.name} ha aceptado ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Curro confirmado');
+}
+
+function operationalPhase(job=S.job){
+ if(!job)return '';
+ if(['confirmed','preparing','en_route'].includes(job.state))return 'Antes del turno';
+ if(['arrived','checked_in','working'].includes(job.state))return 'En el local';
+ if(['finished','payment_pending','business_paid'].includes(job.state))return 'Cierre y pago';
+ if(job.state==='closed')return 'Finalizado';
+ return jobLabel(job.state);
+}
+
+function estimatedTravel(){
+ const km=parseFloat(String(S.job?.distance||'3,2').replace(',','.'))||3.2;
+ const mins=Math.max(6,Math.round(km*3.2+4));
+ return {km,mins};
+}
+function destinationCard(){
+ if(!S.job)return '';
+ const eta=estimatedTravel();
+ const enRoute=['en_route','arrived'].includes(S.job.state);
+ return `<div class="card">
+   <div class="row"><div><div class="eyebrow">${enRoute?'EN CAMINO':'DESTINO'}</div><h3 style="margin:4px 0">${S.job.venue}</h3><div class="muted">${S.job.zone}</div></div><span class="pill ${enRoute?'green':'gold'}">${enRoute?'EN CAMINO':`${eta.mins} MIN`}</span></div>
+   <div class="kpis" style="margin-top:12px"><div class="card"><b>${String(eta.km).replace('.',',')} km</b><span>Distancia</span></div><div class="card"><b>~${eta.mins} min</b><span>Trayecto</span></div><div class="card"><b>${S.job.start}</b><span>Entrada</span></div></div>
+   ${enRoute?`<div class="notice success"><strong>Ruta iniciada</strong><br>Cuando llegues al establecimiento, vuelve a Curro & Parné y confirma tu llegada.</div>`:''}
+ </div>`;
+}
+
+function mapsQuery(){
+ if(!S.job)return '';
+ return encodeURIComponent(`${S.job.venue||''} ${S.job.zone||''} Málaga`);
+}
+function openDirections(){
+ if(!S.job){toast('No hay un Curro activo');return;}
+ const q=mapsQuery();
+ const url=`https://www.google.com/maps/search/?api=1&query=${q}`;
+ if(['confirmed','preparing'].includes(S.job.state)){
+   S.job.state='en_route';
+   const a=assignmentFor('p1');if(a)a.state='en_route';
+   systemMsg('Jonathan ha iniciado la ruta hacia el establecimiento.');
+   notifyRole('biz','route','Profesional en camino',`${S.worker.name} ha iniciado la ruta hacia ${S.job.venue}.`,S.job.id);
+ save();renderAll();
+ }
+ try{window.open?.(url,'_blank','noopener')}catch(e){toast('No se pudo abrir el mapa');}
+}
+function workerArrived(){
+ if(!S.job)return;
+ if(!['confirmed','preparing','en_route','arrived'].includes(S.job.state)){toast('La llegada no está disponible en este estado');return;}
+ S.job.state='checked_in';
+ S.job.shiftEndAt=Date.now()+(S.job.durationMs||5*60*60*1000);
+ const a=assignmentFor('p1');
+ if(a){a.state='checked_in';a.checkedInAt=Date.now();a.shiftEndAt=S.job.shiftEndAt;}
+ systemMsg('Jonathan ha llegado y ha realizado el check-in.');
+ requestShiftAlerts();
+ notifyRole('biz','arrival','Profesional en el local',`${S.worker.name} ha realizado el check-in de ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Check-in realizado ✓');
+ updateShiftTimer();
+}
+function autoStartWorkerIfNeeded(){
+ if(!S.job)return;
+ if(S.job.state==='checked_in'){
+   S.job.state='working';
+   const a=assignmentFor('p1');if(a)a.state='working';
+   systemMsg('Turno iniciado.');
+   save();
+ }
+}
+function finishWorkerShift(){
+ if(!S.job)return;
+ const a=assignmentFor('p1');
+ const state=a?.state||S.job.state;
+ if(!['checked_in','working','arrived'].includes(state)){toast('El turno todavía no está activo');return;}
+ const now=Date.now();
+ S.job.actualEndAt=now;
+ S.job.shiftEndAt=now;
+ if(a){
+   a.state='payment_pending';
+   a.shiftEndAt=now;
+   a.actualEndAt=now;
+ }
+ S.job.state='payment_pending';
+ systemMsg('El profesional ha finalizado el turno.');
+ notifyRole('biz','shift_finished','Turno finalizado',
+   `${S.worker.name} ha finalizado ${S.job.id}. Revisa el cierre y el pago pendiente.`,S.job.id);
+ save();renderAll();toast('Turno finalizado');
+}
+function scheduledEndTimestamp(job=S.job){
+ if(!job)return null;
+ const dayOffset=scheduleDayIndex(job.date);
+ const [h,m]=(job.end||'01:00').split(':').map(Number);
+ const d=new Date();
+ d.setHours(0,0,0,0);
+ d.setDate(d.getDate()+dayOffset);
+ d.setHours(h||0,m||0,0,0);
+ const [sh,sm]=(job.start||'20:00').split(':').map(Number);
+ const startMinutes=(sh||0)*60+(sm||0);
+ const endMinutes=(h||0)*60+(m||0);
+ if(endMinutes<=startMinutes)d.setDate(d.getDate()+1);
+ return d.getTime();
+}
+function actualEndTimestamp(job=S.job){
+ return Number(job?.actualEndAt)||Number(job?.shiftEndAt)||null;
+}
+function extraTimeMs(job=S.job){
+ const end=scheduledEndTimestamp(job),actual=actualEndTimestamp(job);
+ if(!end||!actual)return 0;
+ return Math.max(0,actual-end);
+}
+function formatDurationShort(ms){
+ const total=Math.max(0,Math.round(ms/60000));
+ const h=Math.floor(total/60),m=total%60;
+ if(h&&m)return `${h} h ${m} min`;
+ if(h)return `${h} h`;
+ return `${m} min`;
+}
+function extraTimeStatus(job=S.job){
+ const ms=extraTimeMs(job);
+ const min=Math.round(ms/60000);
+ return {
+   ms,
+   late:ms>0,
+   suspicious:min>=180,
+   label:ms>0?`+${formatDurationShort(ms)}`:'0 min'
+ };
+}
+
+function simulateExtraTime(minutes){
+ if(!S.job)return;
+ const end=scheduledEndTimestamp(S.job);
+ if(!end){toast('No se pudo calcular el fin previsto');return;}
+ const m=Math.max(0,Number(minutes)||0);
+ S.job.actualEndAt=end+m*60000;
+ S.job.shiftEndAt=S.job.actualEndAt;
+ const a=assignmentFor('p1');
+ if(a){a.actualEndAt=S.job.actualEndAt;a.shiftEndAt=S.job.actualEndAt;}
+ if(stateIndex(S.job.state)<stateIndex('payment_pending'))S.job.state='payment_pending';
+ if(a && stateIndex(a.state)<stateIndex('payment_pending'))a.state='payment_pending';
+ save();renderAll();toast(`QA: tiempo adicional simulado +${m} min`);
+}
+function clearExtraTimeSimulation(){
+ if(!S.job)return;
+ S.job.actualEndAt=null;
+ S.job.shiftEndAt=null;
+ const a=assignmentFor('p1');
+ if(a){a.actualEndAt=null;a.shiftEndAt=null;}
+ save();renderAll();toast('Simulación de tiempo extra eliminada');
+}
+function extraTimeQAPanel(){
+ if(!S.job)return '';
+ return `<div class="card">
+   <div class="row"><div><strong>Prueba de tiempo adicional</strong><div class="muted">Solo para este prototipo · no forma parte del flujo real</div></div><span class="pill gold">QA</span></div>
+   <p class="muted">Simula una salida posterior al horario previsto para comprobar cómo se muestra a ambas partes.</p>
+   <div class="btnrow">
+     <button class="btn light" onclick="simulateExtraTime(15)">+15 min</button>
+     <button class="btn light" onclick="simulateExtraTime(30)">+30 min</button>
+     <button class="btn light" onclick="simulateExtraTime(60)">+1 h</button>
+     <button class="btn light" onclick="simulateExtraTime(120)">+2 h</button>
+   </div>
+   <br><button class="btn light" onclick="clearExtraTimeSimulation()">Quitar simulación</button>
+ </div>`;
+}
+
+function extraTimeSummaryHTML(job=S.job){
+ if(!job)return '';
+ const end=scheduledEndTimestamp(job),actual=actualEndTimestamp(job);
+ if(!actual)return '';
+ const x=extraTimeStatus(job);
+ const endText=end?new Date(end).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'—';
+ const actualText=new Date(actual).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+ return `<div class="card"><h3>Tiempo del Curro</h3>
+   <div class="doc-line"><span>Fin previsto</span><strong>${endText}</strong></div>
+   <div class="doc-line"><span>Fin registrado</span><strong>${actualText}</strong></div>
+   <div class="doc-line"><span>Tiempo adicional registrado</span><strong>${x.label}</strong></div>
+   ${x.late
+     ? x.suspicious
+       ? '<div class="notice danger"><strong>Cierre realizado con mucho retraso</strong><br>Este dato indica cuándo se cerró el Curro, no confirma que todo ese tiempo haya sido trabajado.</div>'
+       : '<div class="notice"><strong>Dato informativo</strong><br>El tiempo adicional registrado no implica automáticamente un importe adicional.</div>'
+     : ''}
+ </div>`;
+}
+
+function workerOperationalCard(){
+ if(!S.job)return '';
+ const phase=operationalPhase(S.job);
+ const before=['confirmed','preparing','en_route'].includes(S.job.state);
+ const onsite=['arrived','checked_in','working'].includes(S.job.state);
+ let actions='';
+ if(before){
+   actions=`${destinationCard()}
+   <div class="card">
+     <button class="btn copper" onclick="openDirections()">${S.job.state==='en_route'?'Abrir ruta':'Ir al local'}</button>
+     <br><br><button class="btn green" onclick="workerArrived()">He llegado</button>
+     <br><br><button class="btn light" onclick="showIncidentModal('worker','p1')">Tengo un problema</button>
+     <br><br><button class="btn red" onclick="showCancellationModal('worker','p1')">No puedo acudir</button>
+   </div>`;
+ }else if(onsite){
+   actions=`<div class="card"><div class="notice success"><strong>Check-in realizado ✓</strong><br>Tu turno está activo.</div>
+   <br><button class="btn primary" onclick="finishWorkerShift()">Finalizar turno</button>
+   <br><br><button class="btn light" onclick="showIncidentModal('worker','p1')">Registrar incidencia</button></div>`;
+ }else if(S.job.state==='finished'||S.job.state==='payment_pending'){
+   actions=`${extraTimeSummaryHTML(S.job)}
+   <div class="notice"><strong>Pago pendiente</strong><br>El servicio ya ha terminado aunque todavía no hayas cobrado.</div>
+   <br><button class="btn light" onclick="showIncidentModal('worker','p1')">Registrar incidencia</button>`;
+ }else if(S.job.state==='business_paid'){
+   actions=`${extraTimeSummaryHTML(S.job)}
+   <div class="notice success">El negocio ha marcado el pago como realizado.</div><br><button class="btn green" onclick="workerConfirmPaid()">He cobrado · ${money(S.job.pay)}</button>`;
+ }
+ return `${extraTimeQAPanel()}<div class="card">
+   <div class="row"><div><strong>${S.job.id} · ${S.job.role}</strong><div class="muted">${S.job.date} · ${S.job.start}–${S.job.end}</div></div><span class="pill gold">${phase}</span></div>
+   ${shiftTimerHTML()}
+ </div>${actions}${incidentSummaryHTML()}`;
+}
+function advanceWorker(){
+ if(!S.job)return;
+ if(['confirmed','preparing','en_route','arrived'].includes(S.job.state)){workerArrived();return;}
+ if(['checked_in','working'].includes(S.job.state)){finishWorkerShift();return;}
+ if(S.job.state==='finished'){
+   S.job.state='payment_pending';
+   const a=assignmentFor('p1');if(a)a.state='payment_pending';
+   save();renderAll();toast('Pendiente de pago');
+ }
+}
+function businessPay(){
+ if(!S.job)return;
+ repairActivePaymentState();
+ const a=assignmentFor('p1');
+ const payable=S.job.state==='payment_pending' || a?.state==='payment_pending';
+ if(!payable && !S.job.businessPaid && !a?.businessPaid){toast('El Curro todavía no está listo para pago');return;}
+ if(S.job.businessPaid || a?.businessPaid){
+   S.job.businessPaid=true;
+   if(a){a.businessPaid=true;if(stateIndex(a.state)<stateIndex('business_paid'))a.state='business_paid';}
+   if(S.job.state==='payment_pending')S.job.state='business_paid';
+   notifyRoleOnce('worker','payment','Pago marcado como realizado',`${S.business.name} ha marcado el pago de ${S.job.id}.`,S.job.id);
+   save();renderAll();toast('El pago ya estaba marcado');
+   return;
+ }
+ S.job.businessPaid=true;S.job.state='business_paid';
+ if(a){a.businessPaid=true;a.state='business_paid';}
+ systemMsg('El negocio ha marcado el pago como realizado.');
+ notifyRoleOnce('worker','payment','Pago marcado como realizado',`${S.business.name} ha marcado el pago de ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('Pago marcado');
+}
+function workerConfirmPaid(){
+ if(!S.job)return;
+ repairActivePaymentState();
+ const a=assignmentFor('p1');
+ const paidByBusiness=!!(S.job.businessPaid||a?.businessPaid);
+ if(!paidByBusiness){toast('El negocio todavía no ha marcado el pago');return;}
+ if(S.job.workerPaid||a?.workerPaid){
+   S.job.workerPaid=true;S.job.businessPaid=true;S.job.state='closed';
+   if(a){a.workerPaid=true;a.businessPaid=true;a.state='closed';}
+   notifyRole('biz','closed','Cobro confirmado',`${S.worker.name} ha confirmado el cobro de ${S.job.id}.`,S.job.id);
+ save();renderAll();toast('El cobro ya estaba confirmado');
+   return;
+ }
+ S.job.businessPaid=true;S.job.workerPaid=true;S.job.state='closed';
+ if(a){a.businessPaid=true;a.workerPaid=true;a.state='closed';}
+ S.worker.money+=S.job.pay;S.worker.completed++;S.relation.jobsTogether++;
+ systemMsg('Jonathan ha confirmado el cobro. Curro cerrado.');
+ if(!S.history.some(h=>h.id===S.job.id)){
+   S.history.unshift({
+     id:S.job.id,role:S.job.role,venue:S.job.venue,zone:S.job.zone,date:S.job.date,
+     start:S.job.start,end:S.job.end,pay:S.job.pay,status:'closed',archived:false,closedAt:Date.now()
+   });
+ }
+ save();renderAll();toast(`+${money(S.job.pay)} · Curro cerrado`);
+}
+function requestShiftAlerts(){
+ try{
+   if('Notification' in window && Notification.permission==='default'){
+     Notification.requestPermission().catch(()=>{});
+   }
+ }catch(e){}
+}
+function shiftRemaining(){
+ if(!S.job?.shiftEndAt)return null;
+ return Math.max(0,S.job.shiftEndAt-Date.now());
+}
+function fmtTime(ms){
+ const total=Math.ceil(ms/1000), h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
+ return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function shiftTimerHTML(){
+ if(!S.job?.shiftEndAt || !['checked_in','working'].includes(S.job.state))return '';
+ return `<div class="shift-clock">
+   <div class="clock-label">Tiempo restante de contrato</div>
+   <div id="shiftCountdown" class="clock-time">${fmtTime(shiftRemaining())}</div>
+   <div class="clock-sub">El contador se inició con el check-in · Te avisaremos al finalizar.</div>
+   <button class="mini-action" onclick="simulateContractEnd()">Simular fin de contrato</button>
+ </div>`;
+}
+function updateShiftTimer(){
+ const el=document.getElementById('shiftCountdown');
+ if(el) el.textContent=fmtTime(shiftRemaining()||0);
+ if(S.job?.shiftEndAt && ['checked_in','working'].includes(S.job.state) && Date.now()>=S.job.shiftEndAt){
+   contractEndAlarm();
+ }
+}
+function playAlarm(){
+ try{
+   const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+   const c=new C();
+   [0,.22,.44].forEach((d,i)=>{
+     const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);
+     o.frequency.value=i%2?760:920;g.gain.value=.055;o.start(c.currentTime+d);o.stop(c.currentTime+d+.16);
+   });
+ }catch(e){}
+ try{navigator.vibrate?.([250,120,250,120,400])}catch(e){}
+}
+function contractEndAlarm(){
+ if(!S.job || !['checked_in','working'].includes(S.job.state))return;
+ S.job.state='payment_pending'; S.job.shiftEndAt=null;
+ const a=assignmentFor('p1');if(a){a.state='payment_pending';a.shiftEndAt=null;}
+ systemMsg('Ha finalizado el tiempo contratado. El servicio pasa a pendiente de pago.');
+ save();renderAll();playAlarm();
+ try{
+   if('Notification' in window && Notification.permission==='granted'){
+     new Notification('Curro & Parné',{body:`Ha finalizado el tiempo contratado de ${S.job.id}.`});
+   }
+ }catch(e){}
+ openModal(`<div class="call-box"><div class="call-icon" style="background:var(--copper)">⏱</div><span class="alarm-badge">TURNO FINALIZADO</span><h2>Ha finalizado el tiempo contratado</h2><p class="muted">${S.job.id} · ${S.job.venue}</p><div class="notice">El servicio ha pasado automáticamente a pendiente de pago.</div><br><button class="btn copper" onclick="closeModal();renderAll()">Entendido</button></div>`);
+}
+function simulateContractEnd(){
+ if(S.job){S.job.shiftEndAt=Date.now();save();updateShiftTimer();}
+}
+setInterval(updateShiftTimer,1000);
+
+function historyHTML(){
+ const items=archivedHistoryItems();
+ if(!items.length)return `<div class="card"><strong>Aún no hay Curros cerrados</strong><p class="muted">Los servicios completamente resueltos aparecerán aquí.</p></div>`;
+ return `<div class="card">${items.map(h=>`<div class="history-item"><div><strong>${h.venue||'Negocio'}</strong><div class="muted">${h.id} · ${h.role} · ${h.date} · Cerrado</div></div><div style="text-align:right"><strong>+${h.pay} €</strong><div class="pill green" style="margin-top:4px">RESUELTO</div></div></div>`).join('')}</div>`;
+}
+function rateWorker(){
+ if(!requireJobState('closed','Valorar profesional'))return;
+ if(S.job.ratedByBusiness){toast('Ya has valorado este Curro');return;}
+ S.job.ratedByBusiness=true;
+ if(S.job.ratedByWorker)S.relation.mutualRating=4.9;
+ markCurrentHistoryArchived();syncJonathanAssignmentFromJob();save();renderAll();toast('Valoración guardada');
+}
+function rateBusiness(){
+ if(!requireJobState('closed','Valorar negocio'))return;
+ if(S.job.ratedByWorker){toast('Ya has valorado este Curro');return;}
+ S.job.ratedByWorker=true;
+ if(S.job.ratedByBusiness)S.relation.mutualRating=4.9;
+ markCurrentHistoryArchived();syncJonathanAssignmentFromJob();save();renderAll();toast('Valoración guardada');
+}
+function addFavorite(){S.relation.favorite=true;save();renderAll();toast('Añadido a profesionales de confianza')}
+
+function showProposal(){
+ openModal(`<div class="pill gold">CONTRATACIÓN</div><h2>Proponer contratación</h2>
+ <p class="muted">Esta propuesta es independiente del Curro puntual y queda registrada como relación laboral potencial.</p>
+ <label class="muted">Tipo</label><select id="propType"><option>Temporada</option><option>Incorporación estable</option></select>
+ <label class="muted">Periodo</label><input id="propPeriod" value="Abril – Octubre">
+ <label class="muted">Jornada</label><input id="propHours" value="40 h/semana">
+ <label class="muted">Condiciones</label><textarea id="propTerms" rows="3">Según convenio + incentivos</textarea>
+ <button class="btn copper" onclick="sendProposal()">Enviar propuesta</button>`);
+}
+function sendProposal(){
+ S.proposal={id:'PR-0001',
+  type:document.getElementById('propType')?.value||'Temporada',
+  period:(document.getElementById('propPeriod')?.value||'').trim(),
+  hours:(document.getElementById('propHours')?.value||'').trim(),
+  terms:(document.getElementById('propTerms')?.value||'').trim(),
+  state:'sent'};
+ save();closeModal();renderAll();toast('Propuesta enviada');
+}
+function proposalDecision(ok){S.proposal.state=ok?'accepted':'rejected';save();renderAll();toast(ok?'Propuesta aceptada':'Propuesta rechazada')}
+
+function routeHTML(){
+ if(!S.job)return '';
+ const eta=estimatedTravel();
+ return `<div class="route">
+   <div class="route-line"><i></i><div><strong>Profesional en camino</strong><div class="muted">Destino: ${S.job.venue} · ${S.job.zone}</div></div></div>
+   <div class="row" style="margin-top:10px"><div><strong>~${eta.mins} min</strong><div class="muted">ETA estimada</div></div><span class="pill gold">${jobLabel(S.job.state)}</span></div>
+ </div>`;
+}
+function contractingPhase(job=S.job){
+ if(!job)return 'Sin Curro';
+ if(job.state==='selected')return 'Seleccionado';
+ if(['docs_pending','terms_pending','worker_accept_pending'].includes(job.state))return 'Contratación';
+ if(job.state==='confirmed')return 'Confirmado';
+ return jobLabel(job.state);
+}
+function contractingPhasePill(job=S.job){
+ const phase=contractingPhase(job);
+ const cls=phase==='Confirmado'?'green':phase==='Contratación'?'gold':'';
+ return `<span class="pill ${cls}">${phase.toUpperCase()}</span>`;
+}
+function workerContractSummary(){
+ if(!S.job)return '';
+ return `<div class="card">
+   <div class="row"><div><strong>${S.job.role}</strong><div class="muted">${S.job.venue}<br>${S.job.date} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+   <div class="doc-line"><span>Estado</span><strong>${contractingPhase(S.job)}</strong></div>
+   <div class="doc-line"><span>Datos laborales</span><strong>${S.job.secureFlow?.authorized?'Preparados ✓':S.job.secureFlow?.requested?'Pendientes de autorización':'Protegidos'}</strong></div>
+   <div class="doc-line"><span>Condiciones</span><strong>${S.job.state==='worker_accept_pending'?'Listas para revisar':stateIndex(S.job.state)>=stateIndex('confirmed')?'Aceptadas ✓':'En preparación'}</strong></div>
+ </div>`;
+}
+
+function contractChecklist(){
+ const s=S.job.state, idx=stateIndex(s);
+ const steps=[
+  ['selected','Profesional seleccionado'],
+  ['docs_pending','Datos autorizados y revisión'],
+  ['terms_pending','Documento de condiciones'],
+  ['worker_accept_pending','Documento enviado'],
+  ['confirmed','Profesional acepta']
+ ];
+ return `<div class="contract-steps">${steps.map(([st,label])=>{
+   const i=stateIndex(st), done=idx>i, current=idx===i;
+   return `<div class="contract-step ${done?'done':current?'current':''}"><b>${done?'✓':'•'}</b><div><strong>${label}</strong><div class="muted">${done?'Completado':current?'En curso':'Pendiente'}</div></div></div>`;
+ }).join('')}</div>`;
+}
+function workerJobCard(){
+ const invited=S.job?.workerDecision==='invited';
+ const conflict=workerScheduleConflict(S.job);
+ return `<div class="card job"><div class="row"><span class="pill gold">${invited?'INVITACIÓN':'CURRO YA'}</span><div class="big">${money(S.job.pay)}</div></div>
+ <h3>${S.job.role} · ${S.job.venue}</h3><div class="muted">${S.job.date} · ${S.job.start}–${S.job.end} · ${S.job.zone}</div>
+ <div class="tags"><span class="tag">${S.job.distance}</span><span class="tag">${durationLabel(S.job)}</span><span class="tag">⭐ ${S.business.rating} negocio</span></div>
+ ${conflict?`<div class="notice danger"><strong>Conflicto horario</strong><br>Se solapa con ${conflictText(conflict)}.</div><br>`:''}
+ <button class="btn copper" onclick="openWorkerJob()">${invited?'Revisar invitación':'Ver oportunidad'}</button></div>`;
+}
+function workerHome(){
+ const activeService=S.job&&workerHasRelationship()&&stateIndex(S.job.state)>=stateIndex('confirmed')&&S.job.state!=='closed';
+ const showOpportunity=workerCanSeeOpportunity();
+ const showContract=S.job&&workerHasRelationship()&&['selected','docs_pending','terms_pending','worker_accept_pending'].includes(S.job.state);
+ const allRecords=jobRecords();
+ const compatible=allRecords.filter(workerEligibleRecord);
+ const activeCount=allRecords.filter(r=>{const me=(r.marketplace?.candidates||[]).find(c=>c.id==='p1');return me&&['invited','interested','selected'].includes(me.status)&&r.job?.state!=='closed';}).length;
+ return `<div class="hero"><div class="eyebrow">Buenos días, Jonathan</div><h1>Tu tiempo tiene valor.</h1><p>Curros claros, comunicación directa y reputación construida servicio a servicio.</p></div>
+ <div class="jobs-kpi"><div><b>${compatible.length}</b><span>Curros</span></div><div><b>${activeCount}</b><span>Actividad</span></div><div><b>${S.worker.completed}</b><span>Completados</span></div></div>
+ <div class="section-title"><h2>Tu estado</h2></div>
+ <div class="card"><div class="row"><div><strong>${S.worker.available?'Disponible para Curros':'Disponibilidad pausada'}</strong><div class="muted">Tú decides cuándo recibir oportunidades.</div></div><span class="pill ${S.worker.available?'green':'gold'}">${S.worker.available?'ACTIVO':'PAUSA'}</span></div><br>
+ <button class="btn light" onclick="S.worker.available=!S.worker.available;save();renderAll();toast('Disponibilidad actualizada')">${S.worker.available?'Pausar':'Activar'} disponibilidad</button></div>
+ ${showOpportunity?`<div class="section-title"><h2>${S.job.workerDecision==='invited'?'Invitación':'Curro YA cerca de ti'}</h2></div>${workerJobCard()}`:''}
+ ${S.job&&S.job.state==='interest'&&workerHasRelationship()?`<div class="section-title"><h2>Candidatura enviada</h2></div><div class="card"><strong>${S.job.id} · ${S.job.venue}</strong>${nextStep(S.job.state,'worker')}<button class="btn light" onclick="workerWithdrawApplication()">Retirar candidatura</button></div>`:''}
+ ${showContract&&S.job.state==='selected'&&S.job.secureFlow?.requested&&!S.job.secureFlow?.authorized?secureRequestWorkerCard():''}
+ ${showContract&&['selected','docs_pending','terms_pending'].includes(S.job.state)&&!(S.job.state==='selected'&&S.job.secureFlow?.requested&&!S.job.secureFlow?.authorized)?`<div class="section-title"><h2>Tu próximo Curro</h2></div><div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${jobLabel(S.job.state)}</div></div><span class="pill gold">${money(S.job.pay)}</span></div>${contractChecklist()}${nextStep(S.job.state,'worker')}</div>`:''}
+ ${showContract&&S.job.state==='worker_accept_pending'?`<div class="section-title"><h2>Revisa y acepta</h2></div><div class="card job"><span class="pill gold">CONDICIONES LISTAS</span><h3>${S.job.venue}</h3><div class="tags"><span class="tag">${S.job.start}–${S.job.end}</span><span class="tag">${money(S.job.pay)}</span><span class="tag">${S.job.role}</span></div><div class="notice">El negocio ha enviado el documento de condiciones. Revísalo antes de aceptar.</div><br><button class="btn ghost" onclick="conditionsDocument()">Ver documento completo</button><br><br><button class="btn green" onclick="acceptTerms()">He leído y acepto las condiciones</button></div>`:''}
+ ${activeService?`<div class="section-title"><h2>Servicio activo</h2><span class="muted" style="font-size:10px">En curso</span></div><div class="card service-entry" role="button" tabindex="0" onclick="go('activity',document.querySelector('[data-page=activity]'))"><div class="row"><div><strong>${S.job.id} · ${S.job.role}</strong><div class="muted"><span class="live-dot"></span>${jobLabel(S.job.state)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px"><span class="pill gold">${money(S.job.pay)}</span><span class="progress-link">Ver progreso <span class="arrow">→</span></span></div></div>${nextStep(S.job.state,'worker')}</div>`:''}
+ ${workerHasRelationship()?referralWorkerCard():''}
+ <div class="section-title"><h2>Actividad</h2></div>${professionalActivitySummary()}
+ <div class="section-title"><h2>Historial de Curros</h2></div>${professionalHistoryPanel()}
+ <div class="kpis"><div class="card"><b>${S.worker.money} €</b><span>Este mes</span></div><div class="card"><b>${S.worker.completed}</b><span>Curros</span></div><div class="card"><b>${averageReferenceRating('worker')}</b><span>Valoración</span></div></div>`;
+}
+function workerCurros(){
+ const records=jobRecords().filter(workerEligibleRecord);
+ if(!records.length){
+   return `<div class="section-title"><h2>Curros</h2><span class="pill ${S.worker.available?'green':'gold'}">${S.worker.available?'Disponible':'Pausado'}</span></div>
+   <div class="empty"><h3>No hay Curros compatibles disponibles</h3><p>Solo recibirás oportunidades que encajen con tus competencias y disponibilidad.</p></div>`;
+ }
+ return `<div class="section-title"><h2>Curros</h2><span class="pill ${S.worker.available?'green':'gold'}">${records.length} DISPONIBLES</span></div>
+ <div class="job-switcher">${records.map(r=>jobMiniCard(r,'worker','curros')).join('')}</div>
+ ${S.job&&workerEligibleRecord(activeJobRecord())?`<div class="section-title"><h2>Curro seleccionado</h2><span class="muted">${S.job.id}</span></div>${workerActiveCurroDetail()}`:''}`;
+}
+function workerActiveCurroDetail(){
+ if(!S.job || (!workerCanSeeOpportunity() && !workerHasRelationship())){
+   return `<div class="section-title"><h2>Curros</h2><span class="pill ${S.worker.available?'green':'gold'}">${S.worker.available?'Disponible':'Pausado'}</span></div>
+   <div class="empty"><h3>No hay Curros compatibles disponibles</h3><p>Solo recibirás oportunidades que encajen con tus competencias y disponibilidad.</p></div>`;
+ }
+ if(workerCanSeeOpportunity())return `<div class="section-title"><h2>Curros</h2></div>${workerJobCard()}`;
+ if(S.job.state==='interest'){
+   return `<div class="section-title"><h2>Curros</h2><span class="pill gold">CANDIDATURA ENVIADA</span></div>
+   <div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${S.job.role} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+   ${nextStep(S.job.state,'worker')}<br><button class="btn light" onclick="workerWithdrawApplication()">Retirar candidatura</button></div>`;
+ }
+ return `<div class="section-title"><h2>Curros</h2><span class="pill gold">${jobLabel(S.job.state)}</span></div>
+ <div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${S.job.role} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+ ${progressBar(S.job.state)}${nextStep(S.job.state,'worker')}${stateIndex(S.job.state)>=stateIndex('selected')?commButtons():''}</div>`;
+}
+function workerActivity(){
+ const records=jobRecords().filter(r=>{
+   const j=r.job;if(!j||!professionalCanDo(j.role))return false;
+   if(workerRejectionPendingRecord(r))return true;
+   if(unreadNotificationsForJob('worker',r.id).length)return true;
+   const me=(r.marketplace?.candidates||[]).find(c=>c.id==='p1');
+   if(!me)return false;
+   return ['invited','interested','selected'].includes(me.status) &&
+     (j.state!=='closed'||!(j.ratedByWorker&&j.ratedByBusiness));
+ });
+ if(!records.length){
+   return `<div class="section-title"><h2>Actividad</h2></div><div class="empty"><h3>Todo al día</h3><p>Las oportunidades nuevas están en Curros. Aquí aparecerán decisiones, contratación, servicio, pagos y referencias que requieran tu atención.</p></div>`;
+ }
+ return `<div class="section-title"><h2>Actividad</h2><span class="pill gold">${records.length} ${records.length===1?'ASUNTO':'ASUNTOS'}</span></div>
+ <p class="muted">Solo mostramos lo que está activo o necesita una acción por tu parte.</p>
+ <div class="job-switcher">${records.map(r=>jobMiniCard(r,'worker','activity')).join('')}</div>
+ ${S.job&&records.some(r=>r.id===S.job.id)?`<div class="section-title"><h2>Detalle</h2><span class="muted">${S.job.id}</span></div>${notificationSummaryForJob('worker',S.job.id)}${workerActiveActivityDetail()}`:''}`;
+}
+function workerActiveActivityDetail(){
+ repairActivePaymentState();
+ if(currentWorkerRejectionPending()){
+   const n=S.job.rejectionNotice;
+   return `<div class="section-title"><h2>Actividad</h2><span class="pill red">NO SELECCIONADO</span></div>
+   <div class="card">
+     <div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${S.job.role} · ${S.job.date} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+     <div class="notice danger"><strong>${n.title||'No has sido seleccionado'}</strong><br>${n.message||'El negocio ha continuado el proceso con otro profesional para este Curro.'}</div>
+     <p class="muted">Tu candidatura queda cerrada para esta oferta. Esto no afecta a tu perfil, reputación ni a otras candidaturas.</p>
+     <button class="btn copper" onclick="acknowledgeWorkerRejection()">Entendido</button>
+   </div>`;
+ }
+ if(!S.job || !jobNeedsAttention(S.job)){
+   return `<div class="section-title"><h2>Actividad</h2></div>
+   <div class="empty"><h3>No tienes actividad pendiente</h3><p>Las ofertas nuevas están en Curros. Aquí aparecen invitaciones, candidaturas, contratación, servicios, pagos y referencias pendientes.</p></div>`;
+ }
+ if(S.job.workerDecision==='invited' && S.job.state==='published'){
+   return `<div class="section-title"><h2>Actividad</h2><span class="pill gold">INVITACIÓN</span></div>${workerJobCard()}`;
+ }
+ if(S.job.state==='interest'){
+   return `<div class="section-title"><h2>Actividad</h2><span class="pill gold">CANDIDATURA</span></div>
+   <div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${S.job.role} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+   ${progressBar(S.job.state)}${nextStep(S.job.state,'worker')}<br><button class="btn light" onclick="workerWithdrawApplication()">Retirar candidatura</button></div>`;
+ }
+ if(['selected','docs_pending','terms_pending','worker_accept_pending'].includes(S.job.state)){
+   let action='';
+   if(S.job.state==='selected'&&S.job.secureFlow?.requested&&!S.job.secureFlow?.authorized){
+     action=secureRequestWorkerCard();
+   }else if(S.job.state==='worker_accept_pending'){
+     action=`<button class="btn ghost" onclick="conditionsDocument()">Revisar condiciones</button><br><br><button class="btn green" onclick="acceptTerms()">Aceptar Curro</button>`;
+   }else{
+     action=`<div class="notice">Estamos preparando tu contratación. No tienes que hacer nada ahora.</div>`;
+   }
+   return `<div class="section-title"><h2>Actividad</h2>${contractingPhasePill()}</div>
+   ${workerContractSummary()}
+   <div class="card">
+     <h3>${S.job.state==='worker_accept_pending'?'Revisa y confirma':'Contratación en curso'}</h3>
+     <p class="muted">${S.job.state==='worker_accept_pending'
+       ?'Comprueba horario, puesto, importe y condiciones antes de aceptar.'
+       :'Curro & Parné está gestionando los pasos necesarios de forma segura.'}</p>
+     ${action}
+   </div>`;
+ }
+ if(currentJobLifecycleComplete()){
+   return `<div class="section-title"><h2>Actividad</h2></div><div class="empty"><h3>No tienes actividad pendiente</h3><p>El último Curro está completamente cerrado y archivado.</p></div>`;
+ }
+ if(['confirmed','preparing','en_route','arrived','checked_in','working','finished','payment_pending','business_paid'].includes(S.job.state)){
+   return `<div class="section-title"><h2>Actividad</h2><span class="pill gold">${operationalPhase(S.job)}</span></div>
+   ${workerOperationalCard()}
+   ${!['finished','payment_pending','business_paid'].includes(S.job.state)?`<div class="section-title"><h2>Progreso del Curro</h2></div>${timelineHTML()}`:''}`;
+ }
+ let action='';
+ if(S.job.state==='closed'){
+   if(!S.job.ratedByWorker)action+=reviewComposer('worker');
+   if(S.job.ratedByWorker&&!S.job.ratedByBusiness)action+='<div class="notice"><strong>Tu referencia está enviada.</strong><br>Falta la referencia del negocio para archivar este Curro.</div>';
+   if(currentJobHasOpenIncident())action+='<div class="notice danger"><strong>Incidencia abierta</strong><br>Este Curro seguirá en Actividad hasta resolverla.</div>';
+ }
+ return `<div class="section-title"><h2>Actividad</h2><span class="pill ${S.job.state==='closed'?'green':'gold'}">${jobLabel(S.job.state)}</span></div>
+ <div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.venue}</strong><div class="muted">${S.job.role} · ${S.job.start}–${S.job.end}</div></div><div class="big">${money(S.job.pay)}</div></div>
+ ${progressBar(S.job.state)}${shiftTimerHTML()}${nextStep(S.job.state,'worker')}<br>${action}</div>`;
+}
+
+function timelineHTML(){
+ const items=[
+ ['published','Publicado'],['interest','Profesional interesado'],['selected','Profesional seleccionado'],
+ ['docs_pending','Expediente autorizado'],['worker_accept_pending','Documento enviado'],['confirmed','Curro confirmado'],
+ ['en_route','En ruta'],['checked_in','Check-in'],['working','Turno iniciado'],
+ ['payment_pending','Pendiente de pago'],['business_paid','Pago marcado'],['closed','Curro cerrado']
+ ];
+ const idx=stateIndex(S.job.state);
+ return `<div class="card timeline">${items.map(([st,lab])=>{const i=stateIndex(st);return `<div class="tl ${i<idx?'done':i===idx?'current':''}"><b>${i<idx?'✓':'•'}</b><div><strong>${lab}</strong><p>${i<=idx?'Registrado':'Pendiente'}</p></div></div>`}).join('')}</div>`;
+}
+
+function workerPublicProfileModal(){
+ ensureProfessionalCV();
+ const hasCV=!!S.worker.cv.uploaded;
+ openModal(`<div class="row"><div><span class="pill green">PROFESIONAL VERIFICADO</span><h2 style="margin:8px 0 2px">${S.worker.name}</h2><div class="muted">Camarero · Málaga</div></div><div class="avatar">JG</div></div>
+ <div class="kpis" style="margin-top:14px"><div class="card"><b>${averageReferenceRating('worker')}</b><span>Valoración</span></div><div class="card"><b>${S.worker.punctuality}%</b><span>Puntualidad</span></div><div class="card"><b>${S.worker.completed}</b><span>Curros</span></div></div>
+ <div class="doc-section"><h4>Perfil profesional</h4><div class="doc-line"><span>Especialidad</span><strong>Sala y terraza</strong></div><div class="doc-line"><span>Disponibilidad</span><strong>${S.worker.available?'Disponible':'No disponible'}</strong></div><div class="doc-line"><span>Identidad</span><strong>Verificada ✓</strong></div></div>
+ <div class="doc-section"><h4>CV profesional</h4><div class="doc-line"><span>Estado</span><strong>${hasCV?'Disponible ✓':'No añadido'}</strong></div><div class="doc-line"><span>Acceso</span><strong>Privado y auditado</strong></div></div>
+ ${hasCV?`<button class="btn light" onclick="openCandidateCV('p1')">Ver CV</button>`:'<div class="muted">El profesional todavía no ha añadido un CV.</div>'}
+ <div class="section-title"><h2>Referencias de restaurantes</h2><span class="pill gold">${referenceCount('worker')}</span></div>${referenceHistoryHTML('worker')}
+ <div class="notice">El CV y la Bóveda Laboral son sistemas separados. Los datos sensibles de contratación no aparecen en esta vista.</div><br>
+ <button class="btn light" onclick="closeModal()">Cerrar perfil</button>`);
+}
+function businessPublicProfileModal(){
+ openModal(`<div class="row"><div><span class="pill green">NEGOCIO VERIFICADO</span><h2 style="margin:8px 0 2px">${S.business.name}</h2><div class="muted">Muelle Uno · Málaga</div></div><div class="avatar gold">LT</div></div>
+ <div class="kpis" style="margin-top:14px"><div class="card"><b>${averageReferenceRating('biz')}</b><span>Valoración</span></div><div class="card"><b>${S.business.payAvg}</b><span>Pago medio</span></div><div class="card"><b>${S.relation.jobsTogether}</b><span>Curros juntos</span></div></div>
+ <div class="section-title"><h2>Referencias de profesionales</h2><span class="pill gold">${referenceCount('biz')}</span></div>${referenceHistoryHTML('biz')}
+ <button class="btn light" onclick="closeModal()">Cerrar perfil</button>`);
+}
+
+function workerProfile(){
+ return `<div class="card"><div class="person"><div class="avatar">JG</div><div><strong>${S.worker.name}</strong><div class="muted">Camarero · Málaga</div></div><span class="pill green">Verificado</span></div></div>
+ <div class="kpis"><div class="card"><b>${averageReferenceRating('worker')}</b><span>Valoración</span></div><div class="card"><b>${S.worker.punctuality}%</b><span>Puntualidad</span></div><div class="card"><b>${S.worker.completed}</b><span>Curros</span></div></div>
+ <div class="section-title"><h2>Privacidad laboral</h2><span class="pill green">PROTEGIDA</span></div>
+ ${vaultHTML()}
+ <div class="section-title"><h2>Referencias profesionales</h2><span class="pill gold">${referenceCount('worker')} NEGOCIOS</span></div>
+ <p class="reference-note">Valoraciones de establecimientos con los que has completado Curros. Pensadas como referencia profesional, no como reseñas de clientes.</p>
+ ${referenceHistoryHTML('worker')}
+ ${S.proposal?proposalWorkerCard():''}
+ <div class="section-title"><h2>Historial de Curros</h2><span class="pill soft">${archivedHistoryItems().length} RESUELTOS</span></div>
+ ${historyHTML()}
+ <button class="btn red" onclick="resetDemo()">Reiniciar demo</button>${professionalCVPanel()}`;
+}
+function proposalWorkerCard(){
+ let body=S.proposal.state==='sent'?`<div class="btnrow"><button class="btn light" onclick="proposalDecision(false)">Rechazar</button><button class="btn copper" onclick="proposalDecision(true)">Aceptar</button></div>`:`<div class="notice ${S.proposal.state==='accepted'?'success':'warn'}">${S.proposal.state==='accepted'?'Propuesta aceptada. Siguiente paso: contratación de temporada.':'Propuesta rechazada.'}</div>`;
+ return `<div class="section-title"><h2>Propuesta de contratación</h2></div><div class="card job"><span class="pill gold">${(S.proposal.type||'Propuesta').toUpperCase()}</span><h3>${S.business.name}</h3><p class="muted">${S.proposal.period} · ${S.proposal.hours}</p><div class="notice">${S.proposal.terms||'Condiciones pendientes'}</div><br>${body}</div>`;
+}
+
+function bizHome(){
+ const records=jobRecords();
+ const open=records.filter(r=>r.job?.state!=='closed'||!(r.job?.ratedByWorker&&r.job?.ratedByBusiness));
+ const attention=records.filter(jobRecordNeedsBusinessAttention);
+ return `<div class="hero"><div class="eyebrow">${S.business.name}</div><h1>Tu equipo, cuando lo necesitas.</h1><p>Publica, selecciona, comunica y construye un equipo de confianza.</p></div>
+ <div class="section-title"><h2>Necesidades activas</h2><button onclick="showPublish()">+ Nueva</button></div>
+ ${open.length?`<div class="job-switcher">${open.slice(0,4).map(r=>jobMiniCard(r,'biz','curros')).join('')}</div><button class="btn light" onclick="go('curros',document.querySelector('[data-page=curros]'))">Ver todas las necesidades</button>`:
+ `<div class="card job"><span class="pill gold">CURRO YA</span><h3>Cubre una urgencia en segundos</h3><p class="muted">Publica la necesidad y recibe profesionales compatibles.</p><button class="btn copper" onclick="showPublish()">Publicar Curro YA</button></div>`}
+ ${attention.length?`<div class="notice"><strong>${attention.length} ${attention.length===1?'Curro requiere':'Curros requieren'} atención.</strong><br>Hay selección, contratación, servicio, pago o referencias que requieren acción.</div>`:''}
+ <div class="section-title"><h2>Negocio</h2></div><div class="kpis"><div class="card"><b>${averageReferenceRating('biz')}</b><span>Valoración</span></div><div class="card"><b>${S.relation.jobsTogether}</b><span>Curros juntos</span></div><div class="card"><b>${S.business.payAvg}</b><span>Pago medio</span></div></div>`;
+}
+function businessJobSummary(){
+ return `<div class="card"><div class="row"><div><strong>${S.job.id} · ${S.job.role}</strong><div class="muted">${jobLabel(S.job.state)}</div></div><span class="pill gold">${money(S.job.pay)}</span></div>${progressBar(S.job.state)}${nextStep(S.job.state,'biz')}<br><button class="btn light" onclick="go('curros',document.querySelector('[data-page=curros]'))">Gestionar Curro</button></div>`;
+}
+function bizCurros(){
+ const records=jobRecords();
+ const open=records.filter(r=>r.job?.state!=='closed'||!(r.job?.ratedByWorker&&r.job?.ratedByBusiness));
+ const pending=records.filter(jobRecordNeedsBusinessAttention).length;
+ return `<div class="section-title"><h2>Necesidades</h2><button onclick="showPublish()">+ Publicar</button></div>
+ <div class="jobs-kpi"><div><b>${open.length}</b><span>Abiertas</span></div><div><b>${pending}</b><span>Con acción</span></div><div><b>${records.length}</b><span>Total</span></div></div>
+ ${records.length?`<div class="job-switcher">${records.map(r=>jobMiniCard(r,'biz','curros')).join('')}</div>`:
+ `<div class="empty"><h3>No hay Curros todavía</h3><p>Publica la primera necesidad para iniciar el matching.</p></div>`}
+ <button class="btn copper" onclick="showPublish()">+ Publicar nueva necesidad</button>
+ ${S.job?`<div class="section-title"><h2>Curro seleccionado</h2><span class="muted">${S.activeJobId||''}</span></div>${bizActiveJobDetail()}`:''}`;
+}
+function bizActiveJobDetail(){
+ if(!S.job)return `<div class="section-title"><h2>Necesidades</h2><button onclick="showPublish()">+ Publicar</button></div><div class="card"><strong>No hay Curros abiertos</strong><p class="muted">Publica una necesidad para iniciar el flujo.</p><button class="btn copper" onclick="showPublish()">Publicar Curro YA</button></div>`;
+ let body='';
+ if(S.job.state==='published')body=`<div class="notice">Curro publicado. Esperando profesionales interesados.</div>`;
+ if(S.job.state==='interest')body=`<div class="person"><div class="avatar">JG</div><div><strong>${S.worker.name}</strong><div class="muted">⭐ ${averageReferenceRating('worker')} · ${S.worker.punctuality}% puntualidad · 3,2 km</div></div><span class="pill green">Interesado</span></div><br><div class="btnrow"><button class="btn light" onclick="workerPublicProfileModal()">Ver perfil</button><button class="btn copper" onclick="selectWorker()">Seleccionar profesional</button><button class="btn light" onclick="businessRejectApplicant('p1')">Rechazar candidatura</button></div>`;
+ if(S.job.state==='selected'){
+   const p1a=assignmentFor('p1');
+   const sf=p1a?.secureFlow||S.job.secureFlow||{};
+   body=p1a
+    ? (!sf.requested
+      ? `<div class="notice success">Jonathan seleccionado ✓</div><br><p class="muted">Inicia la contratación. El sistema pedirá solo los datos necesarios y mantendrá la documentación protegida.</p><button class="btn copper" onclick="requestSecureData()">Iniciar contratación</button>`
+      : !sf.authorized
+      ? `<div class="notice">Contratación iniciada. Esperando autorización del profesional.</div>`
+      : `<div class="notice success">Datos preparados ✓</div><br><button class="btn copper" onclick="beginDocs()">Continuar contratación</button>`)
+    : `<div class="notice success">${S.job.assignments?.length||0} plaza${(S.job.assignments?.length||0)===1?'':'s'} asignada${(S.job.assignments?.length||0)===1?'':'s'}.</div><br><div class="notice">Gestiona cada profesional desde “Plazas y profesionales”.</div>`;
+ }
+ if(S.job.state==='docs_pending')body=`<div class="notice success">Datos autorizados ✓</div><br><p class="muted">Revisa el expediente preparado para este Curro.</p><button class="btn copper" onclick="reviewLaborDossier()">Revisar contratación</button>`;
+ if(S.job.state==='terms_pending')body=`<div class="notice success">Contratación preparada ✓</div><br><div class="card"><div class="doc-line"><span>Puesto</span><strong>${S.job.role}</strong></div><div class="doc-line"><span>Horario</span><strong>${S.job.start}–${S.job.end}</strong></div><div class="doc-line"><span>Importe</span><strong>${money(S.job.pay)}</strong></div></div><button class="btn ghost" onclick="conditionsDocument()">Revisar condiciones</button><br><br><button class="btn copper" onclick="sendTerms()">Enviar para confirmar</button>`;
+ if(S.job.state==='worker_accept_pending')body=`<div class="notice">Enviado a Jonathan. Esperando confirmación.</div>${commButtons()}`;
+ if(stateIndex(S.job.state)>=stateIndex('confirmed')){
+   body=assignmentFor('p1')?businessServiceControls():`<div class="notice">Este Curro tiene plazas en servicio. Gestiona cada profesional de forma independiente en “Plazas y profesionales”.</div>`;
+ }
+ return `<div class="card job"><div class="row"><div><strong>${S.job.role}</strong><div class="muted">${S.job.date} · ${S.job.start}–${S.job.end}<br>${S.job.zone}</div></div><div class="big">${money(S.job.pay)}</div></div>${['selected','docs_pending','terms_pending','worker_accept_pending','confirmed'].includes(S.job.state)?contractingPhasePill():progressBar(S.job.state)}
+ ${['selected','docs_pending','terms_pending','worker_accept_pending'].includes(S.job.state)?'':nextStep(S.job.state,'biz')}<br>${body}</div>
+ <div class="section-title"><h2>Plazas y profesionales</h2><span class="muted">${marketOccupied()}/${marketTotal()}</span></div>
+ ${assignmentCards()}
+ ${urgentReplacementHTML()}${incidentSummaryHTML()}
+ ${marketplacePanel()}`;
+}
+
+function assignmentAction(candidateId,action){
+ const a=assignmentFor(candidateId);const c=assignmentCandidate(candidateId);
+ if(!a||!c){toast('No se encontró la plaza');return;}
+ const transitions={
+   request_docs:['selected','selected'],
+   authorize:['selected','selected'],
+   begin_docs:['selected','docs_pending'],
+   docs_ok:['docs_pending','terms_pending'],
+   send_terms:['terms_pending','worker_accept_pending'],
+   accept_terms:['worker_accept_pending','confirmed'],
+   preparing:['confirmed','preparing'],
+   en_route:['preparing','en_route'],
+   arrived:['en_route','arrived'],
+   checkin:['arrived','checked_in'],
+   working:['checked_in','working'],
+   finished:['working','finished'],
+   payment:['finished','payment_pending'],
+   business_paid:['payment_pending','business_paid'],
+   closed:['business_paid','closed']
+ };
+ if(action==='request_docs'){
+   if(a.state!=='selected'){toast('Acción no disponible');return;}
+   a.secureFlow.requested=true;
+ }else if(action==='authorize'){
+   if(a.state!=='selected'||!a.secureFlow.requested){toast('Falta solicitud de datos');return;}
+   a.secureFlow.authorized=true;
+ }else{
+   const tr=transitions[action];if(!tr||a.state!==tr[0]){toast('Acción no disponible en este estado');return;}
+   if(action==='begin_docs'&&!a.secureFlow.authorized){toast('Falta autorización del profesional');return;}
+   a.state=tr[1];
+   if(action==='checkin')a.checkedInAt=Date.now();
+   if(action==='finished'){a.actualEndAt=Date.now();a.shiftEndAt=a.actualEndAt;}
+   if(action==='business_paid')a.businessPaid=true;
+   if(action==='closed')a.workerPaid=true;
+ }
+ recomputeJobSummaryState();save();renderAll();toast(`${c.name} · ${assignmentLabel(a.state)}`);
+}
+function assignmentReference(candidateId,side){
+ const a=assignmentFor(candidateId);if(!a||a.state!=='closed'){toast('La plaza debe estar cerrada');return;}
+ if(side==='biz')a.ratedByBusiness=true;else a.ratedByWorker=true;
+ recomputeJobSummaryState();save();renderAll();toast('Referencia registrada');
+}
+
+function showCancellationModal(actor='business',candidateId='p1'){
+ const a=candidateId==='ref1'?S.referral?.assignment:assignmentFor(candidateId);
+ if(!a){toast('No se encontró la plaza');return;}
+ const state=candidateId==='ref1'?a.status:a.state;
+ if(['working','finished','payment_pending','business_paid','closed'].includes(state)){
+   toast('Este servicio ya no puede cancelarse como plaza libre');return;
+ }
+ const workerReasons=`
+   <option value="personal_emergency">Imprevisto personal</option>
+   <option value="illness">No puedo acudir</option>
+   <option value="transport">Problema de desplazamiento</option>
+   <option value="schedule_error">Error de disponibilidad</option>
+   <option value="other">Otro motivo</option>`;
+ const businessReasons=`
+   <option value="business_change">Ha cambiado la necesidad</option>
+   <option value="overstaffed">Ya no necesito esta plaza</option>
+   <option value="venue_issue">Incidencia en el local</option>
+   <option value="mutual">Acuerdo entre ambas partes</option>
+   <option value="other">Otro motivo</option>`;
+ openModal(`<div class="pill red">CANCELACIÓN</div><h2>${actor==='worker'?'Cancelar mi plaza':'Liberar esta plaza'}</h2>
+ <p class="muted">La plaza volverá a estar disponible. El motivo quedará registrado, pero una cancelación aislada no modifica automáticamente la reputación.</p>
+ <label class="muted">Motivo</label><select id="cancelReason">${actor==='worker'?workerReasons:businessReasons}</select>
+ <button class="btn red" onclick="confirmAssignmentCancellation('${actor}','${candidateId}')">Confirmar cancelación</button>
+ <br><br><button class="btn light" onclick="closeModal()">Volver</button>`);
+}
+function confirmAssignmentCancellation(actor,candidateId){
+ const reason=document.getElementById('cancelReason')?.value||'other';
+ closeModal();
+ const ok=candidateId==='ref1'
+   ?releaseReferralSlot('cancelled',{actor,reasonCode:reason})
+   :releaseAssignmentSlot(candidateId,'cancelled',{actor,reasonCode:reason});
+ if(ok)toast('Plaza liberada. Buscando reemplazo.');
+}
+function showIncidentModal(actor='business',candidateId='p1'){
+ const workerOptions=`
+  <option value="venue_closed">Local cerrado o inaccesible</option>
+  <option value="conditions_changed">Condiciones distintas a las acordadas</option>
+  <option value="safety">Incidencia de seguridad</option>
+  <option value="other">Otra incidencia</option>`;
+ const businessOptions=`
+  <option value="late">Retraso relevante</option>
+  <option value="no_show">No presentado</option>
+  <option value="abandonment">Abandono del turno</option>
+  <option value="conduct">Problema de conducta</option>
+  <option value="safety">Incidencia de seguridad</option>
+  <option value="other">Otra incidencia</option>`;
+ openModal(`<div class="pill red">INCIDENCIA</div><h2>Registrar incidencia</h2>
+ <p class="muted">Se registrará el hecho y el momento. No aplicaremos una penalización automática sin contexto.</p>
+ <label class="muted">Tipo</label><select id="incidentType">${actor==='worker'?workerOptions:businessOptions}</select>
+ <label class="muted">Nota opcional</label><input id="incidentNote" placeholder="Añade contexto breve">
+ <button class="btn copper" onclick="confirmIncident('${actor}','${candidateId}')">Registrar incidencia</button>
+ <br><br><button class="btn light" onclick="closeModal()">Cancelar</button>`);
+}
+function confirmIncident(actor,candidateId){
+ const type=document.getElementById('incidentType')?.value||'other';
+ const note=document.getElementById('incidentNote')?.value||'';
+ closeModal();
+ recordIncident(actor,type,candidateId,note);
+ toast('Incidencia registrada');
+}
+function incidentSummaryHTML(){
+ ensureOperationalState();
+ const open=(S.job?.incidents||[]).filter(i=>i.status==='open');
+ if(!open.length)return '';
+ return `<div class="section-title"><h2>Incidencias</h2><span class="pill red">${open.length} ABIERTA${open.length===1?'':'S'}</span></div>
+ ${open.map(i=>`<div class="card"><div class="row"><div><strong>${incidentTypeLabel(i.type)}</strong><div class="muted">${i.actor==='worker'?'Profesional':'Negocio'} · ${i.candidateId||''}</div></div><span class="pill red">ABIERTA</span></div>
+ ${i.note?`<p class="muted">${escapeHTML(i.note)}</p>`:''}
+ <button class="btn light" onclick="resolveIncident('${i.id}')">Marcar resuelta</button></div>`).join('')}`;
+}
+function urgentReplacementHTML(){
+ ensureOperationalState();
+ if(!S.job?.urgentReplacement?.active || openSlotsFor()<=0)return '';
+ return `<div class="notice danger"><strong>REEMPLAZO PRIORITARIO · ${openSlotsFor()} ${openSlotsFor()===1?'plaza':'plazas'}</strong><br>
+ La plaza se ha vuelto a abrir. Curro & Parné prioriza profesionales compatibles y disponibles sin superar el número original de puestos.</div>`;
+}
+
+function assignmentActionButtons(a){
+ if(!a)return '';
+ const id=a.candidateId;
+ if(assignmentIsReplaceable(a)){
+   return `<button class="btn copper" onclick="replaceAssignment('${id}')">Buscar reemplazo</button>`;
+ }
+ if(id==='p1')return '<span class="muted">Gestionado desde el flujo principal del profesional.</span>';
+ const s=a.state;
+ const cancel=`<br><br><button class="btn red" onclick="showCancellationModal('business','${id}')">Liberar plaza</button>`;
+ if(s==='selected'&&!a.secureFlow.requested)return `<button class="btn light" onclick="assignmentAction('${id}','request_docs')">Iniciar contratación</button>${cancel}`;
+ if(s==='selected'&&a.secureFlow.requested&&!a.secureFlow.authorized)return `<button class="btn light" onclick="assignmentAction('${id}','authorize')">Autorizar datos</button>${cancel}`;
+ if(s==='selected'&&a.secureFlow.authorized)return `<button class="btn copper" onclick="assignmentAction('${id}','begin_docs')">Continuar contratación</button>${cancel}`;
+ if(s==='docs_pending')return `<button class="btn copper" onclick="assignmentAction('${id}','docs_ok')">Preparar condiciones</button>${cancel}`;
+ if(s==='terms_pending')return `<button class="btn copper" onclick="assignmentAction('${id}','send_terms')">Enviar para confirmar</button>${cancel}`;
+ if(s==='worker_accept_pending')return `<button class="btn green" onclick="assignmentAction('${id}','accept_terms')">Confirmar aceptación</button>${cancel}`;
+ if(s==='confirmed')return `<button class="btn light" onclick="assignmentAction('${id}','preparing')">Antes del turno</button>${cancel}`;
+ if(s==='preparing')return `<button class="btn light" onclick="assignmentAction('${id}','en_route')">En camino</button>${cancel}`;
+ if(s==='en_route')return `<button class="btn light" onclick="assignmentAction('${id}','arrived')">Ha llegado</button>${cancel}`;
+ if(s==='arrived')return `<button class="btn green" onclick="assignmentAction('${id}','checkin')">Confirmar llegada</button><br><br><button class="btn red" onclick="showIncidentModal('business','${id}')">Registrar incidencia</button>`;
+ if(s==='checked_in')return `<button class="btn primary" onclick="assignmentAction('${id}','working')">Turno en curso</button>`;
+ if(s==='working')return `<button class="btn primary" onclick="assignmentAction('${id}','finished')">Finalizar turno</button><br><br><button class="btn light" onclick="showIncidentModal('business','${id}')">Registrar incidencia</button>`;
+ if(s==='finished')return `<button class="btn light" onclick="assignmentAction('${id}','payment')">Pasar a pago</button>`;
+ if(s==='payment_pending')return `<button class="btn copper" onclick="assignmentAction('${id}','business_paid')">Pago realizado</button>`;
+ if(s==='business_paid')return `<button class="btn green" onclick="assignmentAction('${id}','closed')">Cobro confirmado</button>`;
+ if(s==='closed'){
+   let b='';
+   if(!a.ratedByBusiness)b+=`<button class="btn light" onclick="assignmentReference('${id}','biz')">Valorar profesional</button>`;
+   if(!a.ratedByWorker)b+=`<button class="btn light" onclick="assignmentReference('${id}','worker')">Registrar referencia del profesional</button>`;
+   return b||'<span class="pill green">Plaza cerrada</span>';
+ }
+ return '';
+}
+function releaseReasonLabel(reason){
+ const m={cancelled:'Cancelado',no_show:'No presentado',replaced:'Reemplazado'};
+ return m[reason]||'Plaza liberada';
+}
+function releasedAssignmentCard(a){
+ const reason=a.releaseReason||a.state;
+ const isNoShow=reason==='no_show';
+ return `<div class="match-card">
+   <div class="row">
+     <div><strong>${a.name}</strong><div class="muted">${a.role} · ${releaseReasonLabel(reason)}</div></div>
+     <span class="pill red">PLAZA LIBERADA</span>
+   </div>
+   <div class="notice danger"><strong>Esta plaza vuelve a estar disponible</strong><br>
+   ${isNoShow
+     ?'El profesional no se presentó al servicio antes de iniciar el turno.'
+     :'La asignación se canceló antes de que la plaza quedara consumida por el servicio.'}</div>
+   <div class="doc-line"><span>Estado anterior</span><strong>${assignmentLabel(a.previousState||'selected')}</strong></div>
+   <div class="doc-line"><span>Motivo</span><strong>${releaseReasonLabel(reason)}</strong></div>
+   <br><button class="btn copper" onclick="go('curros',document.querySelector('[data-page=curros]'));toast('Plaza disponible para cubrir')">Buscar reemplazo</button>
+ </div>`;
+}
+function slotCoverageSummary(){
+ const total=marketTotal(),occupied=marketOccupied(),open=openSlotsFor();
+ return `<div class="kpis">
+   <div class="card"><b>${occupied}/${total}</b><span>Cubiertas</span></div>
+   <div class="card"><b>${open}</b><span>Vacantes</span></div>
+   <div class="card"><b>${total}</b><span>Total</span></div>
+ </div>`;
+}
+function replacementBanner(){
+ const released=(S.job?.assignments||[]).filter(assignmentIsReplaceable);
+ const referralReleased=S.referral?.jobId===S.job?.id && S.referral?.assignment?.slotReleased;
+ if(!released.length&&!referralReleased)return '';
+ const count=released.length+(referralReleased?1:0);
+ return `<div class="notice danger"><strong>${count} ${count===1?'plaza necesita':'plazas necesitan'} reemplazo</strong><br>
+ Puedes cubrir ${count===1?'esta plaza':'estas plazas'} sin alterar las plazas ya trabajadas o cerradas.</div>`;
+}
+
+
+function referralAssignmentCard(){
+ ensureReferral();
+ if(!S.job || S.referral?.jobId!==S.job.id)return '';
+ const a=S.referral?.assignment;
+ const c=S.referral?.candidate;
+ if(!a || !c)return '';
+ const st=a.status;
+ if(!['selected','completed','closed','cancelled','no_show','replaced'].includes(st))return '';
+
+ if(a.slotReleased || ['cancelled','no_show','replaced'].includes(st)){
+   return `<div class="match-card">
+     <div class="row"><div><strong>${c.name||'Profesional recomendado'}</strong><div class="muted">${c.role||S.job.role} · Recomendado</div></div><span class="pill red">PLAZA LIBERADA</span></div>
+     <div class="notice danger"><strong>Esta plaza vuelve a estar disponible</strong><br>La recomendación ya no ocupa plaza en este Curro.</div>
+     <div class="doc-line"><span>Motivo</span><strong>${releaseReasonLabel(a.releaseReason||st)}</strong></div>
+     <br><button class="btn copper" onclick="toast('Plaza disponible para reemplazo')">Buscar reemplazo</button>
+   </div>`;
+ }
+
+ const statusLabel=st==='selected'?'Seleccionado':st==='completed'?'Curro completado':'Cerrado';
+ const pill=st==='closed'?'green':'gold';
+ const payLabel=st==='closed'?'Cobrado ✓':st==='completed'?'Servicio completado':'Pendiente';
+ return `<div class="match-card">
+   <div class="row">
+     <div><strong>${c.name||'Profesional recomendado'}</strong><div class="muted">${c.role||S.job.role} · Recomendado por un profesional</div></div>
+     <span class="pill ${pill}">${statusLabel.toUpperCase()}</span>
+   </div>
+   <div class="doc-line"><span>Origen</span><strong>Recomendación</strong></div>
+   <div class="doc-line"><span>Servicio</span><strong>${statusLabel}</strong></div>
+   <div class="doc-line"><span>Pago</span><strong>${payLabel}</strong></div>
+   ${st==='closed'?'<div class="notice success"><strong>Plaza cerrada ✓</strong><br>Esta plaza permanece cubierta en el historial de este Curro.</div>':''}
+ </div>`;
+}
+
+function assignmentCards(){
+ ensureAssignments();ensureReferral();
+ const as=S.job?.assignments||[];
+ const referralCard=referralAssignmentCard();
+ if(!as.length&&!referralCard)return `<div class="empty"><h3>Aún no hay plazas asignadas</h3><p>Selecciona profesionales desde el marketplace.</p></div>`;
+ return `${slotCoverageSummary()}${replacementBanner()}
+ ${as.map(a=>{
+   if(assignmentIsReplaceable(a))return releasedAssignmentCard(a);
+   return `<div class="match-card">
+     <div class="row"><div><strong>${a.name}</strong><div class="muted">${a.role} · Plaza individual</div></div><span class="pill ${a.state==='closed'?'green':'gold'}">${assignmentLabel(a.state)}</span></div>
+     ${assignmentProgress(a)}
+     <div class="doc-line"><span>Contratación</span><strong>${a.secureFlow.authorized?'Preparada ✓':a.secureFlow.requested?'En curso':'Pendiente'}</strong></div>
+     <div class="doc-line"><span>Pago</span><strong>${a.workerPaid?'Cobrado ✓':a.businessPaid?'Pago marcado':'Pendiente'}</strong></div>
+     <br>${assignmentActionButtons(a)}
+   </div>`;
+ }).join('')}
+ ${referralCard}`;
+}
+function businessServiceControls(){
+ repairActivePaymentState();
+ const a=assignmentFor('p1');
+ const state=a?.state||S.job.state;
+ let x=`<div class="person"><div class="avatar">JG</div><div><strong>Jonathan Gómez</strong><div class="muted">${operationalPhase({state})}</div></div><span class="pill green">Asignado</span></div>`;
+ if(['en_route','arrived'].includes(state))x+='<br>'+routeHTML();
+ if(['confirmed','preparing','en_route','arrived','checked_in','working'].includes(state))x+=`<br>${commButtons()}`;
+ if(['confirmed','preparing','en_route'].includes(state))x+=`<br><br><button class="btn red" onclick="showCancellationModal('business','p1')">Cancelar esta plaza</button>`;
+ if(['arrived','checked_in','working'].includes(state))x+=`<br><br><button class="btn light" onclick="showIncidentModal('business','p1')">Registrar incidencia</button>`;
+ if(state==='finished')x+=`<br>${extraTimeSummaryHTML(S.job)}<div class="notice">El turno ha finalizado.</div>`;
+ if(state==='payment_pending')x+=`<br>${extraTimeSummaryHTML(S.job)}<button class="btn copper" onclick="businessPay()">Marcar pago realizado · ${money(S.job.pay)}</button>`;
+ if(state==='business_paid')x+=`<br>${extraTimeSummaryHTML(S.job)}<div class="notice success">Pago marcado. Esperando confirmación de cobro.</div>`;
+ if(state==='closed')x+=`<br>${extraTimeSummaryHTML(S.job)}<div class="notice success">Servicio cerrado por ambas partes.</div>${reviewComposer('biz')}`;
+ return extraTimeQAPanel()+x+incidentSummaryHTML();
+}
+
+function businessAttentionReasons(r){
+ const j=r?.job;
+ if(!j)return [];
+ ensureOperationalState(j);
+ const reasons=[];
+ const open=Math.max(0,Math.max(1,Number(j.workers)||1)-occupiedSlotsFor(j,r.referral));
+ const openIncidents=(j.incidents||[]).filter(i=>i.status==='open').length;
+ if(j.urgentReplacement?.active && open>0)reasons.push({key:'replacement',label:`Reemplazo prioritario · ${open} ${open===1?'plaza':'plazas'}`,tone:'red'});
+ if(openIncidents)reasons.push({key:'incident',label:`${openIncidents} ${openIncidents===1?'incidencia abierta':'incidencias abiertas'}`,tone:'red'});
+ if(j.state==='interest')reasons.push({key:'candidate',label:'Candidaturas por revisar',tone:'gold'});
+ if(['selected','docs_pending','terms_pending','worker_accept_pending'].includes(j.state))reasons.push({key:'contract',label:'Contratación pendiente',tone:'gold'});
+ if(['confirmed','preparing','en_route','arrived','checked_in','working'].includes(j.state))reasons.push({key:'service',label:'Servicio en curso',tone:'green'});
+ if(['finished','payment_pending'].includes(j.state))reasons.push({key:'payment',label:'Pago pendiente',tone:'gold'});
+ if(j.state==='business_paid')reasons.push({key:'payment_confirm',label:'Esperando confirmación de cobro',tone:'gold'});
+ if(j.state==='closed' && !j.ratedByBusiness)reasons.push({key:'review',label:'Referencia pendiente',tone:'gold'});
+ const unread=unreadNotificationsForJob('biz',r.id).length;
+ if(unread)reasons.push({key:'unread',label:`${unread} ${unread===1?'novedad':'novedades'} sin leer`,tone:'gold'});
+ return reasons;
+}
+function businessActivityCard(r){
+ const j=r.job||{};
+ const reasons=businessAttentionReasons(r);
+ const total=Math.max(1,Number(j.workers)||1);
+ const occupied=occupiedSlotsFor(j,r.referral);
+ const open=Math.max(0,total-occupied);
+ const severe=reasons.some(x=>x.tone==='red');
+ return `<div class="card">
+   <div class="row">
+     <div><strong>${r.id} · ${j.role||'Curro'}</strong><div class="muted">${j.date||''} · ${j.start||''}–${j.end||''} · ${j.zone||''}</div></div>
+     <span class="pill ${severe?'red':'gold'}">${severe?'ATENCIÓN':'PENDIENTE'}</span>
+   </div>
+   <div class="doc-line"><span>Cobertura</span><strong>${occupied}/${total}${open?` · ${open} libre${open===1?'':'s'}`:''}</strong></div>
+   <div class="activity-reasons">${reasons.map(x=>`<div class="notice ${x.tone==='red'?'danger':x.tone==='green'?'success':''}"><strong>${x.label}</strong></div>`).join('')}</div>
+   <button class="btn ${severe?'copper':'light'}" onclick="selectJob('${r.id}','curros')">Gestionar Curro</button>
+ </div>`;
+}
+
+function bizActivity(){
+ const records=jobRecords();
+ const attention=records
+   .map(r=>({r,reasons:businessAttentionReasons(r)}))
+   .filter(x=>x.reasons.length)
+   .sort((a,b)=>{
+     const ar=a.reasons.some(x=>x.tone==='red')?0:1;
+     const br=b.reasons.some(x=>x.tone==='red')?0:1;
+     return ar-br || Number(b.r.updatedAt||0)-Number(a.r.updatedAt||0);
+   });
+ const urgent=attention.filter(x=>x.reasons.some(r=>r.key==='replacement'||r.key==='incident')).length;
+ const payment=attention.filter(x=>x.reasons.some(r=>r.key==='payment'||r.key==='payment_confirm')).length;
+ return `<div class="section-title"><h2>Actividad</h2><span class="muted">Lo que requiere tu atención</span></div>
+ <div class="jobs-kpi">
+   <div><b>${attention.length}</b><span>Pendientes</span></div>
+   <div><b>${urgent}</b><span>Urgentes</span></div>
+   <div><b>${payment}</b><span>Pagos</span></div>
+ </div>
+ ${attention.length
+   ? attention.map(x=>businessActivityCard(x.r)).join('')
+   : `<div class="empty"><h3>Todo al día</h3><p>No hay reemplazos, incidencias, contrataciones, pagos ni referencias pendientes.</p></div>`}`;
+}
+function proposalBizCard(){
+ const label={sent:'Enviada',accepted:'Aceptada',rejected:'Rechazada'}[S.proposal.state];
+ return `<div class="section-title"><h2>Propuestas</h2></div><div class="card"><div class="row"><div><strong>PR-0001 · Temporada</strong><div class="muted">Jonathan Gómez · ${S.proposal.period} · ${S.proposal.hours}</div></div><span class="pill ${S.proposal.state==='accepted'?'green':S.proposal.state==='rejected'?'red':'gold'}">${label}</span></div></div>`;
+}
+function bizProfile(){
+ return `<div class="card"><div class="person"><div class="avatar gold">LT</div><div><strong>${S.business.name}</strong><div class="muted">Muelle Uno · Málaga</div></div><span class="pill green">Verificado</span></div></div>
+ <div class="kpis"><div class="card"><b>${averageReferenceRating('biz')}</b><span>Valoración</span></div><div class="card"><b>${S.business.payAvg}</b><span>Pago medio</span></div><div class="card"><b>${S.relation.jobsTogether}</b><span>Curros</span></div></div>
+ <div class="section-title"><h2>Referencias de profesionales</h2><span class="pill gold">${referenceCount('biz')} EQUIPO</span></div>
+ <p class="reference-note">Opiniones de profesionales que ya han trabajado con este establecimiento.</p>
+ ${referenceHistoryHTML('biz')}
+ <div class="card"><div class="row"><strong>Seguridad de contratación</strong><span class="pill green">ACTIVA</span></div><div class="divider"></div><div class="muted">Los documentos originales del profesional no se muestran ni se ofrecen como descarga. Los accesos deben quedar vinculados a un Curro y ser auditables.</div></div>
+ <div class="card"><div class="row"><strong>Pagos confirmados</strong><span>${S.relation.jobsTogether}/${S.relation.jobsTogether}</span></div><div class="divider"></div><div class="row"><strong>Incidencias</strong><span>0</span></div></div>
+ <div class="section-title"><h2>Historial de servicios</h2><span class="pill soft">${archivedHistoryItems().length} RESUELTOS</span></div>
+ ${archivedHistoryItems().length?`<div class="card">${archivedHistoryItems().map(h=>`<div class="history-item"><div><strong>${h.id} · ${h.role}</strong><div class="muted">${h.date} · ${S.worker.name}</div></div><span class="pill green">CERRADO</span></div>`).join('')}</div>`:''}
+ <button class="btn red" onclick="resetDemo()">Reiniciar demo</button>`;
+}
+
+
+function starsHTML(role){
+ const current=S.job?.reviews?.[role]?.stars||0;
+ return `<div class="rating-stars">${[1,2,3,4,5].map(n=>`<button class="star-btn ${n<=current?'active':''}" onclick="setReviewStars('${role}',${n})" aria-label="${n} estrellas">★</button>`).join('')}</div>`;
+}
+function setReviewStars(role,n){
+ if(!S.job)return;
+ S.job.reviews=S.job.reviews||{worker:null,biz:null};
+ const el=document.getElementById(`reviewComment_${role}`);
+ const prev=S.job.reviews[role]||{};
+ S.job.reviews[role]={...prev,stars:n,draftComment:el?el.value:(prev.draftComment||'')};
+ save();renderAll();
+}
+function submitReview(role){
+ if(!requireJobState('closed','Publicar referencia'))return;
+ const already=role==='worker'?S.job.ratedByWorker:S.job.ratedByBusiness;
+ if(already){toast('La referencia ya está publicada');return;}
+ const current=S.job.reviews?.[role]||{};
+ if(!current.stars){toast('Elige entre 1 y 5 estrellas');return;}
+ const el=document.getElementById(`reviewComment_${role}`);
+ const comment=(el?.value??current.draftComment??'').trim();
+ const review={stars:current.stars,comment,ts:Date.now()};
+ S.job.reviews[role]=review;
+ const author=role==='worker'?S.worker.name:S.business.name;
+ const target=role==='worker'?S.business.name:S.worker.name;
+ S.reviews=S.reviews.filter(r=>!(r.jobId===S.job.id&&r.role===role));
+ S.reviews.push({
+   jobId:S.job.id,
+   author,
+   target,
+   role,
+   stars:review.stars,
+   comment,
+   ts:review.ts,
+   roleName:S.job.role,
+   venue:S.job.venue,
+   date:S.job.date,
+   start:S.job.start,
+   end:S.job.end
+ });
+ if(role==='worker')S.job.ratedByWorker=true; else S.job.ratedByBusiness=true;
+ if(S.job.ratedByWorker&&S.job.ratedByBusiness)S.relation.mutualRating=true;
+ markCurrentHistoryArchived();
+ syncJonathanAssignmentFromJob();save();renderAll();toast('Referencia profesional guardada ✓');
+}
+function reviewComposer(role){
+ const r=S.job?.reviews?.[role]||{};
+ const done=role==='worker'?S.job?.ratedByWorker:S.job?.ratedByBusiness;
+ const who=role==='worker'?S.business.name:S.worker.name;
+ if(done){
+  return `<div class="review-box"><div class="review-head"><div><strong>${who}</strong><div class="muted">${S.job.id} · ${S.job.role}</div></div><span class="pill gold">${'★'.repeat(r.stars||0)}${'☆'.repeat(5-(r.stars||0))}</span></div>${r.comment?`<p>${escapeHTML(r.comment)}</p>`:'<p>Sin comentario.</p>'}</div>`;
+ }
+ const placeholder=role==='worker'?'¿Cómo fue trabajar con este negocio?':'¿Cómo fue trabajar con este profesional?';
+ return `<div class="review-box"><div class="review-head"><div><strong>Valora a ${who}</strong><div class="muted">${S.job.id} · ${S.job.role}</div></div><span class="muted">Referencia profesional</span></div>${starsHTML(role)}
+ <textarea id="reviewComment_${role}" rows="3" placeholder="${placeholder}">${escapeHTML(r.draftComment||'')}</textarea>
+ <div class="reference-note">Queda asociada a un Curro realmente completado entre ambas partes.</div><br>
+ <button class="btn copper" onclick="submitReview('${role}')">Publicar referencia</button></div>`;
+}
+function escapeHTML(s){
+ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function averageReferenceRating(targetRole){
+ const sourceRole=targetRole==='worker'?'biz':'worker';
+ const items=S.reviews.filter(r=>r.role===sourceRole&&Number(r.stars));
+ if(!items.length)return targetRole==='worker'?S.worker.rating:S.business.rating;
+ return (items.reduce((a,r)=>a+Number(r.stars),0)/items.length).toFixed(1);
+}
+function referenceCount(targetRole){
+ const sourceRole=targetRole==='worker'?'biz':'worker';
+ return S.reviews.filter(r=>r.role===sourceRole).length;
+}
+function referenceHistoryHTML(targetRole){
+ const sourceRole=targetRole==='worker'?'biz':'worker';
+ const items=S.reviews.filter(r=>r.role===sourceRole).slice().reverse();
+ if(!items.length)return `<div class="notice">Aún no hay referencias profesionales.</div>`;
+ return items.map(r=>{
+   const counterpart=targetRole==='worker'
+     ? (r.author&&r.author!=='Negocio'?r.author:S.business.name)
+     : (r.author&&r.author!=='Profesional'?r.author:S.worker.name);
+   const jobMeta=[r.roleName,r.date,r.jobId].filter(Boolean).join(' · ');
+   return `<div class="review-box">
+     <div class="review-head">
+       <div><strong>${escapeHTML(counterpart)}</strong><div class="muted">${escapeHTML(jobMeta||r.jobId||'Curro completado')}</div></div>
+       <span class="pill gold">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+     </div>
+     ${r.comment?`<p>${escapeHTML(r.comment)}</p>`:'<p>Sin comentario.</p>'}
+   </div>`;
+ }).join('');
+}
+function freshReferral(){
+ return {jobId:S.job?.id||null,status:'idle',
+   candidate:{id:'ref1',name:'Daniel Moreno',initials:'DM',role:S.job?.role||'Camarero/a',score:89,newcomer:true,status:'none'},
+   assignment:{status:'none',selectedAt:null,completedAt:null},
+   reward:'locked'};
+}
+function ensureReferral(){
+ if(!S.referral || (S.job && S.referral.jobId && S.referral.jobId!==S.job.id)) S.referral=freshReferral();
+ if(!S.referral.assignment)S.referral.assignment={status:S.referral.candidate?.status==='selected'?'selected':'none',selectedAt:null,completedAt:null};
+ if(!S.referral.jobId && S.job)S.referral.jobId=S.job.id;
+}
+function resetReferralForJob(){
+ S.referral=freshReferral();
+}
+function referralStage(){
+ ensureReferral();
+ return {idle:0,sent:1,verified:2,interested:3,selected:4,completed:5,unlocked:6}[S.referral.status]??0;
+}
+
+function releaseReferralSlot(reason='cancelled',meta={}){
+ ensureReferral();
+ const st=S.referral?.assignment?.status;
+ if(!['selected'].includes(st)){toast('La plaza recomendada ya no puede liberarse');return false;}
+ const a=S.referral.assignment;
+ a.status=reason;
+ a.slotReleased=true;
+ a.releasedAt=Date.now();
+ a.releaseReason=reason;
+ a.cancelledBy=meta.actor||'business';
+ a.cancelReasonCode=meta.reasonCode||reason;
+ S.referral.candidate.status='available';
+ S.referral.status='interested';
+ addOperationalEvent(reason==='no_show'?'no_show_release':'cancellation',meta.actor||'business',{
+   candidateId:'ref1',reason:meta.reasonCode||reason,source:'referral'
+ });
+ systemMsg(reason==='no_show'
+   ? 'La plaza del profesional recomendado se libera por no presentación.'
+   : `La plaza del recomendado ha sido liberada (${cancellationReasonLabel(meta.reasonCode||reason)}).`);
+ activateUrgentReplacement('ref1',meta.reasonCode||reason,'referral');
+ save();renderAll();
+ return true;
+}
+function referralSet(st){
+ ensureReferral();
+ const allowed={
+   idle:['sent'], sent:['verified'], verified:['interested'], interested:['selected'],
+   selected:['completed'], completed:['unlocked'], unlocked:[]
+ };
+ if(!(allowed[S.referral.status]||[]).includes(st)){toast('Ese paso no corresponde todavía');return;}
+ if(st==='selected'){
+   if(!S.job || !roleMatches(S.referral.candidate.role,S.job.role)){toast('El recomendado no es compatible con este puesto');return;}
+   if(marketOccupied()>=marketTotal()){toast('No quedan plazas libres');return;}
+   S.referral.candidate.status='selected';
+   S.referral.assignment.status='selected';
+   S.referral.assignment.selectedAt=Date.now();
+ }
+ if(st==='completed'){
+   if(S.referral.assignment.status!=='selected'){toast('No existe una asignación válida');return;}
+   S.referral.assignment.status='completed';
+   S.referral.assignment.completedAt=Date.now();
+ }
+ if(st==='unlocked'){
+   if(S.referral.assignment.status!=='completed'){toast('El Curro recomendado aún no está completado');return;}
+   S.referral.assignment.status='closed';
+   S.referral.assignment.closedAt=Date.now();
+   S.referral.reward='unlocked';
+ }
+ S.referral.status=st;
+ clearUrgentReplacementIfCovered();save();renderAll();
+}
+function releaseReferralCandidate(){
+ ensureReferral();
+ if(S.referral.status!=='selected'){toast('No hay una plaza asignada que liberar');return;}
+ S.referral.status='interested';
+ S.referral.candidate.status='none';
+ S.referral.assignment={status:'none',selectedAt:null,completedAt:null};
+ S.referral.reward='locked';
+ save();renderAll();toast('Plaza del recomendado liberada');
+}
+function recommendColleague(){
+ ensureReferral();
+ if(!S.job){toast('No hay un Curro activo');return;}
+ if(marketOccupied()>=marketTotal()){toast('El equipo ya está completo');return;}
+ openModal(`<span class="pill gold">RECOMENDACIÓN</span><h2>Recomendar compañero</h2>
+ <p class="muted">Compartes esta oportunidad. Tu compañero decide por sí mismo y el negocio mantiene la selección final.</p>
+ <div class="doc-section"><h4>${S.job.id}</h4><div class="doc-line"><span>Puesto</span><strong>${S.job.role}</strong></div><div class="doc-line"><span>Horario</span><strong>${S.job.start}–${S.job.end}</strong></div><div class="doc-line"><span>Plazas libres</span><strong>${Math.max(0,marketTotal()-marketOccupied())}</strong></div></div>
+ <div class="notice">No compartas DNI, Seguridad Social ni documentación de otra persona. Curro & Parné solicitará sus datos directamente al recomendado.</div><br>
+ <button class="btn copper" onclick="closeModal();referralSet('sent');toast('Oportunidad compartida ✓')">Recomendar a Daniel Moreno</button>
+ <button class="btn light" onclick="closeModal()">Cancelar</button>`);
+}
+function referralBusinessCard(){
+ ensureReferral();
+ if(!S.job || S.referral.jobId!==S.job.id || S.referral.status==='idle')return '';
+ const c=S.referral.candidate, st=referralStage();
+ return `<div class="referral-card">
+ <div class="row"><div><span class="pill gold">RECOMENDADO · ${S.job.id}</span><h3 style="margin:7px 0 2px">${c.name}</h3><div class="muted">${c.role} · Nuevo en Curro & Parné</div></div><span class="match-score">${c.score}% compatible</span></div>
+ <div class="match-reasons"><span class="reason newcomer">Sin reputación heredada</span><span class="reason">Recomendado por Jonathan</span><span class="reason">Decisión final del negocio</span></div><br>
+ ${st===1?`<button class="btn light" onclick="referralSet('verified');toast('Identidad verificada ✓')">Simular verificación</button>`:''}
+ ${st===2?`<button class="btn light" onclick="referralSet('interested');toast('Daniel ha mostrado interés')">Simular interés</button>`:''}
+ ${st===3?`<button class="btn copper" onclick="referralSet('selected');toast('Daniel seleccionado ✓')">Seleccionar para este Curro</button>`:''}
+ ${st===4?`<div class="notice success">Daniel ocupa una plaza propia. Jonathan no es responsable de su contratación, servicio ni pago.</div><br><button class="btn light" onclick="releaseReferralCandidate()">Liberar plaza</button>`:''}
+ ${st>=5?`<div class="notice success">Asignación del recomendado completada ✓</div>`:''}
+ </div>`;
+}
+function referralWorkerCard(){
+ ensureReferral();
+ if(!S.job || S.referral.jobId!==S.job.id)return '';
+ const st=referralStage();
+ const jonathanSelected=marketSelected().some(c=>c.id==='p1');
+
+ // El CTA solo aparece si Jonathan ya ocupa una plaza y aún quedan huecos.
+ // Una recomendación ya iniciada SIEMPRE sigue visible, incluso con el equipo 3/3.
+ if(st===0){
+   if(!jonathanSelected || marketOccupied()>=marketTotal())return '';
+   return `<div class="section-title"><h2>Completar el equipo</h2></div>
+   <div class="referral-card"><span class="pill gold">FALTAN ${marketTotal()-marketOccupied()}</span>
+   <h3>¿Conoces a un compañero que encaje?</h3>
+   <p class="muted">Puedes compartir este Curro. El recomendado tendrá que verificar su cuenta, decidir si le interesa y ser seleccionado por el negocio.</p>
+   <button class="btn copper" onclick="recommendColleague()">Recomendar compañero</button></div>`;
+ }
+ const labels=['','Recomendación enviada','Cuenta verificada','Interesado','Seleccionado','Curro completado','Recompensa desbloqueada'];
+ return `<div class="section-title"><h2>Tu recomendación</h2></div>
+ <div class="referral-card"><div class="row"><div><strong>Daniel Moreno</strong><div class="muted">${S.job.id} · ${labels[st]}</div></div><span class="pill ${st===6?'green':'gold'}">${st===6?'COMPLETADA':'EN PROCESO'}</span></div>
+ <div class="referral-flow">${['Enviada','Verificada','Interesado','Seleccionado','Curro completado','Recompensa'].map((x,i)=>`<div class="ref-step ${st>i+1?'done':st===i+1?'current':''}"><b>${st>i+1?'✓':i+1}</b><span>${x}</span></div>`).join('')}</div>
+ <div class="reward-lock"><strong>${st===6?'Recompensa desbloqueada ✓':'Recompensa pendiente'}</strong><br><span class="muted">No se genera por compartir ni por registrarse. Solo tras una asignación válida y un Curro completado. La plaza completada permanece cubierta en este Curro.</span></div>
+ ${st===4?`<br><button class="btn light" onclick="referralSet('completed');toast('Curro del recomendado completado')">Simular Curro completado</button><br><br><button class="btn red" onclick="showCancellationModal('business','ref1')">Liberar plaza recomendada</button>`:''}
+ ${st===5?`<br><button class="btn green" onclick="referralSet('unlocked');toast('Recompensa desbloqueada ✓')">Cerrar plaza del recomendado</button>`:''}
+ </div>`;
+}
+
+function marketTotal(){return Math.max(1,Number(S.job?.workers||S.marketplace?.workers||3))}
+
+
+
+
+function currentJobReviewsDone(){
+ return !!(S.job && S.job.ratedByWorker && S.job.ratedByBusiness);
+}
+function currentJobHasOpenIncident(job=S.job){
+ if(!job)return false;
+ ensureOperationalState(job);
+ if((job.incidents||[]).some(i=>i.status==='open'))return true;
+ if(job.incidentOpen)return true; // compatibilidad legacy
+ return (job.assignments||[]).some(a=>a?.incidentOpen);
+}
+function currentJobLifecycleComplete(){
+ return !!(S.job && S.job.state==='closed' && currentJobReviewsDone() && !currentJobHasOpenIncident());
+}
+
+function jobNeedsAttention(job){
+ if(!job || !professionalCanDo(job.role) || workerDecisionBlocked())return false;
+ if(job.state==='published')return job.workerDecision==='invited';
+ const activeStates=['interest','selected','docs_pending','terms_pending','worker_accept_pending',
+ 'confirmed','preparing','en_route','arrived','checked_in','working','finished','payment_pending','business_paid'];
+ if(activeStates.includes(job.state))return workerHasRelationship();
+ if(job.state==='closed')return workerHasRelationship() && (!currentJobReviewsDone() || currentJobHasOpenIncident());
+ return false;
+}
+function jobIsArchived(job){
+ return !!job && job.state==='closed' && currentJobReviewsDone() && !currentJobHasOpenIncident();
+}
+function professionalActivitySummary(){
+ const records=jobRecords().filter(r=>{
+   if(workerRejectionPendingRecord(r)||unreadNotificationsForJob('worker',r.id).length)return true;
+   const me=(r.marketplace?.candidates||[]).find(c=>c.id==='p1');
+   return !!me&&['invited','interested','selected'].includes(me.status)&&
+     (r.job?.state!=='closed'||!(r.job?.ratedByWorker&&r.job?.ratedByBusiness));
+ });
+ if(!records.length){
+   return `<div class="empty"><h3>Todo al día</h3><p>No tienes candidaturas, pagos, decisiones o referencias pendientes.</p></div>`;
+ }
+ return records.slice(0,3).map(r=>`<div class="job-card service-entry" role="button" tabindex="0" onclick="selectJob('${r.id}','activity')">
+ <div class="row"><div><strong>${r.job.role}</strong><div class="muted">${r.id} · ${workerRejectionPendingRecord(r)?'No seleccionado':jobLabel(r.job.state)}</div></div>
+ <span class="pill ${workerRejectionPendingRecord(r)?'red':'gold'}">${unreadNotificationsForJob('worker',r.id).length?'NUEVO':'ACTIVO'}</span></div></div>`).join('');
+}
+function historyReferenceStatus(jobId){
+ const workerRef=S.reviews.some(r=>r.jobId===jobId&&r.role==='worker');
+ const bizRef=S.reviews.some(r=>r.jobId===jobId&&r.role==='biz');
+ return workerRef&&bizRef?'Completadas':'Pendientes';
+}
+function archivedHistoryItems(){
+ return (S.history||[]).filter(h=>{
+   if(h.id===S.job?.id)return currentJobLifecycleComplete();
+   return h.archived!==false;
+ });
+}
+function markCurrentHistoryArchived(){
+ if(!S.job||!currentJobLifecycleComplete())return;
+ const h=S.history.find(x=>x.id===S.job.id);
+ if(h)h.archived=true;
+}
+
+function professionalHistoryPanel(){
+ const items=archivedHistoryItems();
+ if(!items.length){
+   return `<div class="empty"><h3>Aún no hay Curros archivados</h3><p>Los servicios completamente cerrados se conservarán aquí aunque después aceptes nuevos Curros.</p></div>`;
+ }
+ return items.map(h=>`<div class="job-card">
+   <div class="row"><div><span class="pill green">CERRADO</span><h3 style="margin:7px 0 2px">${h.role||'Curro'}</h3>
+   <div class="muted">${h.id} · ${h.date||'—'}${h.start&&h.end?' · '+h.start+'–'+h.end:''}</div></div><strong>${money(h.pay||0)}</strong></div>
+   <div class="doc-line"><span>Negocio</span><strong>${h.venue||'—'}</strong></div>
+   <div class="doc-line"><span>Pago</span><strong>Confirmado</strong></div>
+   <div class="doc-line"><span>Referencias</span><strong>${historyReferenceStatus(h.id)}</strong></div>
+ </div>`).join('');
+}
+function ensureProfessionalCV(){
+ if(!S.worker.cv){
+   S.worker.cv={
+     uploaded:false,
+     originalName:null,
+     storedName:null,
+     sizeMB:null,
+     mime:null,
+     scan:'none',
+     sanitized:false,
+     metadataStripped:false,
+     visibility:'private',
+     updatedAt:null
+   };
+ }
+}
+function cvSecuritySummary(){
+ ensureProfessionalCV();
+ const c=S.worker.cv;
+ if(!c.uploaded)return `<div class="cv-secure"><strong>CV no añadido</strong><div class="muted">El profesional puede añadir un PDF desde su perfil. No forma parte de la Bóveda Laboral.</div></div>`;
+ return `<div class="cv-secure">
+   <div class="row"><div><strong>CV protegido</strong><div class="muted">${c.originalName||'CV.pdf'} · ${c.sizeMB||'—'} MB</div></div><span class="pill green">VERIFICADO</span></div>
+   <div class="security-list">
+    <div class="security-item"><span class="security-dot">✓</span><span>Formato permitido: PDF</span></div>
+    <div class="security-item"><span class="security-dot">✓</span><span>Firma/MIME comprobados</span></div>
+    <div class="security-item"><span class="security-dot">✓</span><span>Análisis antimalware superado</span></div>
+    <div class="security-item"><span class="security-dot">✓</span><span>Metadatos innecesarios eliminados</span></div>
+    <div class="security-item"><span class="security-dot">✓</span><span>Almacenamiento privado · sin URL pública permanente</span></div>
+   </div>
+ </div>`;
+}
+function openCVUpload(){
+ ensureProfessionalCV();
+ openModal(`<span class="pill gold">CV PROFESIONAL</span><h2>Añadir CV en PDF</h2>
+ <p class="muted">El CV pertenece al perfil profesional, no a la documentación laboral sensible.</p>
+ <div class="cv-upload"><strong>Controles obligatorios en producción</strong>
+ <div class="security-list">
+  <div class="security-item"><span class="security-dot">1</span><span>Solo PDF permitido. Extensión, MIME y firma real deben coincidir.</span></div>
+  <div class="security-item"><span class="security-dot">2</span><span>Límite de tamaño. Propuesta MVP: máximo 5 MB.</span></div>
+  <div class="security-item"><span class="security-dot">3</span><span>Nombre interno aleatorio; nunca usar el nombre original como ruta.</span></div>
+  <div class="security-item"><span class="security-dot">4</span><span>Antimalware/sandbox y, cuando sea viable, sanitización/CDR del PDF.</span></div>
+  <div class="security-item"><span class="security-dot">5</span><span>Eliminar metadatos innecesarios antes de almacenar.</span></div>
+  <div class="security-item"><span class="security-dot">6</span><span>Almacenamiento privado y acceso solo mediante autorización temporal.</span></div>
+ </div></div><br>
+ <div class="notice">No incluyas DNI, NIE, número de Seguridad Social, datos bancarios ni documentación médica en el CV.</div><br>
+ <button class="btn copper" onclick="simulateSecureCVUpload()">Simular subida segura de CV</button>
+ <button class="btn light" onclick="closeModal()">Cancelar</button>`);
+}
+function simulateSecureCVUpload(){
+ ensureProfessionalCV();
+ S.worker.cv={
+   uploaded:true,
+   originalName:'CV_Jonathan_Gomez.pdf',
+   storedName:'cv_'+Math.random().toString(36).slice(2,12)+'.pdf',
+   sizeMB:'1.2',
+   mime:'application/pdf',
+   scan:'clean',
+   sanitized:true,
+   metadataStripped:true,
+   visibility:'private',
+   updatedAt:Date.now()
+ };
+ save();closeModal();renderAll();toast('CV verificado y protegido ✓');
+}
+function deleteProfessionalCV(){
+ ensureProfessionalCV();
+ S.worker.cv={uploaded:false,originalName:null,storedName:null,sizeMB:null,mime:null,scan:'none',sanitized:false,metadataStripped:false,visibility:'private',updatedAt:null};
+ save();renderAll();toast('CV eliminado del perfil');
+}
+
+function candidateHasCV(id){
+ if(id==='p1'){
+   ensureProfessionalCV();
+   return !!S.worker.cv.uploaded;
+ }
+ const c=S.marketplace?.candidates?.find(x=>x.id===id);
+ return !!c?.cvUploaded;
+}
+function openCandidateCV(id){
+ ensureMarketplace();
+ const c=S.marketplace.candidates.find(x=>x.id===id);
+ if(!c)return;
+ if(id==='p1'){
+   ensureProfessionalCV();
+   if(!S.worker.cv.uploaded){toast('Este profesional todavía no ha añadido CV');return;}
+ }
+ if(id!=='p1'&&!c.cvUploaded){toast('Este profesional todavía no ha añadido CV');return;}
+ const jobScope=S.job?S.job.id:'Consulta de perfil';
+ openModal(`<span class="pill green">CV PROFESIONAL</span><h2>${c.name}</h2>
+ <p class="muted">Vista para evaluación profesional. El CV está separado de la Bóveda Laboral y no expone documentación de contratación.</p>
+ <div class="doc-section"><h4>Acceso protegido</h4>
+ <div class="doc-line"><span>Finalidad</span><strong>Evaluación de candidatura</strong></div>
+ <div class="doc-line"><span>Ámbito</span><strong>${jobScope}</strong></div>
+ <div class="doc-line"><span>Acceso</span><strong>Temporal y auditado</strong></div>
+ <div class="doc-line"><span>Descarga directa</span><strong>No por defecto</strong></div></div>
+ <div class="notice">DNI, NIE, Seguridad Social, datos bancarios y demás documentación laboral no se muestran aquí.</div><br>
+ <div class="card"><strong>Vista estructurada del CV</strong>
+ <p class="muted">${id==='p1'?'Experiencia en sala, terraza y atención al cliente. Formación y trayectoria profesional resumidas para reducir exposición del PDF original.':'Experiencia y formación profesional declarada por el candidato. En producción se mostrará una vista sanitizada del PDF y datos estructurados del perfil.'}</p></div>
+ <button class="btn light" onclick="closeModal()">Cerrar CV</button>`);
+}
+
+function openProfessionalCV(){
+ ensureProfessionalCV();
+ if(!S.worker.cv.uploaded){toast('Este profesional todavía no ha añadido CV');return;}
+ openModal(`<span class="pill green">CV VERIFICADO</span><h2>Jonathan Gómez</h2>
+ <p class="muted">Vista de CV para evaluación profesional. El documento original permanece en almacenamiento privado.</p>
+ <div class="doc-section"><h4>Acceso protegido</h4>
+ <div class="doc-line"><span>Finalidad</span><strong>Evaluación de candidatura</strong></div>
+ <div class="doc-line"><span>Ámbito</span><strong>${S.job?S.job.id:'Perfil profesional'}</strong></div>
+ <div class="doc-line"><span>Acceso</span><strong>Temporal y auditado</strong></div>
+ <div class="doc-line"><span>Descarga directa</span><strong>No por defecto</strong></div></div>
+ <div class="notice">En producción, cada apertura quedará registrada por usuario, Curro, finalidad y fecha/hora. El enlace será de corta duración.</div><br>
+ <div class="card"><strong>Vista estructurada del CV</strong><p class="muted">Experiencia en sala, terraza y atención al cliente. Formación y trayectoria profesional resumidas aquí para evitar exponer el archivo más de lo necesario.</p></div>
+ <button class="btn light" onclick="closeModal()">Cerrar</button>`);
+}
+function professionalCVPanel(){
+ ensureProfessionalCV();
+ return `<div class="section-title"><h2>CV profesional</h2></div>
+ <div class="cv-card"><div class="row"><div><strong>${S.worker.cv.uploaded?'CV añadido':'Añade tu CV'}</strong>
+ <div class="muted">${S.worker.cv.uploaded?'Visible solo dentro de tu perfil profesional y bajo acceso controlado.':'Opcional · PDF · máximo 5 MB en producción'}</div></div>
+ <span class="pill ${S.worker.cv.uploaded?'green':'gold'}">${S.worker.cv.uploaded?'PROTEGIDO':'PENDIENTE'}</span></div>
+ ${cvSecuritySummary()}
+ <div class="btnrow">${S.worker.cv.uploaded?`<button class="btn light" onclick="openProfessionalCV()">Ver mi CV</button><button class="btn light" onclick="deleteProfessionalCV()">Eliminar CV</button>`:`<button class="btn copper" onclick="openCVUpload()">Añadir CV PDF</button>`}</div></div>`;
+}
+
+function currentProfessionalRole(){ return 'Camarero'; }
+function professionalCanDo(jobRole){
+ return roleMatches(currentProfessionalRole(), jobRole);
+}
+
+function reconcileProfessionalJobState(){
+ if(!S.job)return;
+ ensureMarketplace();ensureAssignments();
+ const me=S.marketplace.candidates.find(c=>c.id==='p1');if(!me)return;
+ const a=assignmentFor('p1');
+ const activeAssignment=a&&assignmentConsumesSlot(a);
+ if(S.job.workerDecision==='interested'){
+   S.job.workerInterest=true;
+   if(S.job.state==='published')S.job.state='interest';
+   if(me.status!=='selected')me.status='interested';
+ }
+ if(S.job.state==='interest'&&S.job.workerInterest&&S.job.workerDecision!=='selected'){
+   S.job.workerDecision='interested';
+   if(me.status!=='selected')me.status='interested';
+ }
+ if(S.job.workerDecision==='selected' || activeAssignment){
+   S.job.workerDecision='selected';
+   me.status='selected';
+ }
+ if(['cancelled_by_worker','cancelled_by_business'].includes(S.job.workerDecision) && a?.slotReleased){
+   me.status='available';
+   S.job.workerInterest=false;
+ }
+ if(S.job.workerDecision==='rejected_by_worker')me.status='worker_rejected';
+ if(S.job.workerDecision==='withdrawn')me.status='worker_withdrawn';
+ if(S.job.workerDecision==='rejected_by_business')me.status='rejected';
+}
+function workerDecisionBlocked(){
+ return !!(S.job && ['rejected_by_worker','withdrawn','rejected_by_business'].includes(S.job.workerDecision));
+}
+function workerCandidate(){
+ ensureMarketplace();
+ return S.marketplace.candidates.find(c=>c.id==='p1')||null;
+}
+function workerCanSeeOpportunity(){
+ if(!S.job || S.job.state!=='published')return false;
+ if(!S.worker.available || !professionalCanDo(S.job.role) || workerDecisionBlocked())return false;
+ if(marketOccupied()>=marketTotal())return false;
+ const me=workerCandidate();
+ return !!me && !['rejected','worker_rejected','worker_withdrawn'].includes(me.status);
+}
+function workerHasRelationship(){
+ if(!S.job || !professionalCanDo(S.job.role) || workerDecisionBlocked())return false;
+ const me=workerCandidate();
+ if(S.job.workerDecision==='invited' && S.job.state==='published')return true;
+ if(S.job.state==='interest')return S.job.workerDecision==='interested' && !!S.job.workerInterest;
+ if(stateIndex(S.job.state)>=stateIndex('selected')){
+   return !!me && me.status==='selected';
+ }
+ if(S.job.state==='closed')return !!me && me.status==='selected';
+ return false;
+}
+function professionalOpportunityVisible(){
+  return !!(S.job && professionalCanDo(S.job.role) && !['rejected_by_worker','rejected_by_business'].includes(S.job.workerDecision));
+}
+
+function workerAcceptInvitation(){
+ if(!S.job || S.job.workerDecision!=='invited' || !professionalCanDo(S.job.role)){toast('La invitación ya no está disponible');return;}
+ if(marketOccupied()>=marketTotal()){toast('No quedan plazas libres');return;}
+ const conflict=workerScheduleConflict(S.job);
+ if(conflict){toast('No puedes aceptar: se solapa con '+conflictText(conflict));return;}
+ const c=workerCandidate();if(!c)return;
+ c.status='selected';
+ const a=upsertAssignment(c);a.state='selected';
+ S.job.workerDecision='selected';S.job.workerInterest=false;S.job.state='selected';S.unread.worker=0;
+ syncJonathanAssignmentFromJob();
+ systemMsg('Jonathan ha aceptado la invitación y ocupa una plaza.');
+ save();closeModal();renderAll();toast('Invitación aceptada ✓');
+}
+function workerRejectOpportunity(){
+ if(!S.job){toast('No hay un Curro disponible');return;}
+ if(!['published','interest'].includes(S.job.state)){toast('Este Curro ya no puede rechazarse desde esta fase');return;}
+ S.job.workerDecision='rejected_by_worker';
+ S.job.workerInterest=false;
+ if(S.job.state==='interest')S.job.state='published';
+ const me=workerCandidate();
+ if(me && me.status!=='selected')me.status='worker_rejected';
+ S.unread.worker=0;
+ S.unread.biz=(Number(S.unread.biz)||0)+1;
+ systemMsg('Jonathan ha rechazado este Curro.');
+ save();closeModal();renderAll();toast('Has rechazado este Curro');
+}
+function workerWithdrawApplication(){
+ if(!S.job || S.job.state!=='interest' || S.job.workerDecision!=='interested'){toast('No hay una candidatura que retirar');return;}
+ S.job.workerInterest=false;
+ S.job.workerDecision='withdrawn';
+ S.job.state='published';
+ const me=workerCandidate();if(me)me.status='worker_withdrawn';
+ S.unread.biz=(Number(S.unread.biz)||0)+1;
+ systemMsg('Jonathan ha retirado su candidatura.');
+ save();renderAll();toast('Candidatura retirada');
+}
+function businessRejectApplicant(id){
+ const c=S.marketplace?.candidates?.find(x=>x.id===id);if(!c)return;
+ if(c.status==='selected'){toast('Primero libera la plaza');return;}
+ c.status='rejected';
+ if(id==='p1' && S.job){
+   S.job.workerDecision='rejected_by_business';
+   S.job.workerInterest=false;
+   S.job.rejectionNotice={
+     type:'business_rejection',
+     title:'No has sido seleccionado',
+     message:`${S.business.name} ha continuado el proceso con otro profesional para este Curro.`,
+     ts:Date.now(),
+     acknowledged:false,
+     acknowledgedAt:null
+   };
+   if(S.job.state==='interest')S.job.state='published';
+   notifyRole('worker','rejected','No has sido seleccionado',
+     `${S.business.name} ha continuado el proceso con otro profesional para ${S.job.id}.`,S.job.id);
+   systemMsg(`El negocio no ha seleccionado a Jonathan para ${S.job.id}.`);
+ }
+ save();renderAll();toast(c.name+' rechazado para este Curro');
+}
+function normalizeRoleName(v){
+ return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+function roleFamily(v){
+ const r=normalizeRoleName(v);
+ if(r.includes('ayudante de cocina'))return 'ayudante_cocina';
+ if(r.includes('chef de partida'))return 'chef_partida';
+ if(r.includes('cocinero')||r.includes('cocinera'))return 'cocinero';
+ if(r.includes('bartender')||r.includes('barman')||r.includes('barwoman')||r==='barra')return 'bartender';
+ if(r.includes('camarer')||r==='sala'||r.includes('sala y terraza'))return 'camarero';
+ return r;
+}
+function roleMatches(candidateRole, jobRole){
+ const candidateKey=roleFamily(candidateRole);
+ const jobKey=roleFamily(jobRole);
+ return candidateKey===jobKey;
+}
+function candidateIsAvailable(c){
+ if(!c)return false;
+ if(c.id==='p1')return !!S.worker.available;
+ return true;
+}
+function candidateAvailabilityLabel(c){
+ return candidateIsAvailable(c)?'Disponible ✓':'No disponible';
+}
+
+function marketList(){
+ const all=(S.marketplace?.candidates||[]).slice();
+ if(!S.job)return all.sort((a,b)=>b.score-a.score);
+ return all.filter(c=>{
+   const engaged=['invited','interested','selected'].includes(c.status);
+   return roleMatches(c.role,S.job.role)
+     && !['rejected','worker_rejected','worker_withdrawn'].includes(c.status)
+     && (candidateIsAvailable(c)||engaged);
+ }).sort((a,b)=>{
+   const aExact=normalizeRoleName(a.role)===normalizeRoleName(S.job.role)?1:0;
+   const bExact=normalizeRoleName(b.role)===normalizeRoleName(S.job.role)?1:0;
+   if(aExact!==bExact)return bExact-aExact;
+   return b.score-a.score;
+ });
+}
+function rejectedCandidates(){
+ return (S.marketplace?.candidates||[]).filter(c=>c.status==='rejected' && (!S.job || roleMatches(c.role,S.job.role)));
+}
+function rejectCandidate(id){
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c)return;
+ if(c.status==='selected'){toast('Primero libera la plaza antes de rechazar');return;}
+ c.status='rejected';
+ if(id==='p1'&&S.job){
+   S.job.workerDecision='rejected_by_business';
+   S.job.workerInterest=false;
+   if(S.job.state==='interest')S.job.state='published';
+ }
+ save();renderAll();toast(c.name+' rechazado para este Curro');
+}
+function restoreCandidate(id){
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c)return;
+ c.status='available';
+ if(id==='p1'&&S.job){
+   S.job.workerDecision='pending';
+   S.job.workerInterest=false;
+   if(professionalCanDo(S.job.role)&&S.worker.available)S.unread.worker=(Number(S.unread.worker)||0)+1;
+ }
+ save();renderAll();toast(c.name+' vuelve a candidatos');
+}
+function marketSelected(){
+ ensureAssignments();
+ return (S.marketplace?.candidates||[]).filter(c=>{
+   const a=assignmentFor(c.id);
+   return c.status==='selected' && (!a || assignmentConsumesSlot(a));
+ });
+}
+
+function ensureOperationalState(job=S.job){
+ if(!job)return null;
+ job.operationalEvents=Array.isArray(job.operationalEvents)?job.operationalEvents:[];
+ job.incidents=Array.isArray(job.incidents)?job.incidents:[];
+ job.actualEndAt=Number(job.actualEndAt)||null;
+ job.urgentReplacement=job.urgentReplacement&&typeof job.urgentReplacement==='object'
+   ?{active:false,triggeredAt:null,source:null,candidateId:null,reason:null,...job.urgentReplacement}
+   :{active:false,triggeredAt:null,source:null,candidateId:null,reason:null};
+ return job;
+}
+function addOperationalEvent(type,actor,detail={},job=S.job){
+ if(!job)return null;
+ ensureOperationalState(job);
+ const ev={id:`EV-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,type,actor,ts:Date.now(),...detail};
+ job.operationalEvents.unshift(ev);
+ return ev;
+}
+function cancellationReasonLabel(reason){
+ const m={
+  personal_emergency:'Imprevisto personal',
+  illness:'No puede acudir',
+  transport:'Problema de desplazamiento',
+  schedule_error:'Error de disponibilidad',
+  business_change:'Cambio de necesidad del negocio',
+  overstaffed:'La necesidad ha cambiado',
+  venue_issue:'Incidencia en el local',
+  mutual:'Acuerdo entre ambas partes',
+  other:'Otro motivo',
+  no_show:'No presentado'
+ };
+ return m[reason]||'Cancelación';
+}
+function incidentTypeLabel(type){
+ const m={
+  no_show:'No presentado',
+  late:'Retraso relevante',
+  abandonment:'Abandono del turno',
+  venue_closed:'Local cerrado o inaccesible',
+  conditions_changed:'Condiciones distintas a las acordadas',
+  safety:'Incidencia de seguridad',
+  conduct:'Problema de conducta',
+  other:'Otra incidencia'
+ };
+ return m[type]||'Incidencia';
+}
+function activateUrgentReplacement(candidateId=null,reason='cancelled',source='assignment'){
+ if(!S.job || openSlotsFor()<=0)return false;
+ ensureOperationalState();
+ S.job.urgentReplacement={
+   active:true,triggeredAt:Date.now(),source,candidateId,reason
+ };
+ addOperationalEvent('urgent_replacement','system',{candidateId,reason,source});
+ return true;
+}
+function clearUrgentReplacementIfCovered(){
+ if(!S.job)return;
+ ensureOperationalState();
+ if(openSlotsFor()===0 && S.job.urgentReplacement?.active){
+   S.job.urgentReplacement.active=false;
+   S.job.urgentReplacement.resolvedAt=Date.now();
+   addOperationalEvent('urgent_replacement_resolved','system',{});
+ }
+}
+function openIncidentCount(job=S.job){
+ ensureOperationalState(job);
+ return (job?.incidents||[]).filter(i=>i.status==='open').length;
+}
+function recordIncident(actor,type,candidateId='p1',note=''){
+ if(!S.job)return false;
+ ensureOperationalState();
+ const a=candidateId==='ref1'?null:assignmentFor(candidateId);
+ const incident={
+   id:`INC-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+   type,actor,candidateId,status:'open',note,ts:Date.now(),
+   stateAtReport:a?.state||S.referral?.assignment?.status||S.job.state
+ };
+ S.job.incidents.unshift(incident);
+ addOperationalEvent('incident',actor,{incidentId:incident.id,type,candidateId});
+ if(candidateId==='p1'){
+   const recipient=actor==='worker'?'biz':'worker';
+   notifyRole(recipient,'incident','Incidencia registrada',
+     `${incidentTypeLabel(type)} en ${S.job.id}. La incidencia queda registrada para revisión.`,S.job.id);
+ }
+ if(type==='no_show'){
+   if(candidateId==='ref1'){
+     releaseReferralSlot('no_show',{actor,reasonCode:'no_show'});
+   }else{
+     releaseAssignmentSlot(candidateId,'no_show',{actor,reasonCode:'no_show',skipIncident:true});
+   }
+ }
+ save();renderAll();
+ return true;
+}
+function resolveIncident(incidentId){
+ ensureOperationalState();
+ const i=(S.job.incidents||[]).find(x=>x.id===incidentId);
+ if(!i||i.status!=='open'){toast('La incidencia ya está resuelta');return;}
+ i.status='resolved';i.resolvedAt=Date.now();
+ addOperationalEvent('incident_resolved','system',{incidentId});
+ save();renderAll();toast('Incidencia resuelta');
+}
+
+function assignmentConsumesSlot(a){
+ if(!a)return false;
+ // Closed/completed work is historical coverage and never reopens the slot.
+ if(['closed','finished','payment_pending','business_paid','working','checked_in','arrived','en_route','preparing','confirmed',
+     'worker_accept_pending','terms_pending','docs_pending','selected'].includes(a.state))return !a.slotReleased;
+ return false;
+}
+function assignmentIsReplaceable(a){
+ if(!a)return false;
+ return !!a.slotReleased || ['cancelled','no_show','replaced'].includes(a.state);
+}
+function releaseAssignmentSlot(candidateId,reason='cancelled',meta={}){
+ const a=assignmentFor(candidateId);
+ if(!a){toast('No se encontró la asignación');return false;}
+ if(['working','finished','payment_pending','business_paid','closed'].includes(a.state)){
+   toast('Una plaza ya trabajada no puede liberarse');
+   return false;
+ }
+ const previous=a.state;
+ a.state=reason;
+ a.slotReleased=true;
+ a.releasedAt=Date.now();
+ a.releaseReason=reason;
+ a.previousState=previous;
+ a.cancelledBy=meta.actor||a.cancelledBy||'business';
+ a.cancelReasonCode=meta.reasonCode||reason;
+ if(S.marketplace?.candidates){
+   const c=S.marketplace.candidates.find(x=>x.id===candidateId);
+   if(c&&c.status==='selected')c.status='available';
+ }
+ addOperationalEvent(reason==='no_show'?'no_show':'cancellation',meta.actor||'business',{
+   candidateId,reason:meta.reasonCode||reason,previousState:previous
+ });
+ systemMsg(`${a.name} ha liberado su plaza (${cancellationReasonLabel(meta.reasonCode||reason)}).`);
+ if(candidateId==='p1'){
+   if((meta.actor||'business')==='worker'){
+     S.job.workerDecision='cancelled_by_worker';
+     notifyRole('biz','cancellation','El profesional ha cancelado',
+       `${a.name} ha cancelado ${S.job.id}: ${cancellationReasonLabel(meta.reasonCode||reason)}.`,S.job.id);
+   }else{
+     S.job.workerDecision='cancelled_by_business';
+     notifyRole('worker','cancellation','El negocio ha cancelado tu plaza',
+       `${S.business.name} ha cancelado tu asignación en ${S.job.id}: ${cancellationReasonLabel(meta.reasonCode||reason)}.`,S.job.id);
+   }
+ }
+ activateUrgentReplacement(candidateId,meta.reasonCode||reason,'assignment');
+ recomputeJobSummaryState();
+ save();renderAll();
+ return true;
+}
+function replaceAssignment(candidateId){
+ const a=assignmentFor(candidateId);
+ if(!a){toast('No se encontró la asignación');return;}
+ if(!assignmentIsReplaceable(a)){toast('Esta plaza no está disponible para reemplazo');return;}
+ S.businessTeamTab='recommended';
+ save();renderAll();
+ go('curros',document.querySelector('[data-page="curros"]'));
+ toast(`Plaza de ${a.name} disponible para reemplazo`);
+}
+function referralConsumesSlot(ref=S.referral){
+ if(ref?.assignment?.slotReleased)return false;
+ const st=ref?.assignment?.status;
+ return ['selected','completed','closed'].includes(st);
+}
+function occupiedSlotsFor(job=S.job,ref=S.referral){
+ if(!job)return 0;
+ const assignmentCount=(job.assignments||[]).filter(assignmentConsumesSlot).length;
+ const referralCount=referralConsumesSlot(ref)&&ref?.jobId===job.id?1:0;
+ return Math.min(Math.max(1,Number(job.workers)||1),assignmentCount+referralCount);
+}
+function openSlotsFor(job=S.job,ref=S.referral){
+ if(!job)return 0;
+ const total=Math.max(1,Number(job.workers)||1);
+ return Math.max(0,total-occupiedSlotsFor(job,ref));
+}
+
+function marketOccupied(){
+ ensureReferral();ensureAssignments();
+ return occupiedSlotsFor(S.job,S.referral);
+}
+function marketSlots(){
+ ensureReferral();ensureAssignments();
+ let o='';
+ const assigned=[];
+
+ // Las assignments normales que consumen plaza siguen visibles incluso cuando están cerradas.
+ for(const a of (S.job?.assignments||[])){
+   if(assignmentConsumesSlot(a)){
+     assigned.push({
+       name:a.name,
+       state:a.state,
+       source:'assignment'
+     });
+   }
+ }
+
+ // La recomendación usa la misma regla de cobertura que marketOccupied().
+ if(S.referral?.jobId===S.job?.id && referralConsumesSlot(S.referral)){
+   const rs=S.referral.assignment?.status||'selected';
+   assigned.push({
+     name:S.referral.candidate?.name||'Recomendado',
+     state:rs,
+     source:'referral'
+   });
+ }
+
+ const tt=marketTotal();
+ for(let i=0;i<tt;i++){
+   const a=assigned[i];
+   if(a){
+     const label=a.source==='referral'
+       ? (a.state==='closed'?'Cerrado':a.state==='completed'?'Curro completado':'Seleccionado')
+       : assignmentLabel(a.state);
+     const cls=a.state==='closed'?'slot filled':'slot filled';
+     o+=`<div class="${cls}">✓ ${escapeHTML(String(a.name||'Profesional').split(' ')[0])}<br><span class="muted">${label}</span></div>`;
+   }else{
+     o+=`<div class="slot">Plaza ${i+1}<br><span class="muted">Libre</span></div>`;
+   }
+ }
+ return o;
+}
+function setMarketTab(t){S.marketplace.tab=t;save();renderAll()}
+function inviteCandidate(id){
+ if(!S.job){toast('Primero publica un Curro');return;}
+ if(marketOccupied()>=marketTotal()){toast('Todas las plazas están cubiertas');return;}
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c)return;
+ if(!candidateIsAvailable(c)){toast('Este profesional no está disponible ahora mismo');return;}
+ if(!roleMatches(c.role,S.job.role)){toast('Perfil incompatible con este Curro');return;}
+ c.status='invited';
+ if(id==='p1'){
+   S.job.workerDecision='invited';
+   S.job.workerInterest=false;
+   S.unread.worker=(Number(S.unread.worker)||0)+1;
+ }
+ save();renderAll();toast('Invitación enviada a '+c.name);
+}
+function acceptMarketplaceCandidate(id){
+ if(marketOccupied()>=marketTotal()){toast('No quedan plazas libres');return;}
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c||c.status!=='invited')return;
+ if(!roleMatches(c.role,S.job.role)){toast('Perfil incompatible con este Curro');return;}
+ if(id==='p1'){
+   const conflict=workerScheduleConflict(S.job);
+   if(conflict){toast('Conflicto horario con '+conflictText(conflict));return;}
+ }
+ c.status='selected';
+ const a=upsertAssignment(c);a.state='selected';
+ if(id==='p1'){
+   S.job.workerDecision='selected';S.job.workerInterest=false;S.job.state='selected';
+   syncJonathanAssignmentFromJob();
+   systemMsg('Jonathan ha aceptado la invitación y ocupa una plaza.');
+ }else recomputeJobSummaryState();
+ save();renderAll();toast(c.name+' ocupa una plaza ✓');
+}
+function resetCandidate(id){
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c)return;
+ const a=assignmentFor(id);
+ if(a && stateIndex(a.state)>stateIndex('selected')){
+   toast('No se puede liberar la plaza: la contratación ya ha comenzado');
+   return;
+ }
+ c.status='available';removeAssignment(id);
+ if(id==='p1'&&S.job){
+   S.job.workerDecision='pending';S.job.workerInterest=false;
+   S.job.secureFlow={requested:false,authorized:false,conditionsViewed:false};
+ }
+ recomputeJobSummaryState();
+ if(!S.job.assignments.length && S.job.state!=='closed')S.job.state='published';
+ save();renderAll();toast('Plaza liberada');
+}
+function candidateProfile(id){
+ ensureMarketplace();
+ const c=S.marketplace.candidates.find(x=>x.id===id);if(!c)return;
+ const hasCV=candidateHasCV(id);
+ const available=candidateIsAvailable(c);
+ openModal(`<div class="row"><div><span class="pill ${c.newcomer?'gold':'green'}">${c.newcomer?'NUEVO EN CURRO & PARNÉ':'PROFESIONAL'}</span><h2 style="margin:8px 0 2px">${c.name}</h2><div class="muted">${c.role} · ${c.distance}</div></div><div class="avatar">${c.initials}</div></div>
+ <div class="doc-section"><h4>Compatibilidad con el Curro</h4><div class="doc-line"><span>Compatibilidad</span><strong>${c.score}%</strong></div><div class="doc-line"><span>Disponibilidad</span><strong>${candidateAvailabilityLabel(c)}</strong></div><div class="doc-line"><span>Experiencia relevante</span><strong>Compatible ✓</strong></div></div>
+ ${c.newcomer?'<div class="notice">Nuevo en Curro & Parné · Aún sin referencias en la plataforma.</div>':`<div class="doc-section"><h4>Trayectoria</h4><div class="doc-line"><span>Curros</span><strong>${c.completed}</strong></div><div class="doc-line"><span>Valoración</span><strong>⭐ ${c.rating}</strong></div><div class="doc-line"><span>Puntualidad</span><strong>${c.punctuality}%</strong></div></div>`}
+ <div class="doc-section"><h4>CV profesional</h4><div class="doc-line"><span>Estado</span><strong>${hasCV?'Disponible ✓':'No añadido'}</strong></div><div class="doc-line"><span>Privacidad</span><strong>Acceso controlado</strong></div></div>
+ ${hasCV?`<button class="btn light" onclick="openCandidateCV('${c.id}')">Ver CV</button>`:'<div class="muted">Este profesional no ha añadido CV a su perfil.</div>'}
+ <br><br><div class="notice">El CV sirve para evaluar el perfil profesional. La documentación laboral sensible permanece separada en la Bóveda Laboral.</div><br>
+ <div class="notice">La antigüedad no determina la visibilidad. La compatibilidad con el Curro es el criterio principal.</div><br>
+ ${S.job&&c.status==='available'&&available?`<button class="btn copper" onclick="closeModal();inviteCandidate('${c.id}')">Invitar a este Curro</button><button class="btn light" onclick="closeModal();rejectCandidate('${c.id}')">Rechazar candidato</button>`:''}
+ ${S.job&&c.status==='available'&&!available?'<div class="notice">Este profesional ha pausado su disponibilidad y no puede recibir invitaciones nuevas.</div><br>':''}
+ <button class="btn light" onclick="closeModal()">Cerrar</button>`);
+}
+function candidateCard(c){
+ const full=marketOccupied()>=marketTotal();
+ const st=c.status==='selected'?'<span class="pill green">Plaza asignada</span>':
+ c.status==='invited'?'<span class="pill gold">Invitado</span>':
+ c.status==='interested'?'<span class="pill green">Interesado</span>':
+ full?'<span class="pill">CURRO COMPLETO</span>':`<span class="match-score">${c.score}% compatible</span>`;
+ const rr=c.newcomer?'Nuevo · sin referencias':`⭐ ${c.rating} · ${c.completed} Curros`;
+ const urgent=S.job?.urgentReplacement?.active&&openSlotsFor()>0;
+ return `<div class="match-card"><div class="row"><div class="person" style="padding:0"><div class="avatar">${c.initials}</div><div><strong>${c.name}</strong><div class="muted">${c.role} · ${rr}</div><div class="muted">${c.distance}${c.punctuality!==null?' · '+c.punctuality+'% puntualidad':''}</div></div></div>${st}</div>
+ ${urgent&&c.status==='available'?'<div class="notice danger"><strong>Disponible para reemplazo prioritario</strong></div>':''}<div class="match-reasons">${c.newcomer?'<span class="reason newcomer">Nuevo en la plataforma</span>':''}${c.reasons.map(r=>`<span class="reason">${r}</span>`).join('')}</div><br>
+ <div class="btnrow"><button class="btn light" onclick="candidateProfile('${c.id}')">Ver perfil</button>
+ ${c.status==='available'&&!full?`<button class="btn copper" onclick="inviteCandidate('${c.id}')">Invitar</button><button class="btn light" onclick="rejectCandidate('${c.id}')">Rechazar</button>`:''}
+ ${c.status==='invited'&&!full?`<button class="btn green" onclick="acceptMarketplaceCandidate('${c.id}')">Simular aceptación</button><button class="btn light" onclick="rejectCandidate('${c.id}')">Rechazar</button>`:''}
+ ${c.status==='interested'&&!full?`<button class="btn copper" onclick="selectCandidate('${c.id}')">Seleccionar</button><button class="btn light" onclick="businessRejectApplicant('${c.id}')">Rechazar candidatura</button>`:''}
+ ${c.status==='selected'?`<button class="btn light" onclick="showCancellationModal('business','${c.id}')">Gestionar plaza</button>`:''}</div></div>`;
+}
+function marketplacePanel(){
+ if(!S.job)return `<div class="section-title"><h2>Marketplace Málaga</h2></div><div class="empty"><h3>Publica un Curro para activar el matching</h3><p>La búsqueda parte siempre de una necesidad concreta.</p></div>`;
+ const tt=marketTotal(),o=marketOccupied(),free=tt-o,tab=S.marketplace.tab||'recommended';
+ let l=marketList();
+ if(tab==='team')l=l.filter(c=>c.team);
+ if(tab==='new')l=l.filter(c=>c.newcomer);
+ if(tab==='rejected')l=rejectedCandidates();
+ const roleText=S.job.role||'Profesional';
+ const emptyText=tab==='rejected'?'No has rechazado candidatos para este Curro.':`No hay candidatos compatibles con ${roleText} en este filtro.`;
+ const cards=tab==='rejected'
+   ? l.map(c=>`<div class="match-card"><div class="row"><div class="person" style="padding:0"><div class="avatar">${c.initials}</div><div><strong>${c.name}</strong><div class="muted">${c.role} · Rechazado para ${S.job.id}</div></div></div><span class="pill">RECHAZADO</span></div><br><div class="btnrow"><button class="btn light" onclick="candidateProfile('${c.id}')">Ver perfil</button><button class="btn copper" onclick="restoreCandidate('${c.id}')">Recuperar candidato</button></div></div>`).join('')
+   : l.map(candidateCard).join('');
+ return `${urgentReplacementHTML()}<div class="market-hero"><div class="row"><div><div class="eyebrow">MARKETPLACE MÁLAGA</div><h2 style="margin:5px 0">${roleText} · ${o}/${tt} plazas cubiertas</h2><div class="muted">${S.job.date} · ${S.job.start}–${S.job.end} · ${money(S.job.pay)} por profesional</div></div><span class="pill gold">${free?free+' libres':'COMPLETO'}</span></div><div class="fill-track"><div class="fill-bar" style="width:${Math.round(o/tt*100)}%"></div></div><div class="slot-grid">${marketSlots()}</div></div>
+ <div class="section-title"><h2>Encontrar ${roleText.toLowerCase()}</h2><span class="muted">${l.length} visibles</span></div>
+ <div class="market-tabs"><button class="market-tab ${tab==='recommended'?'active':''}" onclick="setMarketTab('recommended')">Recomendados</button><button class="market-tab ${tab==='team'?'active':''}" onclick="setMarketTab('team')">Mi equipo</button><button class="market-tab ${tab==='new'?'active':''}" onclick="setMarketTab('new')">Nuevos</button><button class="market-tab ${tab==='rejected'?'active':''}" onclick="setMarketTab('rejected')">Rechazados</button></div>
+ <div class="notice">Matching por competencia: se muestran únicamente profesionales compatibles con <strong>${roleText}</strong>. La experiencia genera confianza, pero no compra visibilidad.</div>
+ ${cards||`<div class="empty"><h3>${emptyText}</h3></div>`}
+ ${tab!=='rejected'?referralBusinessCard():''}`;
+}
+function ensureMarketplace(){if(!S.marketplace)S.marketplace={tab:'recommended',workers:3,candidates:[
+{id:'p1',name:'Jonathan Gómez',initials:'JG',role:'Camarero',score:94,distance:'3,2 km',punctuality:100,completed:26,rating:4.9,newcomer:false,team:true,status:'available',reasons:['Disponible','Sala y terraza','Ya trabajó contigo']},
+{id:'p2',name:'Álvaro Ruiz',initials:'AR',role:'Camarero',score:93,distance:'2,6 km',punctuality:null,completed:0,rating:null,newcomer:true,team:false,status:'available',reasons:['Disponible','2,6 km','Experiencia verificada']},
+{id:'p3',name:'Lucía Martín',initials:'LM',role:'Camarera',score:91,distance:'4,1 km',punctuality:98,completed:14,rating:4.8,newcomer:false,team:true,status:'available',reasons:['Disponible','Terraza','Equipo flexible']},
+{id:'p4',name:'Sergio Pérez',initials:'SP',role:'Camarero',score:84,distance:'7,8 km',punctuality:96,completed:8,rating:4.7,newcomer:false,team:false,status:'available',reasons:['Disponible','Experiencia sala']},
+{id:'p6',name:'Marcos Vega',initials:'MV',role:'Cocinero',score:95,distance:'2,9 km',punctuality:99,completed:31,rating:4.9,newcomer:false,team:true,status:'available',reasons:['Disponible','Cocina mediterránea','Servicio intenso']},
+{id:'p7',name:'Nerea Campos',initials:'NC',role:'Cocinera',score:92,distance:'3,7 km',punctuality:null,completed:0,rating:null,newcomer:true,team:false,status:'available',reasons:['Disponible','Formación cocina','Experiencia verificada']},
+{id:'p8',name:'Iván Torres',initials:'IT',role:'Cocinero',score:87,distance:'5,2 km',punctuality:97,completed:12,rating:4.8,newcomer:false,team:false,status:'available',reasons:['Disponible','Partida caliente','Mise en place']},
+{id:'p9',name:'Paula Ríos',initials:'PR',role:'Ayudante de cocina',score:78,distance:'4,4 km',punctuality:98,completed:9,rating:4.7,newcomer:false,team:false,status:'available',reasons:['Disponible','Apoyo cocina','Preparación básica']}
+]}}
+
+function renderAll(){ensureMarketplace();ensureReferral();reconcileProfessionalJobState();
+ document.getElementById('swWorker').classList.toggle('on',S.demoRole==='worker');
+ document.getElementById('swBiz').classList.toggle('on',S.demoRole==='biz');
+ document.getElementById('nav2').textContent=S.demoRole==='worker'?'Curros':'Necesidades';
+ document.getElementById('nav3').textContent='Actividad';
+ document.getElementById('nav4').textContent=S.demoRole==='worker'?'Perfil':'Negocio';
+ const badge=document.getElementById('actBadge');
+ const records=jobRecords();
+ const unread=unreadNotificationCount(S.demoRole);
+ const activityPending=S.demoRole==='worker'
+   ? records.some(r=>{
+       if(workerRejectionPendingRecord(r))return true;
+       const me=(r.marketplace?.candidates||[]).find(c=>c.id==='p1');
+       return me&&['invited','interested','selected'].includes(me.status)&&r.job?.state!=='closed';
+     })
+   : records.some(jobRecordNeedsBusinessAttention);
+ const badgeCount=Math.max(unread,activityPending?1:0);
+ badge.innerHTML=badgeCount?`<span class="badge">${badgeCount>9?'9+':badgeCount}</span>`:'';
+ const homeEl=document.getElementById('home'),currosEl=document.getElementById('curros'),activityEl=document.getElementById('activity'),profileEl=document.getElementById('profile');
+ if(S.demoRole==='worker'){
+   homeEl.innerHTML=workerHome();currosEl.innerHTML=workerCurros();activityEl.innerHTML=workerActivity();profileEl.innerHTML=workerProfile();
+ } else {
+   homeEl.innerHTML=bizHome();currosEl.innerHTML=bizCurros();activityEl.innerHTML=bizActivity();profileEl.innerHTML=bizProfile();
+ }
+ setTimeout(updateShiftTimer,0);
+}
+renderAll();
+
+// QA V9.4.2: rechazo del negocio persistente y explícito hasta confirmación del profesional
+</script>
+</body>
+</html>
