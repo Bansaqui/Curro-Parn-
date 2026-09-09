@@ -2,7 +2,7 @@
 
 Prototipo de una plataforma que conecta negocios y profesionales para cubrir servicios y gestionar su actividad. Mercado inicial: **Málaga**.
 
-**Estado: prototipo / pre-MVP. Versión funcional actual: V9.4.3.**
+**Estado: prototipo / pre-MVP. Versión funcional actual: V9.4.8.**
 
 ## Estructura
 
@@ -24,7 +24,7 @@ python -m http.server 8000 --bind 127.0.0.1
 
 Visita `http://127.0.0.1:8000/prototype/current/index.html`.
 
-URL prevista de GitHub Pages, disponible después de activar Pages y completar el despliegue:
+URL de GitHub Pages:
 https://bansaqui.github.io/Curro-Parn-/prototype/current/index.html
 
 El HTML contiene CSS y JavaScript integrados, sin frameworks, compilación ni dependencias externas. Los datos de demostración se guardan en el almacenamiento local del navegador y son independientes por origen. No se sincronizan entre dispositivos ni con Supabase.
@@ -37,7 +37,9 @@ El HTML contiene CSS y JavaScript integrados, sin frameworks, compilación ni de
 4. Añade su SHA-256 al manifiesto `prototype/versions/SHA256SUMS`, sin cambiar entradas previas.
 5. Actualiza CHANGELOG y la versión indicada aquí; revisa el diff y crea un commit.
 
-V9.4.3 procede del archivo entregado `Curro_y_Parne_V9_4_3_Deuda_Operativa_Cerrada_QA.html`, conservado byte a byte. Su título interno todavía dice V9.2 Marketplace QA; se conserva para no alterar el original.
+V9.4.8 se ha promovido desde `Curro_y_Parne_V9_4_8_Gestion_Oferta_Visible_QA.html` sin modificar sus bytes. Su título es «Curro & Parné · V9.4.8 Gestión de oferta visible QA».
+
+El histórico V9.4.3 procede del archivo entregado `Curro_y_Parne_V9_4_3_Deuda_Operativa_Cerrada_QA.html`, conservado byte a byte. Su título interno todavía dice V9.2 Marketplace QA; se conserva para no alterar el original.
 
 ## Backend y seguridad
 
