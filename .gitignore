@@ -1,0 +1,21 @@
+# Credenciales locales
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+# Estado local de Supabase; conservar config.toml, migrations y functions
+supabase/.temp/
+supabase/.branches/
+# Herramientas y archivos locales
+node_modules/
+__pycache__/
+.DS_Store
+Thumbs.db
+*.log
+_site/

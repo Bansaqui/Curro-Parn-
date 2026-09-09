@@ -1,0 +1,3 @@
+# Los prototipos deben conservar sus bytes originales, incluso en Windows.
+prototype/current/*.html -text
+prototype/versions/*.html -text
