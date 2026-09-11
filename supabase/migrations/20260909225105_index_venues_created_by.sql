@@ -1,0 +1,1 @@
+create index cp_venues_created_by on public.cp_venues(created_by,created_at desc);

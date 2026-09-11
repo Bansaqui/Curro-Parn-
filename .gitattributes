@@ -1,3 +1,7 @@
 # Los prototipos deben conservar sus bytes originales, incluso en Windows.
 prototype/current/*.html -text
 prototype/versions/*.html -text
+
+# Preserve recovered SQL and generated types byte for byte.
+supabase/migrations/*.sql -text
+supabase/database.types.ts -text

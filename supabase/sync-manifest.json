@@ -1,0 +1,153 @@
+{
+  "project_id": "crqpjcrpuflufzxiwdfb",
+  "verified_on": "2026-09-11",
+  "source": "supabase_migrations.schema_migrations (read-only SELECT)",
+  "encoding": "UTF-8 without BOM; exact sole stored statement, no added newline",
+  "migrations": [
+    {
+      "version": "20260909134518",
+      "name": "curro_parne_pilot_core",
+      "file": "migrations/20260909134518_curro_parne_pilot_core.sql",
+      "statement_count": 1,
+      "sha256": "ae3af293aa55896fa86c219c734d9354a2038c6c949a3e31e28a38cbad758abe",
+      "remote_statements_md5": "7b52e1bc1e8b5097bd47dcee4f9fe0e8"
+    },
+    {
+      "version": "20260909135440",
+      "name": "curro_parne_workflow_aliases_and_internal_policies",
+      "file": "migrations/20260909135440_curro_parne_workflow_aliases_and_internal_policies.sql",
+      "statement_count": 1,
+      "sha256": "5d55ec237dd0fb6ad336bc98f9fef9d1e2b61a9faff10300feeca193b8e7d818",
+      "remote_statements_md5": "ef73d1a6bfd9db3438bd198d3dfbbf4d"
+    },
+    {
+      "version": "20260909224116",
+      "name": "add_events_actor_index",
+      "file": "migrations/20260909224116_add_events_actor_index.sql",
+      "statement_count": 1,
+      "sha256": "7094ca5c8aff419fc552dd0c2b244670805fe037c270694a77680db24972d775",
+      "remote_statements_md5": "7e62f2b297a7860be3b36eba6fa08f99"
+    },
+    {
+      "version": "20260909225043",
+      "name": "business_entities_venues_and_membership",
+      "file": "migrations/20260909225043_business_entities_venues_and_membership.sql",
+      "statement_count": 1,
+      "sha256": "d46b97b9bbe63ff17e88cde69bed6efb61d7b788c81c2c839db5475bb2ec8544",
+      "remote_statements_md5": "e01ea38d5c277c1ca39258dd0b6dc530"
+    },
+    {
+      "version": "20260909225105",
+      "name": "index_venues_created_by",
+      "file": "migrations/20260909225105_index_venues_created_by.sql",
+      "statement_count": 1,
+      "sha256": "cb5ec387d594b5dda6148a8884afda6cb092a8fead7f61c55adcaaa8961d7c1c",
+      "remote_statements_md5": "fbba92733c2b05d19d68d482b281ecd7"
+    },
+    {
+      "version": "20260909225214",
+      "name": "notifications_and_incident_taxonomy",
+      "file": "migrations/20260909225214_notifications_and_incident_taxonomy.sql",
+      "statement_count": 1,
+      "sha256": "94d9781e742d2ffed0c0dfa37d369dd6c108793f97af0bc348c2607c2fc43017",
+      "remote_statements_md5": "2d7f68afefda78f94e25e31145391daf"
+    },
+    {
+      "version": "20260909225255",
+      "name": "index_notification_foreign_keys",
+      "file": "migrations/20260909225255_index_notification_foreign_keys.sql",
+      "statement_count": 1,
+      "sha256": "feabf50ca1b3092c4a20156be347b4640b181e8e878d1f0cfffdf45a619482d0",
+      "remote_statements_md5": "e7eb8ade1a20e98f9327d4ec6207e518"
+    },
+    {
+      "version": "20260909230411",
+      "name": "auth_onboarding_policy_acceptance_and_safe_defaults",
+      "file": "migrations/20260909230411_auth_onboarding_policy_acceptance_and_safe_defaults.sql",
+      "statement_count": 1,
+      "sha256": "4cc071939e147e0f668fbeb52aa0217dbdf319587687fbc42aa74761504c8ee2",
+      "remote_statements_md5": "45fe54752cfd25a0780522105c04a18d"
+    },
+    {
+      "version": "20260909230605",
+      "name": "atomic_onboarding_and_policy_index",
+      "file": "migrations/20260909230605_atomic_onboarding_and_policy_index.sql",
+      "statement_count": 1,
+      "sha256": "06bedc84f8bbed20516629dc830627915b6e8600f34bd29ebb831b687c19b071",
+      "remote_statements_md5": "5d9c801b3062b98b8f5bebc251797586"
+    },
+    {
+      "version": "20260909230634",
+      "name": "fix_onboarding_auth_boundary",
+      "file": "migrations/20260909230634_fix_onboarding_auth_boundary.sql",
+      "statement_count": 1,
+      "sha256": "736a94ef7d6310df360bb8d1f66e73c52c5bd7f60730916be7ffb0d9eb3385c2",
+      "remote_statements_md5": "c821d6176893a008a465eaf4b283fac0"
+    },
+    {
+      "version": "20260909230727",
+      "name": "harden_command_facade_and_snapshot",
+      "file": "migrations/20260909230727_harden_command_facade_and_snapshot.sql",
+      "statement_count": 1,
+      "sha256": "620d5948f923f3ed2acdb793999dfba0be987df2515c539d601c65dafff42d45",
+      "remote_statements_md5": "41b8cb1c49a68541a005cd7220a763aa"
+    },
+    {
+      "version": "20260909230907",
+      "name": "restore_private_command_internal_delegate",
+      "file": "migrations/20260909230907_restore_private_command_internal_delegate.sql",
+      "statement_count": 1,
+      "sha256": "16ebc48ecfe09dab38a0642b3bc7ca6c4bdee411faec0a231554751bf81ff6e4",
+      "remote_statements_md5": "cc6c108508593030f48155d37d50a9f3"
+    },
+    {
+      "version": "20260909230928",
+      "name": "fix_snapshot_alias_collisions",
+      "file": "migrations/20260909230928_fix_snapshot_alias_collisions.sql",
+      "statement_count": 1,
+      "sha256": "e08c5a7270cdbb8d54f27cc5e61fca398529a57058f1d3a35d47024cb18351c1",
+      "remote_statements_md5": "9ec6d54a3b2bd517cdfabbe0422bffd5"
+    },
+    {
+      "version": "20260909230942",
+      "name": "fix_snapshot_job_venue_alias_collision",
+      "file": "migrations/20260909230942_fix_snapshot_job_venue_alias_collision.sql",
+      "statement_count": 1,
+      "sha256": "3ab918cd09b2abae899f6834a153b791c7a02e658ec13c773048bf131f1ac909",
+      "remote_statements_md5": "f5196602e260f121cbb7eacc3bb53c66"
+    },
+    {
+      "version": "20260909231024",
+      "name": "assignment_released_states_and_overlap_invariants",
+      "file": "migrations/20260909231024_assignment_released_states_and_overlap_invariants.sql",
+      "statement_count": 1,
+      "sha256": "3e8fb7b7a4eb89e6c4871b744830dbd018a6fa4b53d4fae479b723a835dab8ec",
+      "remote_statements_md5": "832d122e92af56ade22eddb3d2fa2e72"
+    },
+    {
+      "version": "20260909231129",
+      "name": "review_targets_business_or_worker",
+      "file": "migrations/20260909231129_review_targets_business_or_worker.sql",
+      "statement_count": 1,
+      "sha256": "6c6b6e1b261c6847fccff59b85efc30bb561fbed9c91d9a8310f9f2b42861da5",
+      "remote_statements_md5": "8ba40fe23e999270aff457fbd082463e"
+    },
+    {
+      "version": "20260909231152",
+      "name": "finish_review_command_target_migration",
+      "file": "migrations/20260909231152_finish_review_command_target_migration.sql",
+      "statement_count": 1,
+      "sha256": "2ca4c44c5e94a5f6f82e651a4317013d0b8c0362ef1f4a28cf953962a8d61583",
+      "remote_statements_md5": "f36bc748c31cf67d852f23cbc81d21af"
+    }
+  ],
+  "types": {
+    "file": "database.types.ts",
+    "source": "Supabase generate_typescript_types(project_id)",
+    "schemas": [
+      "public"
+    ],
+    "sha256": "9e95f57aeb0436a5be5bf526d6c4d5b52462a33dc86f2502463cceee504f35d6",
+    "unchanged_from_previous_export": true
+  }
+}

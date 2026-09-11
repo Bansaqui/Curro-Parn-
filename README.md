@@ -11,7 +11,9 @@ Prototipo de una plataforma que conecta negocios y profesionales para cubrir ser
 - `docs/producto/`: alcance y decisiones de producto.
 - `docs/arquitectura/`: funcionamiento técnico y publicación.
 - `docs/legal/`: espacio reservado para documentación legal revisada.
-- `supabase/migrations/` y `supabase/functions/`: espacio para el backend existente cuando sus archivos se incorporen de forma revisada.
+- `supabase/migrations/`: 17 migraciones originales recuperadas del proyecto remoto.
+- `supabase/database.types.ts`: tipos generados del esquema público actual.
+- `supabase/functions/`: carpeta existente reservada, sin cambios.
 - `app/`: reservado para el futuro MVP; no contiene una aplicación ni dependencias.
 
 ## Abrir el prototipo
@@ -43,7 +45,7 @@ El histórico V9.4.3 procede del archivo entregado `Curro_y_Parne_V9_4_3_Deuda_O
 
 ## Backend y seguridad
 
-Supabase será el backend del MVP real. Ya existe un proyecto conectado: **no recrearlo ni ejecutar inicializaciones, migraciones o despliegues como parte de esta organización**. El repositorio original solo contenía README; no se han encontrado archivos de configuración de Supabase que importar o reorganizar.
+Supabase será el backend del MVP real. Ya existe un proyecto conectado: **no recrearlo ni ejecutar inicializaciones, migraciones o despliegues como parte de esta organización**. El historial de 17 migraciones del proyecto `crqpjcrpuflufzxiwdfb` y sus tipos se han sincronizado mediante lectura, sin aplicar SQL remoto. Consulta [procedencia, integridad y límites de reproducción](supabase/README.md).
 
 No subir credenciales, contraseñas, tokens, claves `service_role` ni archivos `.env` reales. `.gitignore` es una prevención y no retira secretos del historial. Ante una exposición, detener la publicación y rotar la credencial antes de sanear el historial mediante una actuación expresamente revisada.
 

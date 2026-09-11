@@ -1,0 +1,2 @@
+create index cp_notifications_application on public.cp_notifications(application_id,user_id,created_at desc) where application_id is not null;
+create index cp_notifications_assignment on public.cp_notifications(assignment_id,user_id,created_at desc) where assignment_id is not null;
