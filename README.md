@@ -14,7 +14,7 @@ Prototipo de una plataforma que conecta negocios y profesionales para cubrir ser
 - `supabase/migrations/`: 17 migraciones originales recuperadas del proyecto remoto.
 - `supabase/database.types.ts`: tipos generados del esquema público actual.
 - `supabase/functions/`: carpeta existente reservada, sin cambios.
-- `app/`: reservado para el futuro MVP; no contiene una aplicación ni dependencias.
+- `app/`: primera aplicación del MVP con Next.js, Auth SSR y onboarding.
 
 ## Abrir el prototipo
 
@@ -50,3 +50,31 @@ Supabase será el backend del MVP real. Ya existe un proyecto conectado: **no re
 No subir credenciales, contraseñas, tokens, claves `service_role` ni archivos `.env` reales. `.gitignore` es una prevención y no retira secretos del historial. Ante una exposición, detener la publicación y rotar la credencial antes de sanear el historial mediante una actuación expresamente revisada.
 
 La publicación sirve exclusivamente el prototipo actual. Consulta [la guía de Pages](docs/arquitectura/github-pages.md).
+
+## MVP real
+
+La primera base del MVP vive en `app/`: Next.js App Router, React, TypeScript estricto, Tailwind CSS y Supabase Auth SSR. Incluye acceso por correo y contraseña, confirmación, recuperación, onboarding Profesional/Negocio y creación del primer negocio y local mediante las RPC existentes. No incluye todavía el marketplace completo.
+
+Requiere Node.js 22.12 o posterior compatible. Desde `app/`:
+
+```sh
+npm ci
+cp .env.example .env.local
+npm run dev
+```
+
+En PowerShell, usa `Copy-Item .env.example .env.local`. Completa `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con la URL y la publishable key del proyecto existente. `APP_ORIGIN` indica el origen de la app para los enlaces de correo. `.env.local` está ignorado por Git.
+
+Abre [la app local](http://localhost:3000). Para validar:
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run test:security
+```
+
+Con `npm start` en otra terminal, ejecuta `npm run test:routes`. Los clientes browser/server y el Proxy están separados en `src/lib/supabase/`; las Server Actions y la lógica de dominio viven en `src/features/`. Los tipos se importan de `supabase/database.types.ts`, sin duplicarlos.
+
+Consulta [instalación, arquitectura y Auth](app/README.md) y [QA y límites de validación](app/QA.md). Los documentos legales siguen en borrador, pendientes de revisión. La app SSR necesita un servidor Node para desplegarse; GitHub Pages continúa sirviendo únicamente el prototipo V9.4.8.

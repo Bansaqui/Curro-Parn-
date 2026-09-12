@@ -5,3 +5,6 @@ prototype/versions/*.html -text
 # Preserve recovered SQL and generated types byte for byte.
 supabase/migrations/*.sql -text
 supabase/database.types.ts -text
+
+# Application source uses consistent line endings across development platforms.
+app/** text=auto eol=lf
