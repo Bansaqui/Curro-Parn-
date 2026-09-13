@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSnapshot } from "@/features/snapshot/server";
 import { homeDestination } from "@/features/snapshot/schema";
@@ -26,9 +27,11 @@ export default async function Page() {
               {profile.available ? "Disponible" : "No disponible"}
             </span>
             <p className="muted">
-              Estado actual de tu perfil. La gestión de disponibilidad llegará
-              en una próxima fase.
+              Gestiona las franjas en las que puedes trabajar.
             </p>
+            <Link href="/disponibilidad" className="button">
+              Gestionar disponibilidad
+            </Link>
           </Card>
           <EmptyState title="Tu próximo curro está por venir.">
             Próximamente aparecerán aquí los Curros compatibles contigo.

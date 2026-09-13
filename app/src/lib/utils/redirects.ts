@@ -1,4 +1,5 @@
 const destinations = new Set([
+  "/disponibilidad",
   "/inicio",
   "/onboarding",
   "/negocio/nuevo",
@@ -11,7 +12,11 @@ export function safeNext(value: unknown, fallback = "/inicio") {
     : fallback;
 }
 export function isProtectedPath(path: string) {
-  return ["/inicio", "/onboarding", "/negocio", "/actualizar-password"].some(
-    (prefix) => path === prefix || path.startsWith(prefix + "/"),
-  );
+  return [
+    "/disponibilidad",
+    "/inicio",
+    "/onboarding",
+    "/negocio",
+    "/actualizar-password",
+  ].some((prefix) => path === prefix || path.startsWith(prefix + "/"));
 }

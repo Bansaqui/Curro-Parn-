@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { availabilitySlotSchema } from "@/features/availability/schema";
 export const snapshotSchema = z.object({
   profile: z.object({
     id: z.uuid(),
@@ -7,6 +8,7 @@ export const snapshotSchema = z.object({
     specialty: z.string().nullable(),
     available: z.boolean(),
   }),
+  availability: z.array(availabilitySlotSchema),
   businesses: z.array(
     z.object({
       id: z.uuid(),
