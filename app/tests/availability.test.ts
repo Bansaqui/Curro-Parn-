@@ -27,6 +27,7 @@ const snapshot = {
     specialty: "Bartender",
     available: true,
   },
+  jobs: [],
   businesses: [],
   venues: [],
   availability: [slot],

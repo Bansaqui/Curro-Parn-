@@ -2,8 +2,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSnapshot } from "@/features/snapshot/server";
 import { homeDestination } from "@/features/snapshot/schema";
-import { Card, EmptyState } from "@/components/ui";
-export default async function Page() {
+import { JobList } from "@/features/jobs/list";
+import { ownJobs, publishingOptions } from "@/features/jobs/access";
+import { Card, EmptyState, Alert } from "@/components/ui";
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ published?: string }>;
+}) {
+  const { published } = await searchParams;
   const snapshot = await getSnapshot();
   const destination = homeDestination(snapshot);
   if (destination !== "/inicio") redirect(destination);
@@ -70,9 +77,13 @@ export default async function Page() {
               </Card>
             ))}
           </div>
-          <EmptyState title="Tu equipo, en el siguiente paso.">
-            La publicación de Curros llegará en una próxima fase.
-          </EmptyState>
+          {published === "1" && <Alert success>Curro publicado.</Alert>}
+          {publishingOptions(snapshot).businesses.length > 0 && (
+            <Link href="/negocio/curros/nuevo" className="button">
+              Publicar Curro
+            </Link>
+          )}
+          <JobList jobs={ownJobs(snapshot)} />
         </>
       )}
     </div>

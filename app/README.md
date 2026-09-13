@@ -1,6 +1,6 @@
 # Curro & Parné — base del MVP
 
-Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding y disponibilidad del profesional; no publica Curros, no procesa pagos y no importa datos del prototipo.
+Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional y publicación de Curros por negocios; no procesa pagos y no importa datos del prototipo.
 
 ## Stack
 
@@ -81,7 +81,7 @@ app/
 ├── src/
 │   ├── app/                 # (public), (auth), (app), auth handlers
 │   ├── components/          # ui y layout
-│   ├── features/            # auth, onboarding, businesses, venues, availability, snapshot
+│   ├── features/            # auth, onboarding, businesses, venues, availability, jobs, snapshot
 │   ├── lib/                # supabase, validation, utils
 │   ├── types/database.ts   # reexport del archivo generado del repositorio
 │   └── proxy.ts
@@ -132,3 +132,17 @@ Las horas se introducen y muestran en `Europe/Madrid`, independientemente de la 
 Añadir una franja marca el perfil como disponible. Eliminar la última **no desmarca** el perfil: es el comportamiento de la RPC existente, explicado en pantalla. Esta fase no añade un interruptor ni modifica ese contrato. No requiere nuevas variables de entorno, dependencias ni migraciones.
 
 QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y test:security completados correctamente. El análisis de patrones no detectó secretos y confirmó que `.env.local` está ignorado; no prueba ausencia absoluta de secretos. Las pruebas de creación y eliminación usan dobles de la RPC: no se realizaron escrituras ni pruebas autenticadas de extremo a extremo contra Supabase remoto. Sigue pendiente verificar el flujo real con una cuenta de prueba antes del piloto. Se conserva la limitación de ESLint 9 descrita arriba.
+
+## Fase 2.2 — Publicación de Curros
+
+Desde Inicio de Negocio, «Publicar Curro» abre `/negocio/curros/nuevo`. Solo perfiles business y pertenencias activas owner/manager pueden publicar. La página muestra un estado explicativo si faltan permisos o locales activos; la acción valida nuevamente el negocio, el local y su relación utilizando el snapshot de la petición. El snapshot remoto solo incluye pertenencias activas; la RPC vuelve a comprobar los permisos en la transacción. Staff puede consultar los Curros de sus negocios, pero no publicarlos.
+
+La feature `src/features/jobs/` separa validación, permisos/listado, comando, acción y componentes. El snapshot incorpora únicamente los campos necesarios de `jobs`, sin applications, assignments ni notifications. Inicio muestra los Curros de negocios con pertenencia activa: publicados aún vigentes por inicio ascendente, después el historial por inicio descendente. El backend devuelve como máximo 200; no hay paginación en esta fase.
+
+La publicación usa exclusivamente `cp_command('publish', ...)`. No se envían `location`, identidad ni roles desde el formulario. El local determina la ubicación en backend. La remuneración admite coma o punto decimal, nunca separadores de miles, exponentes ni más de dos decimales. Se convierte por partes enteras a `pay_cents`, sin redondear; rango 0,01–100.000 € conforme al límite del backend. No calcula comisiones. Las fechas reutilizan `madridInstant` de disponibilidad: Europe/Madrid, rechazo de horas ambiguas/inexistentes, inicio futuro y duración real máxima de 18 horas. Título 3–120, descripción hasta 2000 y plazas 1–20.
+
+Los envíos muestran «Publicando…» y deshabilitan el botón. Tras éxito se revalida Inicio y se redirige con aviso. No hay reintentos automáticos: si se pierde la respuesta, se pide revisar Inicio antes de reenviar porque la RPC existente no aporta clave de idempotencia. El backend limita a 50 publicaciones por negocio en 24 horas. No se han modificado estas reglas ni creado publicaciones remotas.
+
+Para revisar la UI sin escribir en Supabase: `npm run qa:ui` y abrir `http://127.0.0.1:3001/jobs.html`. El fixture usa el formulario y listado reales con datos sintéticos y una acción simulada; el servidor de QA bloquea imports de Supabase y no carga `.env.local`. No es una ruta de producción.
+
+Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para resultados y límites de esta entrega. No requiere variables de entorno, paquetes ni migraciones nuevos. Edición, cancelación, candidaturas, selección, asignaciones, pagos y contratación permanecen fuera de alcance.

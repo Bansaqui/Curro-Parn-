@@ -1,4 +1,5 @@
 const destinations = new Set([
+  "/negocio/curros/nuevo",
   "/disponibilidad",
   "/inicio",
   "/onboarding",
