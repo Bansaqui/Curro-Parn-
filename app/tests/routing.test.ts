@@ -13,6 +13,7 @@ const snapshot: Snapshot = {
     specialty: null,
     available: false,
   },
+  availability: [],
   businesses: [],
   venues: [],
 };

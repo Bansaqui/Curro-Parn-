@@ -17,6 +17,7 @@ for (const path of [
 }
 for (const path of [
   "/inicio",
+  "/disponibilidad",
   "/onboarding",
   "/negocio/nuevo",
   "/negocio/local/nuevo",

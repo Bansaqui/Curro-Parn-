@@ -778,3 +778,25 @@ legend {
     flex-direction: column;
   }
 }
+
+.availability-list {
+  margin-top: 32px;
+}
+.availability-list ul {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+}
+.availability-list dl {
+  margin: 0 0 20px;
+}
+.availability-list dt {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.availability-list dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+}

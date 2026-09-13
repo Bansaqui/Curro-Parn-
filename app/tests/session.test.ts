@@ -35,6 +35,12 @@ beforeEach(() => {
   eq.mockReturnValue({ maybeSingle });
 });
 describe("server identity and role guards", () => {
+  it("allows worker on worker-only guard", async () => {
+    maybeSingle.mockResolvedValue({ data: { role: "worker" }, error: null });
+    await expect(requireProfile("worker")).resolves.toMatchObject({
+      role: "worker",
+    });
+  });
   it("rejects missing session", async () => {
     getUser.mockResolvedValue({ data: { user: null }, error: null });
     await expect(requireIdentity()).rejects.toThrow("REDIRECT:/login");

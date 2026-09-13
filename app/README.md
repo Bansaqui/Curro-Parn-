@@ -1,6 +1,6 @@
 # Curro & Parné — base del MVP
 
-Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR y onboarding; no publica Curros, no procesa pagos y no importa datos del prototipo.
+Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding y disponibilidad del profesional; no publica Curros, no procesa pagos y no importa datos del prototipo.
 
 ## Stack
 
@@ -72,7 +72,7 @@ Los formularios y Server Actions validan con Zod. Los roles proceden de `cp_prof
 | /inicio                                                            | Perfil creado; negocio incompleto continúa su configuración   |
 | /negocio/nuevo, /negocio/local/nuevo                               | Perfil Negocio; permiso de gestión adicional para crear local |
 
-No existen aún pantallas exclusivas de Profesional. El guard `requireProfile('worker')` está preparado y probado para rechazar Negocio cuando se añadan. Las páginas y las acciones comprueban autorización en servidor, además del Proxy.
+`/disponibilidad` es exclusiva de Profesional. La página y sus acciones usan `requireProfile('worker')` y rechazan Negocio. Las páginas y las acciones comprueban autorización en servidor, además del Proxy.
 
 ## Organización
 
@@ -81,7 +81,7 @@ app/
 ├── src/
 │   ├── app/                 # (public), (auth), (app), auth handlers
 │   ├── components/          # ui y layout
-│   ├── features/            # auth, onboarding, businesses, venues, snapshot
+│   ├── features/            # auth, onboarding, businesses, venues, availability, snapshot
 │   ├── lib/                # supabase, validation, utils
 │   ├── types/database.ts   # reexport del archivo generado del repositorio
 │   └── proxy.ts
@@ -122,3 +122,13 @@ Los textos completos no existen todavía. Las acciones «Ver Términos de uso» 
 - [ ] Actualizar la UI y probar que la aceptación corresponde al contenido/versionado mostrado.
 
 Supabase remoto, los 17 SQL originales, los tipos generados y V9.4.8 se conservan. GitHub Pages sirve solo el prototipo; desplegar esta app requiere un servidor compatible con Next SSR, fuera del alcance de esta fase.
+
+## Fase 2.1 — Disponibilidad profesional
+
+Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. Muestra la marca real del perfil y las franjas propias ordenadas cronológicamente, permite añadir inicio/fin y eliminar una franja propia. Las mutaciones usan exclusivamente `cp_command('availability', ...)`; el snapshot se valida con Zod. Las acciones verifican rol y pertenencia en servidor, y el backend conserva la autorización definitiva.
+
+Las horas se introducen y muestran en `Europe/Madrid`, independientemente de la zona del dispositivo. Se rechazan campos vacíos, fin anterior o igual al inicio, horas inexistentes o ambiguas del cambio de horario y duraciones superiores a 31 días. El backend limita a 100 franjas. No se impide guardar franjas pasadas ni solapadas, de acuerdo con el contrato existente.
+
+Añadir una franja marca el perfil como disponible. Eliminar la última **no desmarca** el perfil: es el comportamiento de la RPC existente, explicado en pantalla. Esta fase no añade un interruptor ni modifica ese contrato. No requiere nuevas variables de entorno, dependencias ni migraciones.
+
+QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y test:security completados correctamente. El análisis de patrones no detectó secretos y confirmó que `.env.local` está ignorado; no prueba ausencia absoluta de secretos. Las pruebas de creación y eliminación usan dobles de la RPC: no se realizaron escrituras ni pruebas autenticadas de extremo a extremo contra Supabase remoto. Sigue pendiente verificar el flujo real con una cuenta de prueba antes del piloto. Se conserva la limitación de ESLint 9 descrita arriba.

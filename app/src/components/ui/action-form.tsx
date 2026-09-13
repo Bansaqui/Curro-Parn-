@@ -19,7 +19,9 @@ import {
   businessSchema,
   venueSchema,
 } from "@/lib/validation/schemas";
+import { availabilityInputSchema } from "@/features/availability/schema";
 const schemas = {
+  availability: availabilityInputSchema,
   login: loginSchema,
   register: registerSchema,
   recovery: recoverySchema,
