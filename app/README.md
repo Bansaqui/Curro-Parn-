@@ -1,6 +1,6 @@
 # Curro & Parné — base del MVP
 
-Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional y publicación de Curros por negocios; no procesa pagos y no importa datos del prototipo.
+Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional, publicación de Curros por negocios e interés del profesional; no procesa pagos y no importa datos del prototipo.
 
 ## Stack
 
@@ -125,11 +125,11 @@ Supabase remoto, los 17 SQL originales, los tipos generados y V9.4.8 se conserva
 
 ## Fase 2.1 — Disponibilidad profesional
 
-Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. Muestra la marca real del perfil y las franjas propias ordenadas cronológicamente, permite añadir inicio/fin y eliminar una franja propia. Las mutaciones usan exclusivamente `cp_command('availability', ...)`; el snapshot se valida con Zod. Las acciones verifican rol y pertenencia en servidor, y el backend conserva la autorización definitiva.
+Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. La Fase 2.3.1 separa el interruptor «Disponible para Curros» de «Mi disponibilidad» (franjas). Muestra la marca real del perfil y las franjas propias ordenadas cronológicamente, permite añadir inicio/fin y eliminar una franja propia. Las mutaciones usan exclusivamente `cp_command('availability', ...)`; el snapshot se valida con Zod. Las acciones verifican rol y pertenencia en servidor, y el backend conserva la autorización definitiva.
 
 Las horas se introducen y muestran en `Europe/Madrid`, independientemente de la zona del dispositivo. Se rechazan campos vacíos, fin anterior o igual al inicio, horas inexistentes o ambiguas del cambio de horario y duraciones superiores a 31 días. El backend limita a 100 franjas. No se impide guardar franjas pasadas ni solapadas, de acuerdo con el contrato existente.
 
-Añadir una franja marca el perfil como disponible. Eliminar la última **no desmarca** el perfil: es el comportamiento de la RPC existente, explicado en pantalla. Esta fase no añade un interruptor ni modifica ese contrato. No requiere nuevas variables de entorno, dependencias ni migraciones.
+Crear o eliminar franjas conserva el interruptor. La Fase 2.3.2 desacopla las franjas del interruptor mediante la migración `20260914202422_decouple_worker_availability_status.sql`, aplicada y verificada en Supabase.
 
 QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y test:security completados correctamente. El análisis de patrones no detectó secretos y confirmó que `.env.local` está ignorado; no prueba ausencia absoluta de secretos. Las pruebas de creación y eliminación usan dobles de la RPC: no se realizaron escrituras ni pruebas autenticadas de extremo a extremo contra Supabase remoto. Sigue pendiente verificar el flujo real con una cuenta de prueba antes del piloto. Se conserva la limitación de ESLint 9 descrita arriba.
 
@@ -146,3 +146,31 @@ Los envíos muestran «Publicando…» y deshabilitan el botón. Tras éxito se 
 Para revisar la UI sin escribir en Supabase: `npm run qa:ui` y abrir `http://127.0.0.1:3001/jobs.html`. El fixture usa el formulario y listado reales con datos sintéticos y una acción simulada; el servidor de QA bloquea imports de Supabase y no carga `.env.local`. No es una ruta de producción.
 
 Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para resultados y límites de esta entrega. No requiere variables de entorno, paquetes ni migraciones nuevos. Edición, cancelación, candidaturas, selección, asignaciones, pagos y contratación permanecen fuera de alcance.
+
+## Fase 2.3 — Curros disponibles e interés
+
+El acceso «Ver Curros» de Inicio del profesional abre `/curros`, protegida con `requireProfile('worker')`. El servidor obtiene el snapshot real y muestra una tarjeta por Curro publicado, de la misma especialidad y con inicio futuro. Se utiliza inicio futuro porque el backend deja de admitir candidaturas al comenzar el turno. Urgente es una señal visual, sin cambiar el orden cronológico ni la compatibilidad.
+
+El snapshot añade `business_name` a jobs y el subconjunto `id`, `job_id`, `worker_id`, `state` de applications. Se consulta exclusivamente la candidatura propia para cada tarjeta. No se incorporan assignments, notifications ni reviews. La UI no reproduce las reglas de cobertura de disponibilidad, capacidad o solapes: `apply` conserva esas comprobaciones.
+
+«Me interesa» usa una Server Action y exclusivamente `cp_command('apply', {job_id})`. Valida UUID, perfil worker, visibilidad del Curro y candidatura existente antes de llamar al backend. La autoridad definitiva es la RPC. Respuestas normales y `{id, unchanged: true}` se consideran éxito; se revalidan `/curros` e `/inicio` y se redirige con confirmación. No hay reintentos automáticos, y una respuesta ambigua pide recargar antes de repetir.
+
+`applied` y `selected` se muestran una sola vez, con «Interés enviado» deshabilitado (en selected se indica el estado existente, sin ofrecer selección). `rejected` y `withdrawn` se muestran cerradas y no permiten otra candidatura. `invited` permite mostrar interés mediante apply, como admite el backend. No se implementan invitaciones ni retirada. Los Curros cancelados o ya iniciados desaparecen de este listado incluso con candidatura previa; no es un historial completo de candidaturas.
+
+Fechas en Europe/Madrid y céntimos a euros reutilizan las utilidades anteriores. Para QA aislada: `npm run qa:ui` y `http://127.0.0.1:3001/interest.html`. Usa componentes reales, datos sintéticos y respuestas simuladas, sin Supabase. Véase [QA-worker-job-interest.md](QA-worker-job-interest.md).
+
+No hay cambios remotos, migraciones, dependencias ni variables de entorno nuevas. El snapshot existente limita jobs a 200 y applications a 500; no se añade paginación. Si una candidatura antigua quedara fuera de ese límite, la RPC seguirá impidiendo duplicados, pero el estado previo puede no estar visible. Se recomienda prueba real autorizada de extremo a extremo antes del merge, sin incluir selección, asignaciones ni pagos.
+
+## Fase 2.3.1 — Estado y horarios separados
+
+«Disponible para Curros» es la intención ON/OFF del perfil. «Mi disponibilidad» son los horarios guardados. Desactivar usa exclusivamente `cp_command('profile')` y no elimina ni modifica franjas. El nombre y la biografía que exige esa RPC se toman del perfil leído en servidor mediante `requireProfile('worker')`; nunca de campos del formulario. No se añade bio al snapshot ni se envía al cliente.
+
+El interruptor muestra el estado confirmado, se deshabilita al guardar y evita cambios optimistas. Si una respuesta no puede confirmarse, muestra un error y «Comprobar estado» sin afirmar ON/OFF. ON sin franjas y OFF con horarios tienen avisos explícitos. Inicio muestra ese mismo estado, la franja en curso o próxima, accesos a «Gestionar disponibilidad» y «Ver Curros», y un bloque Actividad informativo sin funcionalidad.
+
+En Curros se verifica únicamente si una franja propia contiene todo el turno, siguiendo el criterio simple del backend (no se unen franjas contiguas). Si falta cobertura o el perfil está OFF, se muestra «Ajustar disponibilidad» en lugar de permitir un envío que sabemos que será rechazado. La cobertura no garantiza plazas ni ausencia de solapes: apply sigue siendo autoridad final. «Interés enviado» tiene prioridad sobre estos avisos y permanece deshabilitado.
+
+**Fase 2.3.2:** guardar una franja realiza una sola RPC availability; el interruptor usa explícitamente profile. La migración `20260914202422_decouple_worker_availability_status.sql` elimina únicamente la activación automática de la función privada. La migración ya fue aplicada y verificada en Supabase. Las pruebas autenticadas confirmaron que crear o eliminar franjas no modifica el interruptor «Disponible para Curros». El historial sincronizado de 17 migraciones y su manifiesto permanecen intactos. Las respuestas de creación inciertas requieren revisar las franjas antes de repetir, sin reintentos automáticos.
+
+Las pruebas SQL usan PGlite 0.5.8 (dependencia de desarrollo): reproducen las 17 migraciones originales y la nueva migración en PostgreSQL en memoria. Solo auth.users/auth.uid/auth.jwt y los roles de plataforma se simulan localmente; no hay conexión ni credenciales remotas. Esto no sustituye una prueba autenticada contra Supabase después del despliegue autorizado. Persisten posibles conflictos de última escritura entre pestañas al editar nombre/bio/estado, pues profile reemplaza esos campos.
+
+Para QA visual sin backend: `npm run qa:ui`, abrir `/polish.html`. La evidencia histórica de la Fase 2.3.1 se conserva en [QA-worker-availability-polish.md](QA-worker-availability-polish.md); su compensación de dos RPC queda sustituida por la Fase 2.3.2. El parche acumulado `worker-availability-polish-fixed.patch` contiene ambas fases y se aplica con `git am` sobre `dd867b88a8a709cd26e197df2842d89cdcfcf6f2`.

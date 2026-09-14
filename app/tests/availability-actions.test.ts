@@ -52,6 +52,7 @@ describe("availability Server Actions", () => {
     expect(mocks.revalidatePath.mock.calls).toEqual([
       ["/inicio"],
       ["/disponibilidad"],
+      ["/curros"],
     ]);
   });
   it.each([saveAvailability, removeAvailability])(

@@ -1,4 +1,5 @@
 const destinations = new Set([
+  "/curros",
   "/negocio/curros/nuevo",
   "/disponibilidad",
   "/inicio",
@@ -14,6 +15,7 @@ export function safeNext(value: unknown, fallback = "/inicio") {
 }
 export function isProtectedPath(path: string) {
   return [
+    "/curros",
     "/disponibilidad",
     "/inicio",
     "/onboarding",

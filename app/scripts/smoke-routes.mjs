@@ -18,6 +18,7 @@ for (const path of [
 for (const path of [
   "/inicio",
   "/disponibilidad",
+  "/curros",
   "/onboarding",
   "/negocio/nuevo",
   "/negocio/curros/nuevo",

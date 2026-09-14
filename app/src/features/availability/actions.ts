@@ -30,10 +30,21 @@ export async function saveAvailability(
   try {
     await createAvailability(await createClient(), parsed.data);
   } catch (error) {
-    return formError("availability.create", error);
+    const result = formError("availability.create", error);
+    const code =
+      typeof error === "object" && error !== null && "code" in error
+        ? error.code
+        : undefined;
+    if (code === "23514" || code === "42501" || code === "P0001") return result;
+    // A lost response may follow a successful insert; refresh before retrying.
+    revalidatePath("/inicio");
+    revalidatePath("/disponibilidad");
+    revalidatePath("/curros");
+    redirect("/disponibilidad?result=check-create");
   }
   revalidatePath("/inicio");
   revalidatePath("/disponibilidad");
+  revalidatePath("/curros");
   redirect("/disponibilidad?result=created");
 }
 export async function removeAvailability(
@@ -60,5 +71,6 @@ export async function removeAvailability(
   }
   revalidatePath("/inicio");
   revalidatePath("/disponibilidad");
+  revalidatePath("/curros");
   redirect("/disponibilidad?result=deleted");
 }

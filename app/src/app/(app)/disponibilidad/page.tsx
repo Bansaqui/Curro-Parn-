@@ -9,6 +9,8 @@ import {
   AvailabilityForm,
   RemoveAvailabilityForm,
 } from "@/features/availability/forms";
+import { AvailableSwitch } from "@/features/availability/status-form";
+import { availabilityMessage } from "@/features/availability/status";
 import { Card, EmptyState, Alert } from "@/components/ui";
 export default async function Page({
   searchParams,
@@ -26,32 +28,34 @@ export default async function Page({
       <Link href="/inicio" className="quiet-link">
         ← Volver a inicio
       </Link>
-      <h1>Disponibilidad</h1>
+      <h1>Mi disponibilidad</h1>
       <p className="lead">
         Indica cuándo puedes trabajar. Todas las horas se muestran en horario
         peninsular.
       </p>
       {result === "created" && <Alert success>Disponibilidad añadida.</Alert>}
       {result === "deleted" && <Alert success>Franja eliminada.</Alert>}
+      {result === "check-create" && (
+        <Alert>
+          No hemos podido confirmar si se guardó la franja. Revisa las franjas
+          antes de volver a añadirla.
+        </Alert>
+      )}
+      {result === "status" && <Alert success>Estado actualizado.</Alert>}
       <Card>
-        <h2>Tu estado</h2>
-        <span
-          className={`status ${snapshot.profile.available ? "available" : ""}`}
-        >
-          <span />
-          {snapshot.profile.available ? "Disponible" : "No disponible"}
-        </span>
-        <p className="muted">
-          Añadir una franja te marca como disponible. Eliminar franjas no cambia
-          esta marca del perfil.
-        </p>
+        <h2>Disponible para Curros</h2>
+        <AvailableSwitch
+          key={String(snapshot.profile.available) + result}
+          available={snapshot.profile.available}
+          message={availabilityMessage(snapshot.profile.available, slots)}
+        />
       </Card>
       <Card>
-        <h2>Añadir disponibilidad</h2>
+        <h2>Añadir franja</h2>
         <AvailabilityForm key={slots.map((slot) => slot.id).join(",")} />
       </Card>
       <section className="availability-list" aria-labelledby="slots-title">
-        <h2 id="slots-title">Tus franjas · {slots.length}</h2>
+        <h2 id="slots-title">Mi disponibilidad · {slots.length}</h2>
         {slots.length === 0 ? (
           <EmptyState title="Aún no has añadido disponibilidad.">
             Añade tu primera franja con el formulario de arriba.

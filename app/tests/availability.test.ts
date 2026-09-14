@@ -28,6 +28,7 @@ const snapshot = {
     available: true,
   },
   jobs: [],
+  applications: [],
   businesses: [],
   venues: [],
   availability: [slot],
