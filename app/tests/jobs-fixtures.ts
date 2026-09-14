@@ -21,6 +21,7 @@ export const job: Job = {
   business_id: businessId,
   venue_id: venueId,
   venue_name: "Centro",
+  business_name: "Costa",
   title: input.title,
   specialty: input.specialty,
   starts_at: "2026-09-20T08:00:00Z",
@@ -41,6 +42,7 @@ export function snapshot(): Snapshot {
     },
     availability: [],
     jobs: [job],
+    applications: [],
     businesses: [
       {
         id: businessId,

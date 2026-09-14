@@ -1,6 +1,6 @@
 # Curro & Parné — base del MVP
 
-Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional y publicación de Curros por negocios; no procesa pagos y no importa datos del prototipo.
+Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional publicación de Curros por negocios e interés del profesional; no procesa pagos y no importa datos del prototipo.
 
 ## Stack
 
@@ -146,3 +146,17 @@ Los envíos muestran «Publicando…» y deshabilitan el botón. Tras éxito se 
 Para revisar la UI sin escribir en Supabase: `npm run qa:ui` y abrir `http://127.0.0.1:3001/jobs.html`. El fixture usa el formulario y listado reales con datos sintéticos y una acción simulada; el servidor de QA bloquea imports de Supabase y no carga `.env.local`. No es una ruta de producción.
 
 Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para resultados y límites de esta entrega. No requiere variables de entorno, paquetes ni migraciones nuevos. Edición, cancelación, candidaturas, selección, asignaciones, pagos y contratación permanecen fuera de alcance.
+
+## Fase 2.3 — Curros disponibles e interés
+
+El acceso «Ver Curros disponibles» de Inicio del profesional abre `/curros`, protegida con `requireProfile('worker')`. El servidor obtiene el snapshot real y muestra una tarjeta por Curro publicado, de la misma especialidad y con inicio futuro. Se utiliza inicio futuro porque el backend deja de admitir candidaturas al comenzar el turno. Urgente es una señal visual, sin cambiar el orden cronológico ni la compatibilidad.
+
+El snapshot añade `business_name` a jobs y el subconjunto `id`, `job_id`, `worker_id`, `state` de applications. Se consulta exclusivamente la candidatura propia para cada tarjeta. No se incorporan assignments, notifications ni reviews. La UI no reproduce las reglas de cobertura de disponibilidad, capacidad o solapes: `apply` conserva esas comprobaciones.
+
+«Me interesa» usa una Server Action y exclusivamente `cp_command('apply', {job_id})`. Valida UUID, perfil worker, visibilidad del Curro y candidatura existente antes de llamar al backend. La autoridad definitiva es la RPC. Respuestas normales y `{id, unchanged: true}` se consideran éxito; se revalidan `/curros` e `/inicio` y se redirige con confirmación. No hay reintentos automáticos, y una respuesta ambigua pide recargar antes de repetir.
+
+`applied` y `selected` se muestran una sola vez, con «Interés enviado» deshabilitado (en selected se indica el estado existente, sin ofrecer selección). `rejected` y `withdrawn` se muestran cerradas y no permiten otra candidatura. `invited` permite mostrar interés mediante apply, como admite el backend. No se implementan invitaciones ni retirada. Los Curros cancelados o ya iniciados desaparecen de este listado incluso con candidatura previa; no es un historial completo de candidaturas.
+
+Fechas en Europe/Madrid y céntimos a euros reutilizan las utilidades anteriores. Para QA aislada: `npm run qa:ui` y `http://127.0.0.1:3001/interest.html`. Usa componentes reales, datos sintéticos y respuestas simuladas, sin Supabase. Véase [QA-worker-job-interest.md](QA-worker-job-interest.md).
+
+No hay cambios remotos, migraciones, dependencias ni variables de entorno nuevas. El snapshot existente limita jobs a 200 y applications a 500; no se añade paginación. Si una candidatura antigua quedara fuera de ese límite, la RPC seguirá impidiendo duplicados, pero el estado previo puede no estar visible. Se recomienda prueba real autorizada de extremo a extremo antes del merge, sin incluir selección, asignaciones ni pagos.

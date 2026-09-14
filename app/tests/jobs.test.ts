@@ -112,10 +112,10 @@ describe("snapshot and access", () => {
     const result = snapshotSchema.parse({
       ...snapshot(),
       jobs: [{ ...job, description: "discarded", occupied: 1 }],
-      applications: ["discarded"],
+      applications: [],
     });
     expect(result.jobs).toEqual([job]);
-    expect(result).not.toHaveProperty("applications");
+    expect(result.applications).toEqual([]);
   });
   it("rejects missing jobs", () =>
     expect(

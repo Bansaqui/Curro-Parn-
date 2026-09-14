@@ -80,6 +80,7 @@ export const jobSchema = z
     venue_id: z.uuid(),
     title: z.string(),
     venue_name: z.string(),
+    business_name: z.string(),
     specialty: z.enum(specialties),
     starts_at: z.iso.datetime({ offset: true }),
     ends_at: z.iso.datetime({ offset: true }),

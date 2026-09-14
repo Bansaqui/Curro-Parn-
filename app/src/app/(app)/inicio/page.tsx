@@ -4,7 +4,7 @@ import { getSnapshot } from "@/features/snapshot/server";
 import { homeDestination } from "@/features/snapshot/schema";
 import { JobList } from "@/features/jobs/list";
 import { ownJobs, publishingOptions } from "@/features/jobs/access";
-import { Card, EmptyState, Alert } from "@/components/ui";
+import { Card, Alert } from "@/components/ui";
 export default async function Page({
   searchParams,
 }: {
@@ -40,9 +40,9 @@ export default async function Page({
               Gestionar disponibilidad
             </Link>
           </Card>
-          <EmptyState title="Tu próximo curro está por venir.">
-            Próximamente aparecerán aquí los Curros compatibles contigo.
-          </EmptyState>
+          <Link href="/curros" className="button">
+            Ver Curros disponibles
+          </Link>
         </>
       ) : (
         <>
