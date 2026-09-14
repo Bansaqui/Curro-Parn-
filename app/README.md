@@ -1,6 +1,6 @@
 # Curro & Parné — base del MVP
 
-Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional publicación de Curros por negocios e interés del profesional; no procesa pagos y no importa datos del prototipo.
+Aplicación web de hostelería para el piloto de Málaga. Esta fase implementa Auth SSR, onboarding, disponibilidad del profesional, publicación de Curros por negocios e interés del profesional; no procesa pagos y no importa datos del prototipo.
 
 ## Stack
 
@@ -129,7 +129,7 @@ Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. La Fase 2.3.1
 
 Las horas se introducen y muestran en `Europe/Madrid`, independientemente de la zona del dispositivo. Se rechazan campos vacíos, fin anterior o igual al inicio, horas inexistentes o ambiguas del cambio de horario y duraciones superiores a 31 días. El backend limita a 100 franjas. No se impide guardar franjas pasadas ni solapadas, de acuerdo con el contrato existente.
 
-Crear o eliminar franjas conserva el interruptor. La Fase 2.3.2 requiere aplicar primero la nueva migración de desacoplamiento, pendiente de despliegue remoto.
+Crear o eliminar franjas conserva el interruptor. La Fase 2.3.2 desacopla las franjas del interruptor mediante la migración `20260914202422_decouple_worker_availability_status.sql`, aplicada y verificada en Supabase.
 
 QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y test:security completados correctamente. El análisis de patrones no detectó secretos y confirmó que `.env.local` está ignorado; no prueba ausencia absoluta de secretos. Las pruebas de creación y eliminación usan dobles de la RPC: no se realizaron escrituras ni pruebas autenticadas de extremo a extremo contra Supabase remoto. Sigue pendiente verificar el flujo real con una cuenta de prueba antes del piloto. Se conserva la limitación de ESLint 9 descrita arriba.
 
@@ -169,7 +169,7 @@ El interruptor muestra el estado confirmado, se deshabilita al guardar y evita c
 
 En Curros se verifica únicamente si una franja propia contiene todo el turno, siguiendo el criterio simple del backend (no se unen franjas contiguas). Si falta cobertura o el perfil está OFF, se muestra «Ajustar disponibilidad» en lugar de permitir un envío que sabemos que será rechazado. La cobertura no garantiza plazas ni ausencia de solapes: apply sigue siendo autoridad final. «Interés enviado» tiene prioridad sobre estos avisos y permanece deshabilitado.
 
-**Fase 2.3.2:** guardar una franja realiza una sola RPC availability; el interruptor usa explícitamente profile. La migración `20260914200201_decouple_worker_availability_status.sql` elimina únicamente la activación automática de la función privada. No se ha aplicado al remoto: **aplicarla antes de desplegar este frontend**. El historial sincronizado de 17 migraciones y su manifiesto permanecen intactos. Las respuestas de creación inciertas requieren revisar las franjas antes de repetir, sin reintentos automáticos.
+**Fase 2.3.2:** guardar una franja realiza una sola RPC availability; el interruptor usa explícitamente profile. La migración `20260914202422_decouple_worker_availability_status.sql` elimina únicamente la activación automática de la función privada. La migración ya fue aplicada y verificada en Supabase. Las pruebas autenticadas confirmaron que crear o eliminar franjas no modifica el interruptor «Disponible para Curros». El historial sincronizado de 17 migraciones y su manifiesto permanecen intactos. Las respuestas de creación inciertas requieren revisar las franjas antes de repetir, sin reintentos automáticos.
 
 Las pruebas SQL usan PGlite 0.5.8 (dependencia de desarrollo): reproducen las 17 migraciones originales y la nueva migración en PostgreSQL en memoria. Solo auth.users/auth.uid/auth.jwt y los roles de plataforma se simulan localmente; no hay conexión ni credenciales remotas. Esto no sustituye una prueba autenticada contra Supabase después del despliegue autorizado. Persisten posibles conflictos de última escritura entre pestañas al editar nombre/bio/estado, pues profile reemplaza esos campos.
 
