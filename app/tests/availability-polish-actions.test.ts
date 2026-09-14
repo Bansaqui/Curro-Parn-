@@ -99,45 +99,20 @@ describe("worker availability status actions", () => {
     expect(mocks.setAvailable).toHaveBeenCalledOnce();
     expect(JSON.stringify(log.mock.calls)).not.toContain("private details");
   });
-  it("restores OFF after adding a slot, without removing the slot", async () => {
-    await expect(
-      saveAvailability(
-        {},
-        form({ start: "2026-09-20T10:00", end: "2026-09-20T14:00" }),
-      ),
-    ).rejects.toThrow("REDIRECT:/disponibilidad?result=created");
-    expect(mocks.createAvailability).toHaveBeenCalledOnce();
-    expect(mocks.setAvailable).toHaveBeenCalledExactlyOnceWith(
-      {},
-      profile,
-      false,
-    );
-    expect(mocks.createAvailability.mock.invocationCallOrder[0]).toBeLessThan(
-      mocks.setAvailable.mock.invocationCallOrder[0],
-    );
-  });
-  it("does not restore OFF when profile was ON", async () => {
-    mocks.requireProfile.mockResolvedValue({ ...profile, available: true });
-    await expect(
-      saveAvailability(
-        {},
-        form({ start: "2026-09-20T10:00", end: "2026-09-20T14:00" }),
-      ),
-    ).rejects.toThrow("REDIRECT:/disponibilidad?result=created");
-    expect(mocks.setAvailable).not.toHaveBeenCalled();
-  });
-  it("partial success asks for refreshed state and never duplicates slot", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
-    mocks.setAvailable.mockRejectedValue(new Error("network"));
-    await expect(
-      saveAvailability(
-        {},
-        form({ start: "2026-09-20T10:00", end: "2026-09-20T14:00" }),
-      ),
-    ).rejects.toThrow("REDIRECT:/disponibilidad?result=check-status");
-    expect(mocks.createAvailability).toHaveBeenCalledOnce();
-    expect(mocks.setAvailable).toHaveBeenCalledOnce();
-  });
+  it.each([false, true])(
+    "creates one range without changing status %s",
+    async (available) => {
+      mocks.requireProfile.mockResolvedValue({ ...profile, available });
+      await expect(
+        saveAvailability(
+          {},
+          form({ start: "2026-09-20T10:00", end: "2026-09-20T14:00" }),
+        ),
+      ).rejects.toThrow("REDIRECT:/disponibilidad?result=created");
+      expect(mocks.createAvailability).toHaveBeenCalledOnce();
+      expect(mocks.setAvailable).not.toHaveBeenCalled();
+    },
+  );
   it("uncertain range creation refreshes actual status without replaying writes", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mocks.createAvailability.mockRejectedValue(new Error("lost response"));

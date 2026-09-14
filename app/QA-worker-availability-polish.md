@@ -1,5 +1,7 @@
 # QA — Fase 2.3.1
 
+> Registro histórico de la Fase 2.3.1. La Fase 2.3.2 elimina la compensación de dos RPC descrita aquí; véase `QA-worker-availability-contract.md` para el contrato y la validación actuales.
+
 Rama existente `feat/worker-job-interest`. Commit anterior/base del parche incremental: `dd867b88a8a709cd26e197df2842d89cdcfcf6f2`. No se crea otra rama.
 
 ## Resultados

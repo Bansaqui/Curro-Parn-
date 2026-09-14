@@ -6,7 +6,6 @@ import { getSnapshot } from "@/features/snapshot/server";
 import { createClient } from "@/lib/supabase/server";
 import { formError, type FormState } from "@/lib/utils/errors";
 import { availabilityInputSchema, deleteAvailabilitySchema } from "./schema";
-import { setAvailable } from "./profile-command";
 import { createAvailability, deleteAvailability } from "./commands";
 export async function saveAvailability(
   _state: FormState,
@@ -37,22 +36,11 @@ export async function saveAvailability(
         ? error.code
         : undefined;
     if (code === "23514" || code === "42501" || code === "P0001") return result;
-    // A lost response may follow an inserted range and the RPC's implicit ON.
+    // A lost response may follow a successful insert; refresh before retrying.
     revalidatePath("/inicio");
     revalidatePath("/disponibilidad");
     revalidatePath("/curros");
     redirect("/disponibilidad?result=check-create");
-  }
-  if (profile.available === false) {
-    try {
-      await setAvailable(await createClient(), profile, false);
-    } catch (error) {
-      formError("availability.restore-off", error);
-      revalidatePath("/inicio");
-      revalidatePath("/disponibilidad");
-      revalidatePath("/curros");
-      redirect("/disponibilidad?result=check-status");
-    }
   }
   revalidatePath("/inicio");
   revalidatePath("/disponibilidad");

@@ -37,17 +37,11 @@ export default async function Page({
       {result === "deleted" && <Alert success>Franja eliminada.</Alert>}
       {result === "check-create" && (
         <Alert>
-          No hemos podido confirmar si se guardó la franja. Revisa las franjas y
-          el estado actual antes de volver a añadirla.
+          No hemos podido confirmar si se guardó la franja. Revisa las franjas
+          antes de volver a añadirla.
         </Alert>
       )}
       {result === "status" && <Alert success>Estado actualizado.</Alert>}
-      {result === "check-status" && (
-        <Alert>
-          La franja se ha guardado, pero no hemos podido confirmar que sigas en
-          OFF. Revisa el estado leído abajo antes de continuar.
-        </Alert>
-      )}
       <Card>
         <h2>Disponible para Curros</h2>
         <AvailableSwitch
