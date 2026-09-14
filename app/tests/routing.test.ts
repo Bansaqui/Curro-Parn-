@@ -14,6 +14,7 @@ const snapshot: Snapshot = {
     available: false,
   },
   availability: [],
+  jobs: [],
   businesses: [],
   venues: [],
 };

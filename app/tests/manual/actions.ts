@@ -14,4 +14,5 @@ export {
   simulated as logout,
   simulated as saveBusiness,
   simulated as saveVenue,
+  simulated as saveJob,
 };

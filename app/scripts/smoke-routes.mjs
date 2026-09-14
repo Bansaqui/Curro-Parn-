@@ -20,6 +20,7 @@ for (const path of [
   "/disponibilidad",
   "/onboarding",
   "/negocio/nuevo",
+  "/negocio/curros/nuevo",
   "/negocio/local/nuevo",
   "/actualizar-password",
 ]) {

@@ -20,7 +20,9 @@ import {
   venueSchema,
 } from "@/lib/validation/schemas";
 import { availabilityInputSchema } from "@/features/availability/schema";
+import { publishInputSchema } from "@/features/jobs/schema";
 const schemas = {
+  publish: publishInputSchema,
   availability: availabilityInputSchema,
   login: loginSchema,
   register: registerSchema,

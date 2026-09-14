@@ -800,3 +800,33 @@ legend {
   margin: 4px 0 0;
   font-weight: 700;
 }
+
+.jobs-list {
+  margin-top: 32px;
+}
+.jobs-list ul {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+}
+.jobs-list dl {
+  margin: 0;
+}
+.jobs-list dt {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.jobs-list dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.jobs-list h3 {
+  overflow-wrap: anywhere;
+}
+.job-description {
+  height: auto;
+  resize: vertical;
+}
