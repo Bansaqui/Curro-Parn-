@@ -19,7 +19,7 @@ const server = await createServer({
       enforce: "pre",
       resolveId(source, importer) {
         if (
-          source === "./actions" &&
+          (source === "./actions" || source === "./status-actions") &&
           importer?.replaceAll("\\", "/").includes("/src/features/")
         )
           return mock;

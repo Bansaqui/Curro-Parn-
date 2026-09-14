@@ -830,3 +830,47 @@ legend {
   height: auto;
   resize: vertical;
 }
+
+.availability-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+  padding: 8px 0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+}
+.availability-switch:focus-visible {
+  outline: 3px solid #876030;
+  outline-offset: 4px;
+}
+.availability-switch:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.switch-track {
+  width: 52px;
+  height: 30px;
+  border-radius: 20px;
+  background: #686b64;
+  padding: 4px;
+  display: inline-flex;
+}
+.switch-track > span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+}
+.availability-switch[aria-checked="true"] .switch-track {
+  background: #357449;
+}
+.availability-switch[aria-checked="true"] .switch-track > span {
+  margin-left: auto;
+}
+.interest-guidance {
+  margin-top: 20px;
+}

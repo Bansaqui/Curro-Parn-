@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { getRequestTime } from "@/lib/utils/request-time";
 import { redirect } from "next/navigation";
 import { getSnapshot } from "@/features/snapshot/server";
 import { homeDestination } from "@/features/snapshot/schema";
 import { JobList } from "@/features/jobs/list";
 import { ownJobs, publishingOptions } from "@/features/jobs/access";
+import { WorkerAvailabilitySummary } from "@/features/availability/summary";
 import { Card, Alert } from "@/components/ui";
 export default async function Page({
   searchParams,
@@ -25,25 +27,7 @@ export default async function Page({
           : "Tu negocio ya tiene su sitio."}
       </p>
       {profile.role === "worker" ? (
-        <>
-          <Card>
-            <span className="eyebrow">PROFESIONAL</span>
-            <h2>{profile.specialty}</h2>
-            <span className={`status ${profile.available ? "available" : ""}`}>
-              <span />
-              {profile.available ? "Disponible" : "No disponible"}
-            </span>
-            <p className="muted">
-              Gestiona las franjas en las que puedes trabajar.
-            </p>
-            <Link href="/disponibilidad" className="button">
-              Gestionar disponibilidad
-            </Link>
-          </Card>
-          <Link href="/curros" className="button">
-            Ver Curros disponibles
-          </Link>
-        </>
+        <WorkerAvailabilitySummary snapshot={snapshot} now={getRequestTime()} />
       ) : (
         <>
           <div className="business-list">

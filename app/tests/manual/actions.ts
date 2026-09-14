@@ -16,4 +16,5 @@ export {
   simulated as saveVenue,
   simulated as saveJob,
   simulated as sendInterest,
+  simulated as saveAvailable,
 };

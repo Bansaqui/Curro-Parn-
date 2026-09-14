@@ -19,7 +19,7 @@ afterEach(() => vi.useRealTimers());
 describe("worker job selectors", () => {
   it("allows compatible future jobs", () =>
     expect(workerJobs(workerSnapshot())).toEqual([
-      { job, application: undefined },
+      { job, application: undefined, availability: "uncovered" },
     ]));
   it("rejects business", () => {
     const s = workerSnapshot();

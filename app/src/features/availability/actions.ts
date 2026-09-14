@@ -6,6 +6,7 @@ import { getSnapshot } from "@/features/snapshot/server";
 import { createClient } from "@/lib/supabase/server";
 import { formError, type FormState } from "@/lib/utils/errors";
 import { availabilityInputSchema, deleteAvailabilitySchema } from "./schema";
+import { setAvailable } from "./profile-command";
 import { createAvailability, deleteAvailability } from "./commands";
 export async function saveAvailability(
   _state: FormState,
@@ -30,10 +31,32 @@ export async function saveAvailability(
   try {
     await createAvailability(await createClient(), parsed.data);
   } catch (error) {
-    return formError("availability.create", error);
+    const result = formError("availability.create", error);
+    const code =
+      typeof error === "object" && error !== null && "code" in error
+        ? error.code
+        : undefined;
+    if (code === "23514" || code === "42501" || code === "P0001") return result;
+    // A lost response may follow an inserted range and the RPC's implicit ON.
+    revalidatePath("/inicio");
+    revalidatePath("/disponibilidad");
+    revalidatePath("/curros");
+    redirect("/disponibilidad?result=check-create");
+  }
+  if (profile.available === false) {
+    try {
+      await setAvailable(await createClient(), profile, false);
+    } catch (error) {
+      formError("availability.restore-off", error);
+      revalidatePath("/inicio");
+      revalidatePath("/disponibilidad");
+      revalidatePath("/curros");
+      redirect("/disponibilidad?result=check-status");
+    }
   }
   revalidatePath("/inicio");
   revalidatePath("/disponibilidad");
+  revalidatePath("/curros");
   redirect("/disponibilidad?result=created");
 }
 export async function removeAvailability(
@@ -60,5 +83,6 @@ export async function removeAvailability(
   }
   revalidatePath("/inicio");
   revalidatePath("/disponibilidad");
+  revalidatePath("/curros");
   redirect("/disponibilidad?result=deleted");
 }

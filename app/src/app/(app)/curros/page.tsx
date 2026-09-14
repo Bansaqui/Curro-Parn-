@@ -17,7 +17,7 @@ export default async function Page({
       <Link href="/inicio" className="quiet-link">
         ← Volver a inicio
       </Link>
-      <h1>Curros disponibles</h1>
+      <h1>Ver Curros</h1>
       <p className="lead">
         Curros de tu especialidad, próximos primero. Horario peninsular.
       </p>

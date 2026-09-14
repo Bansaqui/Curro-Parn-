@@ -125,11 +125,11 @@ Supabase remoto, los 17 SQL originales, los tipos generados y V9.4.8 se conserva
 
 ## Fase 2.1 — Disponibilidad profesional
 
-Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. Muestra la marca real del perfil y las franjas propias ordenadas cronológicamente, permite añadir inicio/fin y eliminar una franja propia. Las mutaciones usan exclusivamente `cp_command('availability', ...)`; el snapshot se valida con Zod. Las acciones verifican rol y pertenencia en servidor, y el backend conserva la autorización definitiva.
+Desde Inicio, «Gestionar disponibilidad» abre `/disponibilidad`. La Fase 2.3.1 separa el interruptor «Disponible para Curros» de «Mi disponibilidad» (franjas). Muestra la marca real del perfil y las franjas propias ordenadas cronológicamente, permite añadir inicio/fin y eliminar una franja propia. Las mutaciones usan exclusivamente `cp_command('availability', ...)`; el snapshot se valida con Zod. Las acciones verifican rol y pertenencia en servidor, y el backend conserva la autorización definitiva.
 
 Las horas se introducen y muestran en `Europe/Madrid`, independientemente de la zona del dispositivo. Se rechazan campos vacíos, fin anterior o igual al inicio, horas inexistentes o ambiguas del cambio de horario y duraciones superiores a 31 días. El backend limita a 100 franjas. No se impide guardar franjas pasadas ni solapadas, de acuerdo con el contrato existente.
 
-Añadir una franja marca el perfil como disponible. Eliminar la última **no desmarca** el perfil: es el comportamiento de la RPC existente, explicado en pantalla. Esta fase no añade un interruptor ni modifica ese contrato. No requiere nuevas variables de entorno, dependencias ni migraciones.
+Añadir una franja marca el perfil como disponible. Eliminar la última **no desmarca** el perfil: es el comportamiento de la RPC existente, explicado en pantalla. La Fase 2.3.1 incorpora un interruptor usando el comando profile existente; véanse sus límites más abajo. No requiere nuevas variables de entorno, dependencias ni migraciones.
 
 QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y test:security completados correctamente. El análisis de patrones no detectó secretos y confirmó que `.env.local` está ignorado; no prueba ausencia absoluta de secretos. Las pruebas de creación y eliminación usan dobles de la RPC: no se realizaron escrituras ni pruebas autenticadas de extremo a extremo contra Supabase remoto. Sigue pendiente verificar el flujo real con una cuenta de prueba antes del piloto. Se conserva la limitación de ESLint 9 descrita arriba.
 
@@ -149,7 +149,7 @@ Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para re
 
 ## Fase 2.3 — Curros disponibles e interés
 
-El acceso «Ver Curros disponibles» de Inicio del profesional abre `/curros`, protegida con `requireProfile('worker')`. El servidor obtiene el snapshot real y muestra una tarjeta por Curro publicado, de la misma especialidad y con inicio futuro. Se utiliza inicio futuro porque el backend deja de admitir candidaturas al comenzar el turno. Urgente es una señal visual, sin cambiar el orden cronológico ni la compatibilidad.
+El acceso «Ver Curros» de Inicio del profesional abre `/curros`, protegida con `requireProfile('worker')`. El servidor obtiene el snapshot real y muestra una tarjeta por Curro publicado, de la misma especialidad y con inicio futuro. Se utiliza inicio futuro porque el backend deja de admitir candidaturas al comenzar el turno. Urgente es una señal visual, sin cambiar el orden cronológico ni la compatibilidad.
 
 El snapshot añade `business_name` a jobs y el subconjunto `id`, `job_id`, `worker_id`, `state` de applications. Se consulta exclusivamente la candidatura propia para cada tarjeta. No se incorporan assignments, notifications ni reviews. La UI no reproduce las reglas de cobertura de disponibilidad, capacidad o solapes: `apply` conserva esas comprobaciones.
 
@@ -160,3 +160,15 @@ El snapshot añade `business_name` a jobs y el subconjunto `id`, `job_id`, `work
 Fechas en Europe/Madrid y céntimos a euros reutilizan las utilidades anteriores. Para QA aislada: `npm run qa:ui` y `http://127.0.0.1:3001/interest.html`. Usa componentes reales, datos sintéticos y respuestas simuladas, sin Supabase. Véase [QA-worker-job-interest.md](QA-worker-job-interest.md).
 
 No hay cambios remotos, migraciones, dependencias ni variables de entorno nuevas. El snapshot existente limita jobs a 200 y applications a 500; no se añade paginación. Si una candidatura antigua quedara fuera de ese límite, la RPC seguirá impidiendo duplicados, pero el estado previo puede no estar visible. Se recomienda prueba real autorizada de extremo a extremo antes del merge, sin incluir selección, asignaciones ni pagos.
+
+## Fase 2.3.1 — Estado y horarios separados
+
+«Disponible para Curros» es la intención ON/OFF del perfil. «Mi disponibilidad» son los horarios guardados. Desactivar usa exclusivamente `cp_command('profile')` y no elimina ni modifica franjas. El nombre y la biografía que exige esa RPC se toman del perfil leído en servidor mediante `requireProfile('worker')`; nunca de campos del formulario. No se añade bio al snapshot ni se envía al cliente.
+
+El interruptor muestra el estado confirmado, se deshabilita al guardar y evita cambios optimistas. Si una respuesta no puede confirmarse, muestra un error y «Comprobar estado» sin afirmar ON/OFF. ON sin franjas y OFF con horarios tienen avisos explícitos. Inicio muestra ese mismo estado, la franja en curso o próxima, accesos a «Gestionar disponibilidad» y «Ver Curros», y un bloque Actividad informativo sin funcionalidad.
+
+En Curros se verifica únicamente si una franja propia contiene todo el turno, siguiendo el criterio simple del backend (no se unen franjas contiguas). Si falta cobertura o el perfil está OFF, se muestra «Ajustar disponibilidad» en lugar de permitir un envío que sabemos que será rechazado. La cobertura no garantiza plazas ni ausencia de solapes: apply sigue siendo autoridad final. «Interés enviado» tiene prioridad sobre estos avisos y permanece deshabilitado.
+
+**Límite técnico a revisar antes de producción:** el comando availability existente activa el perfil al crear una franja. Para conservar OFF, la app ejecuta después profile(false). Son dos llamadas no atómicas: existe una ventana de activación y la restauración puede fallar. En ese caso conserva la franja, refresca el estado y avisa; nunca repite la creación automáticamente. Si la respuesta de creación es incierta, refresca franjas/estado y pide comprobarlos. No se ha cambiado el backend para resolver esta limitación. Una garantía transaccional de OFF durante toda la operación requiere una futura modificación autorizada del contrato remoto. También pueden existir conflictos de última escritura entre pestañas al editar nombre/bio/estado porque profile reemplaza esos campos.
+
+Para QA sin backend: `npm run qa:ui`, abrir `/polish.html`. Evidencia en [QA-worker-availability-polish.md](QA-worker-availability-polish.md). Este es un segundo commit sobre feat/worker-job-interest y su parche incremental se aplica después de la Fase 2.3.

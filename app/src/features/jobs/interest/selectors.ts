@@ -1,7 +1,12 @@
 import type { Snapshot } from "@/features/snapshot/schema";
 import type { Job } from "../schema";
 import type { Application } from "./schema";
-export type WorkerJob = { job: Job; application?: Application };
+import { coversTurn } from "@/features/availability/status";
+export type WorkerJob = {
+  job: Job;
+  application?: Application;
+  availability: "off" | "uncovered" | "covered";
+};
 export function ownApplication(snapshot: Snapshot, jobId: string) {
   return snapshot.applications.find(
     (a) => a.worker_id === snapshot.profile.id && a.job_id === jobId,
@@ -22,7 +27,20 @@ export function workerJobs(snapshot: Snapshot, now = Date.now()): WorkerJob[] {
         Date.parse(a.starts_at) - Date.parse(b.starts_at) ||
         a.id.localeCompare(b.id),
     )
-    .map((job) => ({ job, application: ownApplication(snapshot, job.id) }));
+    .map((job) => ({
+      job,
+      application: ownApplication(snapshot, job.id),
+      availability: !snapshot.profile.available
+        ? "off"
+        : coversTurn(
+              snapshot.availability,
+              snapshot.profile.id,
+              job.starts_at,
+              job.ends_at,
+            )
+          ? "covered"
+          : "uncovered",
+    }));
 }
 export function interestLabel(state?: Application["state"]) {
   switch (state) {

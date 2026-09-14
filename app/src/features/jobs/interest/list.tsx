@@ -11,13 +11,13 @@ export function WorkerJobList({ entries }: { entries: WorkerJob[] }) {
       </EmptyState>
     );
   return (
-    <section className="jobs-list" aria-label="Curros compatibles">
+    <section className="jobs-list" aria-label="Curros de tu especialidad">
       <ul>
-        {entries.map(({ job, application }) => (
+        {entries.map(({ job, application, availability }) => (
           <li key={job.id}>
             <Card>
               <span className="eyebrow">
-                Publicado{job.urgent ? " · Urgente" : ""}
+                Curro publicado{job.urgent ? " · Urgente" : ""}
               </span>
               <h2>{job.title}</h2>
               <p className="muted">
@@ -42,7 +42,11 @@ export function WorkerJobList({ entries }: { entries: WorkerJob[] }) {
                 <dt>Remuneración</dt>
                 <dd>{formatPay(job.pay_cents)}</dd>
               </dl>
-              <InterestForm jobId={job.id} state={application?.state} />
+              <InterestForm
+                jobId={job.id}
+                state={application?.state}
+                availability={availability}
+              />
             </Card>
           </li>
         ))}

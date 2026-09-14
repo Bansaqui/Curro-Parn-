@@ -19,10 +19,11 @@ createRoot(document.getElementById("root")!).render(
         </p>
         <WorkerJobList
           entries={[
-            { job: { ...job, urgent: true } },
+            { job: { ...job, urgent: true }, availability: "covered" },
             {
               job: { ...job, id: otherId, title: "Curro con interés enviado" },
               application: { ...application, job_id: otherId },
+              availability: "uncovered",
             },
           ]}
         />
