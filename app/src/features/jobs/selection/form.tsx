@@ -1,6 +1,7 @@
 "use client";
 import { useActionState, useState } from "react";
 import { Alert, Button } from "@/components/ui";
+import { RefreshLink } from "@/components/ui/refresh-link";
 import { saveDecision } from "./actions";
 import type { FormState } from "@/lib/utils/errors";
 export function CandidateActions({
@@ -27,9 +28,7 @@ export function CandidateActions({
       {state.error ? (
         <div role="status">
           <Alert>{state.error}</Alert>
-          <a className="button" href={`/negocio/curros/${jobId}/candidaturas`}>
-            Actualizar candidaturas
-          </a>
+          <RefreshLink href={`/negocio/curros/${jobId}/candidaturas`} />
         </div>
       ) : (
         <>
@@ -47,6 +46,7 @@ export function CandidateActions({
           )}
           {rejectable && (
             <Button
+              className="button-dismiss"
               name="decision"
               value="reject"
               onClick={() => setDecision("reject")}

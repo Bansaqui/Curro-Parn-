@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { BackLink } from "@/components/ui/back-link";
+import { RefreshLink } from "@/components/ui/refresh-link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireProfile } from "@/features/auth/session";
@@ -23,21 +24,19 @@ export default async function Page({
   const { result } = await searchParams;
   return (
     <div className="home">
-      <Link href="/inicio" className="quiet-link">
-        ← Volver a inicio
-      </Link>
+      <BackLink />
       <h1>Candidaturas</h1>
       <p className="lead">
-        {context.job.title} · {context.job.venue_name}
+        {context.job.title} · {context.job.business_name}
       </p>
       {(result === "selected" || result === "rejected") && (
         <Alert success>
           Consulta actualizada. Comprueba el estado de la candidatura abajo.
         </Alert>
       )}
-      <a href={`/negocio/curros/${jobId}/candidaturas`} className="quiet-link">
-        Actualizar candidaturas
-      </a>
+      <div className="context-actions">
+        <RefreshLink href={`/negocio/curros/${jobId}/candidaturas`} />
+      </div>
       <CandidateList snapshot={snapshot} jobId={jobId} now={getRequestTime()} />
     </div>
   );

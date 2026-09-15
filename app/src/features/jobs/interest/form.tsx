@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ActionForm } from "@/components/ui/action-form";
-import { Button } from "@/components/ui";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { sendInterest } from "./actions";
 import { canSendInterest, interestLabel } from "./selectors";
 import type { Application } from "./schema";
@@ -19,9 +19,17 @@ export function InterestForm({
   if (!canSendInterest(state))
     return (
       <div>
-        <Button type="button" disabled>
+        <StatusBadge
+          tone={
+            state === "selected"
+              ? "positive"
+              : state === "applied"
+                ? "copper"
+                : "neutral"
+          }
+        >
           {interestLabel(state)}
-        </Button>
+        </StatusBadge>
         {state === "rejected" && <p>No seleccionado para este Curro.</p>}
       </div>
     );
@@ -34,7 +42,7 @@ export function InterestForm({
             ? "Ahora estás fuera del matching. Tus horarios seguirán guardados."
             : "Tu disponibilidad no cubre todo este turno."}
         </p>
-        <Link href="/disponibilidad" className="button">
+        <Link href="/disponibilidad" className="button secondary">
           Ajustar disponibilidad
         </Link>
       </div>

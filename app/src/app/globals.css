@@ -108,7 +108,7 @@ em {
     background 0.15s,
     transform 0.15s;
 }
-.button:hover {
+.button:hover:not(:disabled) {
   background: #cda571;
 }
 .button:active {
@@ -116,7 +116,7 @@ em {
 }
 .button:disabled {
   opacity: 0.6;
-  cursor: wait;
+  cursor: not-allowed;
   transform: none;
 }
 .button.secondary {
@@ -876,6 +876,7 @@ legend {
 }
 .candidate-list {
   list-style: none;
+  margin: 24px 0;
   padding: 0;
   display: grid;
   gap: 16px;
@@ -889,8 +890,102 @@ legend {
   flex-wrap: wrap;
 }
 .candidate-actions .button {
-  flex: 1;
   min-width: 130px;
+}
+.home .button.secondary,
+.button.button-dismiss {
+  background: #fffdf9;
+  color: #433a30;
+  border-color: #9e9384;
+}
+.home .button.secondary:hover:not(:disabled),
+.button.button-dismiss:hover:not(:disabled) {
+  background: #ece5da;
+}
+.button.button-dismiss {
+  color: #634a3c;
+}
+.button:disabled:has(.spinner),
+form[aria-busy="true"] .button:disabled {
+  cursor: progress;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  cursor: default;
+  max-width: 100%;
+}
+.status-badge--neutral {
+  color: #4c4944;
+  background: #eeece7;
+  border-color: #d8d4cd;
+}
+.status-badge--copper {
+  color: #694319;
+  background: #f5e8d6;
+  border-color: #d9bd96;
+}
+.status-badge--positive {
+  color: #245a3a;
+  background: #e6f2e9;
+  border-color: #b2d3bc;
+}
+.back-link {
+  align-self: flex-start;
+  margin-bottom: 22px;
+  min-height: 44px;
+  padding: 10px 16px;
+}
+.context-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0 24px;
+}
+.card-subtle {
+  background: transparent;
+  box-shadow: none;
+}
+.card-subtle h2 {
+  font-size: 1.2rem;
+}
+.home .card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 24px 0 12px;
+}
+.capacity-count {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.candidate-list .card > p {
+  margin-bottom: 16px;
+}
+.candidate-list .card h2 {
+  margin-bottom: 8px;
+}
+.jobs-list .status-badge {
+  margin: 16px 0 8px;
+}
+@media (max-width: 520px) {
+  .context-actions {
+    flex-direction: column;
+  }
+  .context-actions .button {
+    width: 100%;
+  }
+  .candidate-actions .button {
+    flex: 1 1 130px;
+  }
 }
 .candidate-positive {
   color: #27623a;

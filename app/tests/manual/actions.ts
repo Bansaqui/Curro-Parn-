@@ -21,4 +21,6 @@ export {
   simulated as saveJob,
   simulated as sendInterest,
   simulated as saveAvailable,
+  simulated as saveAvailability,
+  simulated as removeAvailability,
 };

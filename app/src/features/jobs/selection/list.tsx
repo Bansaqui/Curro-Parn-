@@ -1,4 +1,5 @@
 import { Card, EmptyState } from "@/components/ui";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { formatAvailabilityDate } from "@/features/availability/schema";
 import type { Snapshot } from "@/features/snapshot/schema";
 import { interestLabel } from "../interest/selectors";
@@ -25,11 +26,20 @@ export function CandidateList({
     <>
       <Card>
         <h2>Plazas</h2>
-        <p>
-          {job.occupied} / {job.slots} cubiertas ·{" "}
-          {Math.max(0, job.slots - job.occupied)} pendientes
+        <p className="capacity-count">
+          {job.occupied} de {job.slots} cubiertas
         </p>
-        {job.occupied >= job.slots && <p>Todas las plazas están cubiertas.</p>}
+        <p className="muted">
+          {Math.max(0, job.slots - job.occupied)}{" "}
+          {job.slots - job.occupied === 1 ? "pendiente" : "pendientes"}
+        </p>
+        {job.occupied >= job.slots && (
+          <p>
+            <StatusBadge tone="positive">
+              <span aria-hidden="true">✓ </span>Todas las plazas están cubiertas
+            </StatusBadge>
+          </p>
+        )}
         {!canManage && (
           <p>
             Acceso de solo lectura. El propietario o gestor puede seleccionar y
@@ -51,14 +61,20 @@ export function CandidateList({
               <Card>
                 <h2>{application.worker_name}</h2>
                 <p className="muted">Especialidad del Curro: {job.specialty}</p>
-                <p
-                  className={
-                    application.state === "selected" ? "candidate-positive" : ""
-                  }
-                >
-                  {application.state === "applied"
-                    ? "Interés recibido"
-                    : interestLabel(application.state)}
+                <p>
+                  <StatusBadge
+                    tone={
+                      application.state === "selected"
+                        ? "positive"
+                        : application.state === "applied"
+                          ? "copper"
+                          : "neutral"
+                    }
+                  >
+                    {application.state === "applied"
+                      ? "Interés recibido"
+                      : interestLabel(application.state)}
+                  </StatusBadge>
                 </p>
                 <p className="muted">
                   Candidatura del{" "}
