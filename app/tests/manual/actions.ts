@@ -10,6 +10,9 @@ export async function saveDecision(): Promise<FormState> {
   return { error: "Todas las plazas ya están cubiertas." };
 }
 export {
+  simulated as saveProfile,
+  simulated as saveExperience,
+  simulated as removeExperience,
   simulated as completeOnboarding,
   simulated as login,
   simulated as register,

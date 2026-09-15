@@ -16,6 +16,8 @@ for (const path of [
   count++;
 }
 for (const path of [
+  "/perfil",
+  "/negocio/curros/44444444-4444-4444-8444-444444444444/candidaturas/00000000-0000-4000-8000-000000000010/perfil",
   "/inicio",
   "/disponibilidad",
   "/curros",
