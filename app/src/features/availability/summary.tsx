@@ -46,6 +46,9 @@ export function WorkerAvailabilitySummary({
           <p className="muted">No hay próximas franjas guardadas.</p>
         )}
         <div className="context-actions">
+          <Link href="/perfil" className="button secondary">
+            Mi perfil
+          </Link>
           <Link href="/curros" className="button">
             Ver Curros
           </Link>

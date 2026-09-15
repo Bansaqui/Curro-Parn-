@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, EmptyState } from "@/components/ui";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatAvailabilityDate } from "@/features/availability/schema";
@@ -60,6 +61,14 @@ export function CandidateList({
             <li key={application.id}>
               <Card>
                 <h2>{application.worker_name}</h2>
+                {application.state !== "invited" && (
+                  <Link
+                    className="button secondary"
+                    href={`/negocio/curros/${jobId}/candidaturas/${application.id}/perfil`}
+                  >
+                    Ver perfil profesional
+                  </Link>
+                )}
                 <p className="muted">Especialidad del Curro: {job.specialty}</p>
                 <p>
                   <StatusBadge

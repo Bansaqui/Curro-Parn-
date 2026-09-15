@@ -991,3 +991,52 @@ form[aria-busy="true"] .button:disabled {
   color: #27623a;
   font-weight: 700;
 }
+
+/* Profile foundation: compact controls, long declared text wraps safely. */
+.profile-trust {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.profile-trust > * + * {
+  margin-top: 1.25rem;
+}
+.profile-options {
+  border: 1px solid var(--line, #d8d4cd);
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 0;
+}
+.profile-options label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.profile-options input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.profile-trust summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.profile-trust .input {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+}
+.profile-experience {
+  border-top: 1px solid var(--line, #d8d4cd);
+  padding: 16px 0;
+}
+.profile-remove summary {
+  color: #9e332c;
+}
+.profile-remove .button {
+  background: #9e332c;
+  color: white;
+}
