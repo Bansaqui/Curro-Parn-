@@ -22,6 +22,7 @@ for (const path of [
   "/onboarding",
   "/negocio/nuevo",
   "/negocio/curros/nuevo",
+  "/negocio/curros/44444444-4444-4444-8444-444444444444/candidaturas",
   "/negocio/local/nuevo",
   "/actualizar-password",
 ]) {

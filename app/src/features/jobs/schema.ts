@@ -85,6 +85,7 @@ export const jobSchema = z
     starts_at: z.iso.datetime({ offset: true }),
     ends_at: z.iso.datetime({ offset: true }),
     slots: z.number().int().min(1).max(20),
+    occupied: z.number().int().min(0).max(20),
     pay_cents: z.number().int().min(1).max(10_000_000),
     urgent: z.boolean(),
     state: z.enum(["published", "cancelled"]),

@@ -67,7 +67,7 @@ export default async function Page({
               Publicar Curro
             </Link>
           )}
-          <JobList jobs={ownJobs(snapshot)} />
+          <JobList jobs={ownJobs(snapshot)} applications={snapshot.applications} />
         </>
       )}
     </div>

@@ -13,43 +13,50 @@ export function WorkerJobList({ entries }: { entries: WorkerJob[] }) {
   return (
     <section className="jobs-list" aria-label="Curros de tu especialidad">
       <ul>
-        {entries.map(({ job, application, availability }) => (
-          <li key={job.id}>
-            <Card>
-              <span className="eyebrow">
-                Curro publicado{job.urgent ? " · Urgente" : ""}
-              </span>
-              <h2>{job.title}</h2>
-              <p className="muted">
-                {job.business_name} · {job.venue_name}
-              </p>
-              <p>{job.specialty}</p>
-              <dl>
-                <dt>Inicio</dt>
-                <dd>
-                  <time dateTime={job.starts_at}>
-                    {formatAvailabilityDate(job.starts_at)}
-                  </time>
-                </dd>
-                <dt>Fin</dt>
-                <dd>
-                  <time dateTime={job.ends_at}>
-                    {formatAvailabilityDate(job.ends_at)}
-                  </time>
-                </dd>
-                <dt>Plazas</dt>
-                <dd>{job.slots}</dd>
-                <dt>Remuneración</dt>
-                <dd>{formatPay(job.pay_cents)}</dd>
-              </dl>
-              <InterestForm
-                jobId={job.id}
-                state={application?.state}
-                availability={availability}
-              />
-            </Card>
-          </li>
-        ))}
+        {entries.map(
+          ({ job, application, availability, closed, selectionNote }) => (
+            <li key={job.id}>
+              <Card>
+                <span className="eyebrow">
+                  {job.state === "cancelled"
+                    ? "Curro cancelado"
+                    : "Curro publicado"}
+                  {job.urgent ? " · Urgente" : ""}
+                </span>
+                <h2>{job.title}</h2>
+                <p className="muted">
+                  {job.business_name} · {job.venue_name}
+                </p>
+                <p>{job.specialty}</p>
+                <dl>
+                  <dt>Inicio</dt>
+                  <dd>
+                    <time dateTime={job.starts_at}>
+                      {formatAvailabilityDate(job.starts_at)}
+                    </time>
+                  </dd>
+                  <dt>Fin</dt>
+                  <dd>
+                    <time dateTime={job.ends_at}>
+                      {formatAvailabilityDate(job.ends_at)}
+                    </time>
+                  </dd>
+                  <dt>Plazas</dt>
+                  <dd>{job.slots}</dd>
+                  <dt>Remuneración</dt>
+                  <dd>{formatPay(job.pay_cents)}</dd>
+                </dl>
+                <InterestForm
+                  jobId={job.id}
+                  state={application?.state}
+                  availability={availability}
+                  closed={closed}
+                />
+                {selectionNote && <p>{selectionNote}</p>}
+              </Card>
+            </li>
+          ),
+        )}
       </ul>
     </section>
   );

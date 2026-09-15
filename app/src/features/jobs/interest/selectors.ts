@@ -2,10 +2,13 @@ import type { Snapshot } from "@/features/snapshot/schema";
 import type { Job } from "../schema";
 import type { Application } from "./schema";
 import { coversTurn } from "@/features/availability/status";
+import { selectionEvidence } from "../selection/selectors";
 export type WorkerJob = {
   job: Job;
   application?: Application;
   availability: "off" | "uncovered" | "covered";
+  closed?: boolean;
+  selectionNote?: string;
 };
 export function ownApplication(snapshot: Snapshot, jobId: string) {
   return snapshot.applications.find(
@@ -18,9 +21,10 @@ export function workerJobs(snapshot: Snapshot, now = Date.now()): WorkerJob[] {
   return snapshot.jobs
     .filter(
       (job) =>
-        job.state === "published" &&
-        Date.parse(job.starts_at) > now &&
-        job.specialty === snapshot.profile.specialty,
+        !!ownApplication(snapshot, job.id) ||
+        (job.state === "published" &&
+          Date.parse(job.starts_at) > now &&
+          job.specialty === snapshot.profile.specialty),
     )
     .sort(
       (a, b) =>
@@ -30,6 +34,17 @@ export function workerJobs(snapshot: Snapshot, now = Date.now()): WorkerJob[] {
     .map((job) => ({
       job,
       application: ownApplication(snapshot, job.id),
+      ...(job.state !== "published" || Date.parse(job.starts_at) <= now
+        ? { closed: true }
+        : {}),
+      ...(ownApplication(snapshot, job.id)?.state === "selected"
+        ? {
+            selectionNote: selectionEvidence(
+              snapshot,
+              ownApplication(snapshot, job.id)!,
+            ),
+          }
+        : {}),
       availability: !snapshot.profile.available
         ? "off"
         : coversTurn(
@@ -47,9 +62,9 @@ export function interestLabel(state?: Application["state"]) {
     case "applied":
       return "Interés enviado";
     case "selected":
-      return "Interés enviado · Candidatura seleccionada";
+      return "Seleccionado";
     case "rejected":
-      return "Candidatura rechazada";
+      return "No seleccionado";
     case "withdrawn":
       return "Candidatura retirada";
     case "invited":

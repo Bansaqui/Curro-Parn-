@@ -137,7 +137,7 @@ QA de esta fase: `npm ci`, lint, typecheck, 79 pruebas en 8 archivos, build y te
 
 Desde Inicio de Negocio, «Publicar Curro» abre `/negocio/curros/nuevo`. Solo perfiles business y pertenencias activas owner/manager pueden publicar. La página muestra un estado explicativo si faltan permisos o locales activos; la acción valida nuevamente el negocio, el local y su relación utilizando el snapshot de la petición. El snapshot remoto solo incluye pertenencias activas; la RPC vuelve a comprobar los permisos en la transacción. Staff puede consultar los Curros de sus negocios, pero no publicarlos.
 
-La feature `src/features/jobs/` separa validación, permisos/listado, comando, acción y componentes. El snapshot incorpora únicamente los campos necesarios de `jobs`, sin applications, assignments ni notifications. Inicio muestra los Curros de negocios con pertenencia activa: publicados aún vigentes por inicio ascendente, después el historial por inicio descendente. El backend devuelve como máximo 200; no hay paginación en esta fase.
+La feature `src/features/jobs/` separa validación, permisos/listado, comando, acción y componentes. Inicio muestra los Curros de negocios con pertenencia activa: publicados aún vigentes por inicio ascendente, después el historial por inicio descendente. El backend devuelve como máximo 200; no hay paginación. Las fases siguientes incorporan candidaturas y el subconjunto necesario de asignaciones descrito más abajo.
 
 La publicación usa exclusivamente `cp_command('publish', ...)`. No se envían `location`, identidad ni roles desde el formulario. El local determina la ubicación en backend. La remuneración admite coma o punto decimal, nunca separadores de miles, exponentes ni más de dos decimales. Se convierte por partes enteras a `pay_cents`, sin redondear; rango 0,01–100.000 € conforme al límite del backend. No calcula comisiones. Las fechas reutilizan `madridInstant` de disponibilidad: Europe/Madrid, rechazo de horas ambiguas/inexistentes, inicio futuro y duración real máxima de 18 horas. Título 3–120, descripción hasta 2000 y plazas 1–20.
 
@@ -145,21 +145,21 @@ Los envíos muestran «Publicando…» y deshabilitan el botón. Tras éxito se 
 
 Para revisar la UI sin escribir en Supabase: `npm run qa:ui` y abrir `http://127.0.0.1:3001/jobs.html`. El fixture usa el formulario y listado reales con datos sintéticos y una acción simulada; el servidor de QA bloquea imports de Supabase y no carga `.env.local`. No es una ruta de producción.
 
-Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para resultados y límites de esta entrega. No requiere variables de entorno, paquetes ni migraciones nuevos. Edición, cancelación, candidaturas, selección, asignaciones, pagos y contratación permanecen fuera de alcance.
+Consultar [QA-business-job-publishing.md](QA-business-job-publishing.md) para la validación histórica de publicación. Las candidaturas y la selección se incorporan en las fases 2.3 y 2.4; edición, cancelación y operativa posterior del turno no se implementan aquí.
 
 ## Fase 2.3 — Curros disponibles e interés
 
 El acceso «Ver Curros» de Inicio del profesional abre `/curros`, protegida con `requireProfile('worker')`. El servidor obtiene el snapshot real y muestra una tarjeta por Curro publicado, de la misma especialidad y con inicio futuro. Se utiliza inicio futuro porque el backend deja de admitir candidaturas al comenzar el turno. Urgente es una señal visual, sin cambiar el orden cronológico ni la compatibilidad.
 
-El snapshot añade `business_name` a jobs y el subconjunto `id`, `job_id`, `worker_id`, `state` de applications. Se consulta exclusivamente la candidatura propia para cada tarjeta. No se incorporan assignments, notifications ni reviews. La UI no reproduce las reglas de cobertura de disponibilidad, capacidad o solapes: `apply` conserva esas comprobaciones.
+El snapshot incluye `business_name` en jobs y la candidatura propia para cada tarjeta del profesional. La Fase 2.4 amplía los campos necesarios de applications y assignments. No se incorporan reviews ni una bandeja de notificaciones. La UI muestra orientación simple de cobertura; `apply` conserva la autoridad sobre disponibilidad, capacidad y solapes.
 
 «Me interesa» usa una Server Action y exclusivamente `cp_command('apply', {job_id})`. Valida UUID, perfil worker, visibilidad del Curro y candidatura existente antes de llamar al backend. La autoridad definitiva es la RPC. Respuestas normales y `{id, unchanged: true}` se consideran éxito; se revalidan `/curros` e `/inicio` y se redirige con confirmación. No hay reintentos automáticos, y una respuesta ambigua pide recargar antes de repetir.
 
-`applied` y `selected` se muestran una sola vez, con «Interés enviado» deshabilitado (en selected se indica el estado existente, sin ofrecer selección). `rejected` y `withdrawn` se muestran cerradas y no permiten otra candidatura. `invited` permite mostrar interés mediante apply, como admite el backend. No se implementan invitaciones ni retirada. Los Curros cancelados o ya iniciados desaparecen de este listado incluso con candidatura previa; no es un historial completo de candidaturas.
+Los estados actuales son «Interés enviado», «Seleccionado», «No seleccionado» y «Candidatura retirada». Las candidaturas cerradas no permiten otro envío. Una invitación permite mostrar interés si el Curro sigue abierto; no se añade UI para invitar o retirar. Los Curros con candidatura propia permanecen visibles aunque hayan empezado o se hayan cancelado, siempre que estén incluidos en el snapshot. No constituye un historial paginado completo.
 
 Fechas en Europe/Madrid y céntimos a euros reutilizan las utilidades anteriores. Para QA aislada: `npm run qa:ui` y `http://127.0.0.1:3001/interest.html`. Usa componentes reales, datos sintéticos y respuestas simuladas, sin Supabase. Véase [QA-worker-job-interest.md](QA-worker-job-interest.md).
 
-No hay cambios remotos, migraciones, dependencias ni variables de entorno nuevas. El snapshot existente limita jobs a 200 y applications a 500; no se añade paginación. Si una candidatura antigua quedara fuera de ese límite, la RPC seguirá impidiendo duplicados, pero el estado previo puede no estar visible. Se recomienda prueba real autorizada de extremo a extremo antes del merge, sin incluir selección, asignaciones ni pagos.
+El snapshot existente limita jobs a 200 y applications a 500; no se añade paginación. Si una candidatura antigua quedara fuera de ese límite, la RPC seguirá impidiendo duplicados, pero el estado previo puede no estar visible. La prueba real previa al merge de la Fase 2.4 debe incluir selección y rechazo, sin operativa posterior ni pagos.
 
 ## Fase 2.3.1 — Estado y horarios separados
 
@@ -173,4 +173,20 @@ En Curros se verifica únicamente si una franja propia contiene todo el turno, s
 
 Las pruebas SQL usan PGlite 0.5.8 (dependencia de desarrollo): reproducen las 17 migraciones originales y la nueva migración en PostgreSQL en memoria. Solo auth.users/auth.uid/auth.jwt y los roles de plataforma se simulan localmente; no hay conexión ni credenciales remotas. Esto no sustituye una prueba autenticada contra Supabase después del despliegue autorizado. Persisten posibles conflictos de última escritura entre pestañas al editar nombre/bio/estado, pues profile reemplaza esos campos.
 
-Para QA visual sin backend: `npm run qa:ui`, abrir `/polish.html`. La evidencia histórica de la Fase 2.3.1 se conserva en [QA-worker-availability-polish.md](QA-worker-availability-polish.md); su compensación de dos RPC queda sustituida por la Fase 2.3.2. El parche acumulado `worker-availability-polish-fixed.patch` contiene ambas fases y se aplica con `git am` sobre `dd867b88a8a709cd26e197df2842d89cdcfcf6f2`.
+Para QA visual sin backend: `npm run qa:ui`, abrir `/polish.html` para disponibilidad o `/selection.html` para candidaturas. La evidencia histórica de la Fase 2.3.1 se conserva en [QA-worker-availability-polish.md](QA-worker-availability-polish.md); su compensación de dos RPC queda sustituida por la Fase 2.3.2, ya integrada en main.
+
+## Fase 2.4 — Candidaturas y selección
+
+Desde cada Curro propio, «Ver candidaturas» abre `/negocio/curros/[jobId]/candidaturas`. El servidor exige perfil business y pertenencia al negocio. Owner/manager pueden seleccionar una candidatura applied o descartar applied/invited; staff solo consulta. Orden por fecha de candidatura ascendente e id, sin ranking. Se muestra el nombre disponible en el snapshot; la especialidad se etiqueta como especialidad del Curro, porque el snapshot no incluye la especialidad actual del candidato. No se infieren experiencia, referencias ni rating.
+
+Las mutaciones usan exclusivamente `cp_command('select'|'reject', {application_id})`. El backend crea la asignación y asigna slot_no; el frontend nunca escribe tablas ni decide el número de plaza. La ocupación usa `jobs.occupied`, calculado por el backend excluyendo cancelled/no_show/replaced. Al llenarse se bloquea seleccionar, pero las candidaturas siguen visibles y se pueden descartar según su estado.
+
+Zod exige `occupied`, `business_id`, `worker_name`, `created_at` y assignments mínimos (`id`, `application_id`, `job_id`, `worker_id`, `state`), sin valores por defecto que oculten datos ausentes. Una selección histórica con asignación liberada se identifica como tal; si no aparece la asignación, se pide comprobarla, sin afirmar una plaza activa. No se añaden RPC ni datos al backend: se valida un subconjunto del snapshot existente.
+
+Los triggers existentes generan notificaciones de selección/rechazo y se verifican en SQL. El estado visible se deriva de applications; no se añade bandeja, envío externo ni marcado de lectura. Inicio remite a Ver Curros para consultar actividad, sin módulo operativo nuevo. La selección revalida Inicio, Curros y candidaturas. Sin realtime: otras sesiones deben actualizar. Los errores conocidos se traducen; ante resultado ambiguo no hay reintento automático ni confirmación inventada.
+
+No hay nuevas migraciones, dependencias, variables ni modificaciones remotas. Validación y límites: [QA-business-candidate-selection.md](QA-business-candidate-selection.md). No se implementan condiciones, documentación, confirmación, turnos, pagos ni otras transiciones de assignments.
+
+## Fase 2.4.1 — Navegación y estados
+
+Los estados de candidaturas se presentan como badges semánticos de texto, sin botones disabled: interés enviado en cobre, seleccionado en verde y resultados cerrados en neutro. Inicio agrupa Ver Curros y Gestionar disponibilidad dentro de la tarjeta principal; Actividad mantiene menor peso. BackLink unifica «Volver a Inicio» y RefreshLink ofrece «Actualizar» conservando la lectura completa de servidor. Curros y Disponibilidad presentan accesos contextuales independientes del texto. No cambia ninguna regla ni comando backend. QA visual aislada: `npm run qa:ui`, `/ux.html`. Resultados: [QA-business-candidate-selection-ux-polish.md](QA-business-candidate-selection-ux-polish.md).

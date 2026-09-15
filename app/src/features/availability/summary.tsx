@@ -45,17 +45,20 @@ export function WorkerAvailabilitySummary({
         ) : (
           <p className="muted">No hay próximas franjas guardadas.</p>
         )}
-        <Link href="/disponibilidad" className="button">
-          Gestionar disponibilidad
-        </Link>
+        <div className="context-actions">
+          <Link href="/curros" className="button">
+            Ver Curros
+          </Link>
+          <Link href="/disponibilidad" className="button secondary">
+            Gestionar disponibilidad
+          </Link>
+        </div>
       </Card>
-      <Link href="/curros" className="button">
-        Ver Curros
-      </Link>
-      <Card>
+      <Card className="card-subtle">
         <h2>Actividad</h2>
         <p className="muted">
-          Aquí podrás consultar tu actividad en una próxima fase.
+          Consulta el estado de tus candidaturas en Ver Curros: interés enviado,
+          seleccionado o no seleccionado.
         </p>
       </Card>
     </>

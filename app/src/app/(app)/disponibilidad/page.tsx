@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BackLink } from "@/components/ui/back-link";
 import { requireProfile } from "@/features/auth/session";
 import { getSnapshot } from "@/features/snapshot/server";
 import {
@@ -25,14 +26,17 @@ export default async function Page({
   const { result } = await searchParams;
   return (
     <div className="home">
-      <Link href="/inicio" className="quiet-link">
-        ← Volver a inicio
-      </Link>
+      <BackLink />
       <h1>Mi disponibilidad</h1>
       <p className="lead">
         Indica cuándo puedes trabajar. Todas las horas se muestran en horario
         peninsular.
       </p>
+      <div className="context-actions">
+        <Link href="/curros" className="button secondary">
+          Ver Curros disponibles
+        </Link>
+      </div>
       {result === "created" && <Alert success>Disponibilidad añadida.</Alert>}
       {result === "deleted" && <Alert success>Franja eliminada.</Alert>}
       {result === "check-create" && (
