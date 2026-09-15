@@ -114,7 +114,7 @@ describe("snapshot and access", () => {
       jobs: [{ ...job, description: "discarded", occupied: 1 }],
       applications: [],
     });
-    expect(result.jobs).toEqual([job]);
+    expect(result.jobs).toEqual([{ ...job, occupied: 1 }]);
     expect(result.applications).toEqual([]);
   });
   it("rejects missing jobs", () =>

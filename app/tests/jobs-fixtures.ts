@@ -27,6 +27,7 @@ export const job: Job = {
   starts_at: "2026-09-20T08:00:00Z",
   ends_at: "2026-09-20T12:00:00Z",
   slots: 2,
+  occupied: 0,
   pay_cents: 8550,
   urgent: false,
   state: "published",
@@ -43,6 +44,7 @@ export function snapshot(): Snapshot {
     availability: [],
     jobs: [job],
     applications: [],
+    assignments: [],
     businesses: [
       {
         id: businessId,

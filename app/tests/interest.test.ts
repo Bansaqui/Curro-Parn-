@@ -62,8 +62,8 @@ describe("worker job selectors", () => {
       s.applications = [{ ...application, state }];
       const entries = workerJobs(s);
       expect(entries).toHaveLength(1);
-      expect(interestLabel(entries[0].application?.state)).toContain(
-        "Interés enviado",
+      expect(interestLabel(entries[0].application?.state)).toBe(
+        state === "selected" ? "Seleccionado" : "Interés enviado",
       );
       expect(canSendInterest(state)).toBe(false);
     },
@@ -94,8 +94,7 @@ describe("snapshot application parsing", () => {
     expect(
       applicationSchema.parse({
         ...application,
-        worker_name: "not needed",
-        business_id: otherId,
+        private_document: "discarded",
       }),
     ).toEqual(application));
   it.each([

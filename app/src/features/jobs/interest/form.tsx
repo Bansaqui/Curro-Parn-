@@ -9,17 +9,23 @@ export function InterestForm({
   jobId,
   state,
   availability,
+  closed,
 }: {
   jobId: string;
   state?: Application["state"];
   availability?: "off" | "uncovered" | "covered";
+  closed?: boolean;
 }) {
   if (!canSendInterest(state))
     return (
-      <Button type="button" disabled>
-        {interestLabel(state)}
-      </Button>
+      <div>
+        <Button type="button" disabled>
+          {interestLabel(state)}
+        </Button>
+        {state === "rejected" && <p>No seleccionado para este Curro.</p>}
+      </div>
     );
+  if (closed) return <p>Este Curro ya no admite candidaturas.</p>;
   if (availability === "off" || availability === "uncovered")
     return (
       <div className="interest-guidance">

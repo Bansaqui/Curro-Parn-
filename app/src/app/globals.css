@@ -874,3 +874,25 @@ legend {
 .interest-guidance {
   margin-top: 20px;
 }
+.candidate-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.candidate-list h2 {
+  overflow-wrap: anywhere;
+}
+.candidate-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.candidate-actions .button {
+  flex: 1;
+  min-width: 130px;
+}
+.candidate-positive {
+  color: #27623a;
+  font-weight: 700;
+}

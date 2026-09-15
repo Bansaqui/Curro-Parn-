@@ -29,6 +29,7 @@ const snapshot = {
   },
   jobs: [],
   applications: [],
+  assignments: [],
   businesses: [],
   venues: [],
   availability: [slot],

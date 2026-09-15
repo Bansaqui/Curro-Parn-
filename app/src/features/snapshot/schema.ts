@@ -2,6 +2,7 @@ import { z } from "zod";
 import { availabilitySlotSchema } from "@/features/availability/schema";
 import { jobSchema } from "@/features/jobs/schema";
 import { applicationSchema } from "@/features/jobs/interest/schema";
+import { assignmentSchema } from "@/features/jobs/selection/schema";
 export const snapshotSchema = z.object({
   profile: z.object({
     id: z.uuid(),
@@ -12,6 +13,7 @@ export const snapshotSchema = z.object({
   }),
   jobs: z.array(jobSchema),
   applications: z.array(applicationSchema),
+  assignments: z.array(assignmentSchema),
   availability: z.array(availabilitySlotSchema),
   businesses: z.array(
     z.object({

@@ -30,7 +30,11 @@ export async function sendInterest(
       error:
         "Ya existe una candidatura cerrada para este Curro. No puedes enviar otra.",
     };
-  if (!workerJobs(snapshot).some(({ job }) => job.id === parsed.data.jobId))
+  if (
+    !workerJobs(snapshot).some(
+      ({ job, closed }) => job.id === parsed.data.jobId && !closed,
+    )
+  )
     return {
       error:
         "Este Curro ya no está disponible para tu perfil. Actualiza el listado.",

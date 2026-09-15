@@ -55,7 +55,8 @@ export function WorkerAvailabilitySummary({
       <Card>
         <h2>Actividad</h2>
         <p className="muted">
-          Aquí podrás consultar tu actividad en una próxima fase.
+          Consulta el estado de tus candidaturas en Ver Curros: interés enviado,
+          seleccionado o no seleccionado.
         </p>
       </Card>
     </>
